@@ -23,6 +23,11 @@ class ProfileController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'company' => $user->company,
+                'business_address' => $user->business_address,
+                'business_no' => $user->business_no,
+                'whatsapp' => $user->whatsapp,
+                'business_reg_no' => $user->business_reg_no,
+                'persons_in_charge' => $user->persons_in_charge ?? [],
                 'avatar' => $user->avatar ? asset('storage/' . $user->avatar) : null,
             ],
         ]);
@@ -37,6 +42,14 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'company' => ['nullable', 'string', 'max:255'],
+            'business_address' => ['nullable', 'string', 'max:1000'],
+            'business_no' => ['nullable', 'string', 'max:255'],
+            'whatsapp' => ['nullable', 'string', 'max:255'],
+            'business_reg_no' => ['nullable', 'string', 'max:255'],
+            'persons_in_charge' => ['nullable', 'array'],
+            'persons_in_charge.*.name' => ['required', 'string', 'max:255'],
+            'persons_in_charge.*.role' => ['required', Rule::in(['Primary', 'Billing', 'Staff'])],
+            'persons_in_charge.*.email' => ['nullable', 'email', 'max:255'],
         ]);
 
         $user->update($validated);

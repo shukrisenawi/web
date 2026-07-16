@@ -4,10 +4,21 @@ import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
 
 
+interface PersonInCharge {
+    name: string;
+    role: string;
+    email?: string | null;
+}
+
 interface UserProfile {
     name: string;
     email: string;
     company: string | null;
+    business_address?: string | null;
+    business_no?: string | null;
+    whatsapp?: string | null;
+    business_reg_no?: string | null;
+    persons_in_charge?: PersonInCharge[];
     avatar: string | null;
 }
 
@@ -22,7 +33,33 @@ export default function Profile({ user }: ProfileProps) {
         name: user.name,
         email: user.email,
         company: user.company ?? '',
+        business_address: user.business_address ?? '',
+        business_no: user.business_no ?? '',
+        whatsapp: user.whatsapp ?? '',
+        business_reg_no: user.business_reg_no ?? '',
+        persons_in_charge: user.persons_in_charge ?? [],
     });
+
+    const addPerson = () => {
+        profileForm.setData('persons_in_charge', [
+            ...profileForm.data.persons_in_charge,
+            { name: '', role: 'Staff', email: '' },
+        ]);
+    };
+
+    const updatePerson = (idx: number, key: keyof PersonInCharge, value: string) => {
+        const next = profileForm.data.persons_in_charge.map((p, i) =>
+            i === idx ? { ...p, [key]: value } : p
+        );
+        profileForm.setData('persons_in_charge', next);
+    };
+
+    const removePerson = (idx: number) => {
+        profileForm.setData(
+            'persons_in_charge',
+            profileForm.data.persons_in_charge.filter((_, i) => i !== idx)
+        );
+    };
 
     const [avatarPreview, setAvatarPreview] = useState(user.avatar);
 
@@ -152,11 +189,11 @@ export default function Profile({ user }: ProfileProps) {
                 </Card>
 
                 <div className="grid gap-6 lg:grid-cols-2">
-                    {/** Edit profile */}
+                    {/** Edit profile / company */}
                     <Card>
                         <div className="mb-4 flex items-center gap-2">
                             <User className="h-5 w-5 text-blue-600" />
-                            <h3 className="font-semibold text-slate-900">Edit Profile</h3>
+                            <h3 className="font-semibold text-slate-900">Company Information</h3>
                         </div>
 
                         <form onSubmit={handleProfileSubmit} className="space-y-4">
@@ -185,7 +222,7 @@ export default function Profile({ user }: ProfileProps) {
                             </div>
 
                             <div>
-                                <label htmlFor="company" className="block text-sm font-medium text-slate-700">Company</label>
+                                <label htmlFor="company" className="block text-sm font-medium text-slate-700">Company Name</label>
                                 <input
                                     id="company"
                                     type="text"
@@ -194,6 +231,51 @@ export default function Profile({ user }: ProfileProps) {
                                     className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none"
                                 />
                                 {profileForm.errors.company && <p className="mt-1 text-xs text-red-600">{profileForm.errors.company}</p>}
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label htmlFor="business_no" className="block text-sm font-medium text-slate-700">Business No.</label>
+                                    <input
+                                        id="business_no"
+                                        type="text"
+                                        value={profileForm.data.business_no}
+                                        onChange={(e) => profileForm.setData('business_no', e.target.value)}
+                                        className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="whatsapp" className="block text-sm font-medium text-slate-700">WhatsApp</label>
+                                    <input
+                                        id="whatsapp"
+                                        type="text"
+                                        value={profileForm.data.whatsapp}
+                                        onChange={(e) => profileForm.setData('whatsapp', e.target.value)}
+                                        className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="business_address" className="block text-sm font-medium text-slate-700">Business Address</label>
+                                <textarea
+                                    id="business_address"
+                                    rows={2}
+                                    value={profileForm.data.business_address}
+                                    onChange={(e) => profileForm.setData('business_address', e.target.value)}
+                                    className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="business_reg_no" className="block text-sm font-medium text-slate-700">Business Reg No. (Optional)</label>
+                                <input
+                                    id="business_reg_no"
+                                    type="text"
+                                    value={profileForm.data.business_reg_no}
+                                    onChange={(e) => profileForm.setData('business_reg_no', e.target.value)}
+                                    className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                />
                             </div>
 
                             {avatarForm.errors.avatar && <p className="text-xs text-red-600">{avatarForm.errors.avatar}</p>}
@@ -206,6 +288,67 @@ export default function Profile({ user }: ProfileProps) {
                                 {profileForm.processing ? 'Saving...' : 'Save Changes'}
                             </button>
                         </form>
+                    </Card>
+
+                    {/** Persons in charge */}
+                    <Card>
+                        <div className="mb-4 flex items-center justify-between">
+                            <h3 className="font-semibold text-slate-900">Persons In Charge</h3>
+                            <button
+                                type="button"
+                                onClick={() => profileForm.submit()}
+                                disabled={profileForm.processing}
+                                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-70"
+                            >
+                                {profileForm.processing ? 'Saving...' : 'Save'}
+                            </button>
+                        </div>
+
+                        <div className="space-y-3">
+                            {profileForm.data.persons_in_charge.map((person, idx) => (
+                                <div key={`${person.name}-${idx}`} className="rounded-xl border border-slate-100 p-3">
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Name"
+                                            value={person.name}
+                                            onChange={(e) => updatePerson(idx, 'name', e.target.value)}
+                                            className="flex-1 rounded-lg border border-slate-200 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+                                        />
+                                        <select
+                                            value={person.role}
+                                            onChange={(e) => updatePerson(idx, 'role', e.target.value)}
+                                            className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+                                        >
+                                            <option value="Primary">Primary</option>
+                                            <option value="Billing">Billing</option>
+                                            <option value="Staff">Staff</option>
+                                        </select>
+                                        <button
+                                            type="button"
+                                            onClick={() => removePerson(idx)}
+                                            className="rounded-lg border border-slate-200 p-1.5 text-slate-400 hover:text-red-500"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                    <input
+                                        type="email"
+                                        placeholder="Email (optional)"
+                                        value={person.email ?? ''}
+                                        onChange={(e) => updatePerson(idx, 'email', e.target.value)}
+                                        className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={addPerson}
+                                className="w-full rounded-lg border border-dashed border-slate-300 py-2 text-sm font-medium text-slate-500 hover:border-blue-500 hover:text-blue-600"
+                            >
+                                + Add Person In Charge
+                            </button>
+                        </div>
                     </Card>
 
                     {/** Change password */}

@@ -16,18 +16,26 @@ class TicketController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        Ticket::whereNull('viewed_at')->update(['viewed_at' => now()]);
+        if (! $user->isAdmin()) {
+            Ticket::whereNull('viewed_at')->update(['viewed_at' => now()]);
+        }
 
-        $tickets = Ticket::with('project', 'user')
+        $query = $user->isAdmin()
+            ? Ticket::query()->with('project', 'user')
+            : $user->tickets()->with('project', 'user');
+
+        $tickets = $query
             ->orderByDesc('created_at')
             ->get()
             ->map(fn ($t) => [
                 'id' => $t->ticket_no,
+                'ticket_id' => $t->id,
                 'subject' => $t->subject,
                 'description' => $t->description,
                 'status' => $t->status,
                 'priority' => $t->priority,
                 'project' => $t->project?->title,
+                'client' => $t->user?->company ?? $t->user?->name,
                 'name' => $t->name ?? $t->user?->name,
                 'email' => $t->email ?? $t->user?->email,
                 'date' => $t->created_at->format('M d, Y'),
@@ -54,7 +62,40 @@ class TicketController extends Controller
 
         $ticket = $this->createTicket($validated, $user->id);
 
-        return redirect()->route('support')->with('success', 'Message sent successfully.');
+        return redirect()->route('support')->with('success', 'Ticket created successfully. Our team will respond soon.');
+    }
+
+    public function update(Request $request, Ticket $ticket)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'status' => ['required', Rule::in(['open', 'in_progress', 'resolved'])],
+            'priority' => ['required', Rule::in(['low', 'medium', 'high'])],
+        ]);
+
+        $ticket->update($validated);
+
+        return redirect()->route('support')->with('success', 'Ticket updated successfully.');
+    }
+
+    public function destroy(Ticket $ticket)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $ticket->delete();
+
+        return redirect()->route('support')->with('success', 'Ticket deleted successfully.');
     }
 
     public function storeFromContact(Request $request)

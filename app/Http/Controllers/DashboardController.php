@@ -14,23 +14,28 @@ class DashboardController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        $projects = $user->projects()
-            ->orderByDesc('progress')
-            ->get();
+        $isAdmin = $user->isAdmin();
+
+        $projectQuery = $isAdmin ? \App\Models\Project::query() : $user->projects();
+        $invoiceQuery = $isAdmin ? \App\Models\Invoice::query() : $user->invoices();
+        $ticketQuery = $isAdmin ? \App\Models\Ticket::query() : $user->tickets();
+
+        $projects = $projectQuery->orderByDesc('created_at')->get();
 
         $activeProjects = $projects->where('status', 'in_progress')->count();
         $completedProjects = $projects->where('status', 'completed')->count();
-        $totalSpent = $user->invoices()
+        $totalSpent = (clone $invoiceQuery)
             ->where('status', 'paid')
             ->sum('amount');
-        $openTickets = $user->tickets()
+        $openTickets = (clone $ticketQuery)
             ->whereIn('status', ['open', 'in_progress'])
             ->count();
 
-        $milestones = $user->projects()
-            ->with(['milestones' => function ($query) {
-                $query->orderBy('due_date')->limit(3);
-            }])
+        $milestoneQuery = $isAdmin
+            ? \App\Models\Project::query()->with('milestones')
+            : $user->projects()->with('milestones');
+
+        $milestones = $milestoneQuery
             ->get()
             ->pluck('milestones')
             ->flatten()
@@ -39,15 +44,16 @@ class DashboardController extends Controller
             ->map(fn ($m) => [
                 'title' => $m->project->title,
                 'note' => $m->note,
-                'due_date' => $m->due_date->format('M d, Y'),
+                'due_date' => $m->due_date?->format('M d, Y'),
                 'is_active' => $m->is_active,
             ])
             ->values();
 
-        $files = $user->projects()
-            ->with(['fileUploads' => function ($query) {
-                $query->orderByDesc('created_at')->limit(3);
-            }])
+        $fileQuery = $isAdmin
+            ? \App\Models\Project::query()->with('fileUploads')
+            : $user->projects()->with('fileUploads');
+
+        $files = $fileQuery
             ->get()
             ->pluck('fileUploads')
             ->flatten()
@@ -60,7 +66,7 @@ class DashboardController extends Controller
             ])
             ->values();
 
-        $invoices = $user->invoices()
+        $invoices = (clone $invoiceQuery)
             ->with('project')
             ->orderByDesc('issue_date')
             ->limit(5)
@@ -73,7 +79,7 @@ class DashboardController extends Controller
                 'status' => $i->status,
             ]);
 
-        $tickets = $user->tickets()
+        $tickets = (clone $ticketQuery)
             ->orderByDesc('created_at')
             ->limit(4)
             ->get()
@@ -84,7 +90,11 @@ class DashboardController extends Controller
                 'date' => $t->created_at->format('M d, Y'),
             ]);
 
-        $activity = $user->activityLogs()
+        $activityQuery = $isAdmin
+            ? \App\Models\ActivityLog::query()
+            : $user->activityLogs();
+
+        $activity = $activityQuery
             ->orderByDesc('created_at')
             ->limit(6)
             ->get()
@@ -98,7 +108,7 @@ class DashboardController extends Controller
             'stats' => [
                 ['label' => 'Active Projects', 'value' => $activeProjects, 'sub' => 'View all projects'],
                 ['label' => 'Projects Completed', 'value' => $completedProjects, 'sub' => 'View completed'],
-                ['label' => 'Total Spent', 'value' => '$'.number_format($totalSpent, 2), 'sub' => 'View invoices'],
+                ['label' => $isAdmin ? 'Total Billing' : 'Total Spent', 'value' => '$'.number_format($totalSpent, 2), 'sub' => 'View invoices'],
                 ['label' => 'Open Tickets', 'value' => $openTickets, 'sub' => 'View tickets'],
             ],
             'projects' => $projects->map(fn ($p) => [

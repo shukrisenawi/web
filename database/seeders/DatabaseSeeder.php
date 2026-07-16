@@ -24,11 +24,24 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = User::firstOrCreate(
-            ['email' => 'admin@website'],
+            ['email' => 'admin@kenju.tech'],
             [
-                'name' => 'Admin',
-                'password' => Hash::make('123'),
+                'name' => 'Kenju Admin',
+                'password' => Hash::make('password'),
+                'company' => 'Kenju Tech',
+                'role' => User::ROLE_ADMIN,
+                'avatar' => null,
+            ]
+        );
+        $user->update(['role' => User::ROLE_ADMIN]);
+
+        $client = User::firstOrCreate(
+            ['email' => 'client@kenju.tech'],
+            [
+                'name' => 'Demo Client',
+                'password' => Hash::make('password'),
                 'company' => 'Acme Corporation',
+                'role' => User::ROLE_CLIENT,
                 'avatar' => null,
             ]
         );
@@ -44,7 +57,7 @@ class DatabaseSeeder extends Seeder
         $projects = collect();
         foreach ($projectsData as $index => $data) {
             $projects->push(Project::factory()->create([
-                'user_id' => $user->id,
+                'user_id' => $client->id,
                 'title' => $data['title'],
                 'category' => $data['category'],
                 'progress' => $data['progress'],
@@ -71,7 +84,7 @@ class DatabaseSeeder extends Seeder
         ];
         foreach ($invoicesData as $invoice) {
             Invoice::factory()->create([
-                'user_id' => $user->id,
+                'user_id' => $client->id,
                 'invoice_no' => $invoice['invoice_no'],
                 'issue_date' => $invoice['issue_date'],
                 'amount' => $invoice['amount'],
@@ -88,7 +101,7 @@ class DatabaseSeeder extends Seeder
         ];
         foreach ($ticketsData as $ticket) {
             Ticket::factory()->create([
-                'user_id' => $user->id,
+                'user_id' => $client->id,
                 'description' => 'Sample support ticket description.',
                 ...$ticket,
             ]);
@@ -101,7 +114,7 @@ class DatabaseSeeder extends Seeder
         ];
         foreach ($filesData as $file) {
             FileUpload::factory()->create([
-                'uploaded_by' => $user->id,
+                'uploaded_by' => $client->id,
                 'path' => 'uploads/' . $file['filename'],
                 'mime_type' => 'application/pdf',
                 ...$file,
@@ -118,7 +131,7 @@ class DatabaseSeeder extends Seeder
         ];
         foreach ($activityData as $activity) {
             ActivityLog::factory()->create([
-                'user_id' => $user->id,
+                'user_id' => $client->id,
                 ...$activity,
             ]);
         }

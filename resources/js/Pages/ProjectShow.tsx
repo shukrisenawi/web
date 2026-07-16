@@ -1,0 +1,140 @@
+import { Head, Link, usePage } from '@inertiajs/react';
+import { ArrowRight, FolderKanban, ListChecks, CheckCircle2 } from 'lucide-react';
+import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
+
+interface Milestone {
+    id: number;
+    title: string;
+    note: string | null;
+    due_date: string | null;
+    is_active: boolean;
+}
+
+interface Project {
+    id: number;
+    client: string;
+    title: string;
+    category: string;
+    service_type: string | null;
+    description: string | null;
+    progress: number;
+    status: string;
+    payment_status: string;
+    icon_color: string;
+    created_at: string;
+    milestones: Milestone[];
+}
+
+const statusBadgeColor = (status: string) => {
+    switch (status) {
+        case 'completed':
+            return 'green';
+        case 'on_hold':
+            return 'amber';
+        default:
+            return 'blue';
+    }
+};
+
+const paymentBadgeColor = (status: string) => {
+    switch (status) {
+        case 'paid':
+            return 'green';
+        case 'partial':
+            return 'amber';
+        default:
+            return 'red';
+    }
+};
+
+export default function ProjectShow({ project }: { project: Project }) {
+    const { auth } = usePage().props as any;
+    const isAdmin = auth?.user?.isAdmin;
+
+    return (
+        <>
+            <Head title={project.title} />
+
+            <DashboardLayout title="Project Details">
+                <div className="mb-6 flex items-center justify-between">
+                    <Link
+                        href="/projects"
+                        className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
+                    >
+                        <ArrowRight className="h-4 w-4 rotate-180" /> Back to Projects
+                    </Link>
+                </div>
+
+                <Card className="mb-6">
+                    <div className="flex items-start gap-4">
+                        <div
+                            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-white"
+                            style={{ backgroundColor: project.icon_color }}
+                        >
+                            <FolderKanban className="h-7 w-7" />
+                        </div>
+                        <div className="flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <h2 className="text-xl font-bold text-slate-900">{project.title}</h2>
+                                <Badge color={statusBadgeColor(project.status)}>
+                                    {project.status.replace('_', ' ')}
+                                </Badge>
+                                <Badge color={paymentBadgeColor(project.payment_status)}>
+                                    {project.payment_status} payment
+                                </Badge>
+                            </div>
+                            <p className="mt-1 text-sm text-slate-500">{project.category}</p>
+                            {isAdmin && (
+                                <p className="text-xs font-medium text-blue-600">Client: {project.client}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <p className="mt-4 text-sm text-slate-600">{project.description}</p>
+
+                    <div className="mt-6">
+                        <div className="mb-2 flex items-center justify-between text-sm">
+                            <span className="text-slate-500">Progress</span>
+                            <span className="font-semibold text-slate-700">{project.progress}%</span>
+                        </div>
+                        <Progress value={project.progress} />
+                    </div>
+                </Card>
+
+                <Card>
+                    <div className="mb-4 flex items-center gap-2">
+                        <ListChecks className="h-5 w-5 text-blue-600" />
+                        <h3 className="font-semibold text-slate-900">Milestones & Updates</h3>
+                    </div>
+
+                    {project.milestones.length === 0 ? (
+                        <p className="text-sm text-slate-500">
+                            No milestones yet. Our team will add progress updates here.
+                        </p>
+                    ) : (
+                        <div className="space-y-3">
+                            {project.milestones.map((m) => (
+                                <div key={m.id} className="flex items-start gap-3 rounded-xl border border-slate-100 p-3">
+                                    <div
+                                        className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
+                                            m.is_active ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'
+                                        }`}
+                                    >
+                                        <CheckCircle2 className="h-4 w-4" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-sm font-semibold text-slate-900">{m.title}</p>
+                                        {m.note && <p className="text-xs text-slate-500">{m.note}</p>}
+                                    </div>
+                                    {m.due_date && (
+                                        <span className="text-xs text-slate-400">{m.due_date}</span>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </Card>
+            </DashboardLayout>
+        </>
+    );
+}

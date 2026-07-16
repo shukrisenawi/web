@@ -16,12 +16,21 @@ import {
     MoreVertical,
 } from 'lucide-react';
 
-const sidebar = [
+const clientSidebar = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
     { label: 'Invoices', href: '/invoices', icon: FileText },
-    { label: 'Messages', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
-    { label: 'Manage Frontpage', href: '/manage-frontpage', icon: Home },
+    { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
+    { label: 'Profile', href: '/profile', icon: Users },
+];
+
+const adminSidebar = [
+    { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { label: 'Projects', href: '/projects', icon: FolderKanban },
+    { label: 'Billing', href: '/invoices', icon: FileText },
+    { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
+    { label: 'Website Content', href: '/manage-frontpage', icon: Home },
+    { label: 'Blog', href: '/manage-blog', icon: FileText },
     { label: 'Profile', href: '/profile', icon: Users },
 ];
 
@@ -37,7 +46,8 @@ interface NotificationItem {
 
 export function DashboardLayout({ children, title }: { children: React.ReactNode; title?: string }) {
     const { auth, url, unreadMessagesCount } = usePage().props as any;
-    const user = auth?.user ?? { name: 'John Doe', email: 'john.doe@email.com', company: 'Acme Corporation' };
+    const user = auth?.user ?? { name: 'John Doe', email: 'john.doe@email.com', company: 'Acme Corporation', isAdmin: false };
+    const sidebar = user?.isAdmin ? adminSidebar : clientSidebar;
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [notifOpen, setNotifOpen] = useState(false);
     const [notifCount, setNotifCount] = useState(unreadMessagesCount ?? 0);

@@ -53,6 +53,7 @@ class AuthController extends Controller
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $validated['role'] = User::ROLE_CLIENT;
 
         $user = User::create($validated);
         Auth::login($user);
