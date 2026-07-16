@@ -16,8 +16,10 @@ class TicketController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        if (! $user->isAdmin()) {
-            Ticket::whereNull('viewed_at')->update(['viewed_at' => now()]);
+        if ($user->isAdmin()) {
+            Ticket::whereNull('admin_viewed_at')->update(['admin_viewed_at' => now()]);
+        } else {
+            $user->tickets()->whereNull('viewed_at')->update(['viewed_at' => now()]);
         }
 
         $query = $user->isAdmin()
@@ -155,6 +157,11 @@ class TicketController extends Controller
         $validated['user_id'] = $userId;
         $validated['status'] = 'open';
         $validated['priority'] = $validated['priority'] ?? 'medium';
+        $validated['admin_viewed_at'] = null;
+
+        if ($userId) {
+            $validated['viewed_at'] = now();
+        }
 
         return Ticket::create($validated);
     }

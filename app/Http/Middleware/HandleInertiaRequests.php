@@ -58,7 +58,11 @@ class HandleInertiaRequests extends Middleware
                 'error' => $request->session()->get('error'),
             ],
             'frontpage' => FrontpageContent::getCurrent()->toArray(),
-            'unreadMessagesCount' => $request->user() ? Ticket::whereNull('viewed_at')->count() : 0,
+            'unreadMessagesCount' => $request->user()
+                ? ($request->user()->isAdmin()
+                    ? Ticket::whereNull('admin_viewed_at')->count()
+                    : $request->user()->tickets()->whereNull('viewed_at')->count())
+                : 0,
         ];
     }
 }
