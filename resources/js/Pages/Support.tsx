@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, Headphones, Plus, X, Save, Trash2, AlertCircle, MessageSquare, Send } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
 
 interface Reply {
@@ -63,6 +63,18 @@ export default function Support({ tickets }: SupportProps) {
     const [activeTab, setActiveTab] = useState<Tab>('all');
 
     const filteredTickets = activeTab === 'all' ? tickets : tickets.filter((t) => t.status === activeTab);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const ticketNo = params.get('ticket');
+        if (ticketNo) {
+            const found = tickets.find((t) => t.id === ticketNo);
+            if (found) {
+                updateForm.setData({ status: found.status, priority: found.priority });
+                setViewId(found.ticket_id ?? null);
+            }
+        }
+    }, []);
 
     const createForm = useForm({
         name: auth?.user?.name ?? '',

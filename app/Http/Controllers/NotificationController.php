@@ -30,7 +30,7 @@ class NotificationController extends Controller
                 'name' => $t->name ?? $t->user?->name,
                 'email' => $t->email ?? $t->user?->email,
                 'date' => $t->created_at->format('M d, Y'),
-                'url' => route('support'),
+                'url' => route('support') . '?ticket=' . $t->ticket_no,
             ]);
 
         return response()->json([
