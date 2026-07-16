@@ -57,13 +57,7 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                         .invoice-card {
                             border: none !important;
                             box-shadow: none !important;
-                            background: transparent !important;
-                            padding: 0 !important;
                             max-width: 100% !important;
-                        }
-                        .invoice-card .border-b,
-                        .invoice-card .border-t {
-                            border-color: transparent !important;
                         }
                     }
                 `}</style>
