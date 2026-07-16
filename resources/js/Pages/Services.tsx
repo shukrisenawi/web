@@ -1,15 +1,9 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { ArrowRight, Check, Code, Rocket, ShieldCheck } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { Clients } from '@/Components/Clients';
-
-function slugify(title: string): string {
-    return title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-}
+import { ServicesGrid } from '@/Components/ServicesGrid';
 
 const promotions = [
     {
@@ -59,10 +53,6 @@ const promotions = [
 ];
 
 export default function Services() {
-    const { frontpage } = usePage().props as any;
-    const c = frontpage ?? {};
-    const services = c.services || [];
-
     return (
         <>
             <Head title="Services" />
@@ -127,49 +117,7 @@ export default function Services() {
                     </div>
                 </section>
 
-                {/* Services Grid */}
-                <section className="py-20 bg-white">
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                            <div>
-                                <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">What We Do</p>
-                                <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">Our Services</h2>
-                            </div>
-                            <p className="max-w-md text-sm text-slate-600">
-                                {c.services_subtitle || 'End-to-end digital solutions to help your business succeed in the digital world.'}
-                            </p>
-                        </div>
-
-                        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                            {services.map((service: any, idx: number) => {
-                                const slug = slugify(service.title);
-                                return (
-                                    <Link
-                                        key={service.title + idx}
-                                        href={`/services/${slug}`}
-                                        className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-                                    >
-                                        <div className="aspect-[16/10] overflow-hidden">
-                                            <img
-                                                src={service.image}
-                                                alt={service.title}
-                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                            />
-                                        </div>
-                                        <div className="flex flex-1 flex-col p-6">
-                                            <h3 className="text-lg font-semibold text-slate-900">{service.title}</h3>
-                                            <p className="mt-2 flex-1 text-sm text-slate-600">{service.description}</p>
-                                            <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-600">
-                                                Learn More
-                                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                                            </div>
-                                        </div>
-                                    </Link>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </section>
+                <ServicesGrid showAll />
 
                 {/* Promotions */}
                 <section className="bg-slate-50 py-16 lg:py-24">

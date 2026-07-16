@@ -89,10 +89,12 @@ export function ServicesGrid({ showAll = false }: ServicesGridProps) {
                             </p>
                         </div>
                     )}
-                    <Link href="/services" className="text-sm font-semibold text-blue-600 inline-flex items-center gap-1 hover:underline">
-                        View All Services
-                        <ArrowRight className="h-4 w-4" />
-                    </Link>
+                    {!showAll && (
+                        <Link href="/services" className="text-sm font-semibold text-blue-600 inline-flex items-center gap-1 hover:underline">
+                            View All Services
+                            <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    )}
                 </div>
 
                 <div className="mt-12 grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
