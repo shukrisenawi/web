@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowRight, Globe, Smartphone, Palette, TrendingUp, Gamepad2, Shield, Code, Megaphone, BarChart, Layers, Monitor, Printer } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Globe, Smartphone, Palette, TrendingUp, Gamepad2, Shield, Code, Megaphone, BarChart, Layers, Monitor, Printer } from 'lucide-react';
 
 const iconMap: Record<string, React.ElementType> = {
     Globe,
@@ -17,12 +17,12 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 const colorClasses = [
-    { color: 'text-blue-600', bg: 'bg-blue-50' },
-    { color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { color: 'text-amber-600', bg: 'bg-amber-50' },
-    { color: 'text-rose-600', bg: 'bg-rose-50' },
-    { color: 'text-cyan-600', bg: 'bg-cyan-50' },
+    { color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
+    { color: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-100' },
+    { color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+    { color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
+    { color: 'text-rose-600', bg: 'bg-rose-50', border: 'border-rose-100' },
+    { color: 'text-cyan-600', bg: 'bg-cyan-50', border: 'border-cyan-100' },
 ];
 
 interface ServicesGridProps {
@@ -96,30 +96,27 @@ export function ServicesGrid({ showAll = false }: ServicesGridProps) {
                 </div>
 
                 <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {(showAll ? services : services).map((service: any, idx: number) => {
+                    {services.map((service: any, idx: number) => {
                         const Icon = iconMap[service.icon] || Globe;
                         const style = colorClasses[idx % colorClasses.length];
                         const slug = slugify(service.title);
-                        const image = service.image || servicesData[slug]?.image;
                         return (
                             <Link
                                 key={service.title + idx}
                                 href={`/services/${slug}`}
-                                className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                                className="group flex flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
                             >
-                                <div className="aspect-[16/10] overflow-hidden">
-                                    <img
-                                        src={image}
-                                        alt={service.title}
-                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                    />
-                                </div>
-                                <div className="flex flex-1 flex-col p-6">
+                                <div className="flex flex-1 flex-col">
+                                    <div className={`mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl border ${style.bg} ${style.border}`}>
+                                        <Icon className={`h-6 w-6 ${style.color}`} />
+                                    </div>
                                     <h3 className="text-lg font-semibold text-slate-900">{service.title}</h3>
                                     <p className="mt-2 flex-1 text-sm text-slate-600">{service.description}</p>
-                                    <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-600">
-                                        Learn More
-                                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                    <div className="mt-4 flex items-center justify-between">
+                                        <span className="text-sm font-semibold text-blue-600">Learn More</span>
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-100 bg-white text-blue-600 transition-colors group-hover:border-blue-600 group-hover:bg-blue-600 group-hover:text-white">
+                                            <ArrowUpRight className="h-4 w-4" />
+                                        </div>
                                     </div>
                                 </div>
                             </Link>
