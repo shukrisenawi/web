@@ -5,13 +5,13 @@ import {
     BarChart3,
     Calendar,
     Check,
+    Cloud,
     Code,
     Cpu,
     Database,
     DollarSign,
     FileText,
     Filter,
-    Gamepad2,
     Globe,
     Headphones,
     Layers,
@@ -20,7 +20,6 @@ import {
     Megaphone,
     MessageCircle,
     Palette,
-    Printer,
     Rocket,
     ScanLine,
     Search,
@@ -57,8 +56,8 @@ export default function ServiceDetail({ slug }: ServiceDetailProps) {
     const isWebSystem = slug === 'web-system';
     const isMobileApps = slug === 'mobile-apps';
     const isWebDevelopment = slug === 'web-development';
-    const isGameDevelopment = slug === 'game-development';
-    const isITEquipment = slug === 'it-equipment-supply-setup';
+    const isCloudSolutions = slug === 'cloud-solutions';
+    const isCybersecurity = slug === 'cybersecurity';
 
     if (!service || !extra) {
         return (
@@ -96,12 +95,8 @@ export default function ServiceDetail({ slug }: ServiceDetailProps) {
         return <WebDevelopmentDetail service={service} />;
     }
 
-    if (isGameDevelopment) {
-        return <GameDevelopmentDetail service={service} />;
-    }
-
-    if (isITEquipment) {
-        return <ITEquipmentDetail service={service} />;
+    if (isWebSystem || isCloudSolutions || isCybersecurity) {
+        return <WebSystemDetail service={service} />;
     }
 
     const features = [
@@ -1735,9 +1730,9 @@ function WebDevelopmentHeroIllustration() {
 
 function GameDevelopmentDetail({ service }: { service: any }) {
     const heroHighlights = [
-        { icon: Gamepad2, title: 'Multi-Platform', desc: 'PC, Console, Mobile & VR' },
-        { icon: Palette, title: 'Stunning Visuals', desc: 'Immersive art & animation' },
-        { icon: Zap, title: 'High Performance', desc: 'Smooth gameplay at scale' },
+        { icon: Cloud, title: 'Cloud Native', desc: 'AWS, Azure & GCP ready' },
+        { icon: Shield, title: 'Secure by Design', desc: 'Security built into every layer' },
+        { icon: Zap, title: 'High Performance', desc: 'Fast, reliable infrastructure' },
     ];
 
     const techStack = [
@@ -2140,11 +2135,11 @@ function ITEquipmentDetail({ service }: { service: any }) {
     ];
 
     const supplyServices = [
-        { icon: Printer, title: 'IT Equipment Supply', desc: 'Genuine products with official warranty' },
-        { icon: Settings, title: 'Installation & Configuration', desc: 'Professional setup and system configuration' },
-        { icon: Wifi, title: 'Network Setup', desc: 'LAN, Wi-Fi, VPN and network security' },
-        { icon: Server, title: 'System Integration', desc: 'Integrate hardware with your business systems' },
-        { icon: Wrench, title: 'Maintenance & Support', desc: 'Ongoing support and maintenance' },
+        { icon: Cloud, title: 'Cloud Migration', desc: 'Seamless move to cloud platforms' },
+        { icon: Server, title: 'Infrastructure Setup', desc: 'Servers, storage and networking' },
+        { icon: Shield, title: 'Security Hardening', desc: 'Protect cloud resources and data' },
+        { icon: Wrench, title: 'DevOps Automation', desc: 'CI/CD and deployment pipelines' },
+        { icon: Headphones, title: 'Managed Support', desc: 'Ongoing monitoring and support' },
     ];
 
     const whyChooseUs = [

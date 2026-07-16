@@ -1,19 +1,17 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowRight, Globe, Smartphone, Palette, TrendingUp, Gamepad2, Shield, Code, Megaphone, BarChart, Layers, Monitor, Printer } from 'lucide-react';
+import { ArrowRight, Globe, Smartphone, TrendingUp, Shield, Code, Megaphone, BarChart, Layers, Monitor, Cloud } from 'lucide-react';
 
 const iconMap: Record<string, React.ElementType> = {
     Globe,
     Smartphone,
-    Palette,
     TrendingUp,
-    Gamepad2,
     Shield,
     Code,
     Megaphone,
     BarChart,
     Layers,
     Monitor,
-    Printer,
+    Cloud,
 };
 
 const colorClasses = [
@@ -50,15 +48,15 @@ const servicesData: Record<string, { description: string; content: string; image
         content: 'We develop digital marketing strategies that align with your business objectives. From SEO and content marketing to paid advertising and analytics, we help you reach the right audience and measure real results.',
         image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80',
     },
-    'game-development': {
-        description: 'Engaging, high-quality games that captivate players and deliver unforgettable experiences across all platforms.',
-        content: 'We create engaging, high-quality games that captivate players and deliver unforgettable experiences across all platforms. From concept and art to development and launch, we handle the full game production pipeline.',
-        image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+    'cloud-solutions': {
+        description: 'Scalable cloud infrastructure and DevOps practices for reliability.',
+        content: 'We design and manage scalable cloud infrastructure that keeps your applications reliable and cost-effective. From architecture and migration to CI/CD and monitoring, our DevOps practices help your team deploy faster and recover quickly.',
+        image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
     },
-    'it-equipment-supply-setup': {
-        description: 'High-quality IT equipment supply and professional setup to get your business running smoothly.',
-        content: 'We supply high-quality IT equipment and provide professional setup and configuration to get your business running smoothly. From laptops and desktops to networking devices and printers, we deliver end-to-end solutions.',
-        image: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=80',
+    'cybersecurity': {
+        description: 'Protect your business with modern security assessments and best practices.',
+        content: 'We help protect your business with practical security assessments, hardening guidance and best practices. From vulnerability reviews to staff awareness, our approach makes security manageable for growing teams.',
+        image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80',
     },
 };
 
