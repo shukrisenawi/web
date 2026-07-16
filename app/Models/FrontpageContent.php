@@ -38,7 +38,7 @@ class FrontpageContent extends Model
             'hero_trusted_text' => 'Trusted by 100+ clients',
             'hero_trusted_subtext' => 'from startups to enterprise',
             'hero_image' => '/images/hero.png',
-            'services_title' => 'Services Built for Growth',
+            'services_title' => 'Services We Provide',
             'services_subtitle' => 'From strategy to deployment, we deliver end-to-end digital solutions tailored to your business goals.',
             'services' => [
                 ['icon' => 'Globe', 'title' => 'Web Development', 'description' => 'High-performance websites and web applications built with modern technologies.', 'image' => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80'],
