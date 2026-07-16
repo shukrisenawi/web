@@ -44,7 +44,7 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
     };
 
     const updateStatus = () => {
-        form.put(`/invoices/${invoice.invoice_id}`, {
+        form.put(`/invoices/${invoice.id}`, {
             onSuccess: () => window.print(),
         });
     };

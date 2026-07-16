@@ -73,7 +73,7 @@ export default function Invoices({ invoices, filters, widgets, clients = [] }: I
         });
     };
 
-    const deleteInvoice = (id: number) => {
+    const deleteInvoice = (id: string) => {
         if (!confirm('Delete this invoice?')) return;
         router.delete(`/invoices/${id}`);
     };
@@ -213,7 +213,7 @@ export default function Invoices({ invoices, filters, widgets, clients = [] }: I
                                                 )}
                                                 {isAdmin && inv.invoice_id && (
                                                     <button
-                                                        onClick={() => deleteInvoice(inv.invoice_id!)}
+                                                        onClick={() => deleteInvoice(inv.id)}
                                                         className="rounded-lg border border-slate-200 p-2 text-slate-400 hover:text-red-500"
                                                         title="Delete"
                                                     >

@@ -7,11 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'project_id', 'invoice_no', 'issue_date', 'amount', 'status'])]
+#[Fillable(['user_id', 'project_id', 'invoice_no', 'issue_date', 'amount', 'status', 'company_name', 'company_address', 'company_no', 'payment_url'])]
 class Invoice extends Model
 {
-    /** @use HasFactory\Database\Factories\InvoiceFactory */
+    /** @use HasFactory<Database\Factories\InvoiceFactory> */
     use HasFactory;
+
+    public function getRouteKeyName(): string
+    {
+        return 'invoice_no';
+    }
 
     protected function casts(): array
     {
