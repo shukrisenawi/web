@@ -25,6 +25,7 @@ class TicketController extends Controller
             : $user->tickets()->with('project', 'user');
 
         $tickets = $query
+            ->with('replies.user')
             ->orderByDesc('created_at')
             ->get()
             ->map(fn ($t) => [
@@ -39,6 +40,13 @@ class TicketController extends Controller
                 'name' => $t->name ?? $t->user?->name,
                 'email' => $t->email ?? $t->user?->email,
                 'date' => $t->created_at->format('M d, Y'),
+                'replies' => $t->replies->map(fn ($r) => [
+                    'id' => $r->id,
+                    'message' => $r->message,
+                    'user' => $r->user?->name ?? 'Unknown',
+                    'is_admin' => $r->user?->isAdmin() ?? false,
+                    'date' => $r->created_at->format('M d, Y h:i A'),
+                ]),
             ]);
 
         return Inertia::render('Support', [
@@ -82,6 +90,29 @@ class TicketController extends Controller
         $ticket->update($validated);
 
         return redirect()->route('support')->with('success', 'Ticket updated successfully.');
+    }
+
+    public function reply(Request $request, Ticket $ticket)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'message' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $ticket->replies()->create([
+            'user_id' => $user->id,
+            'message' => $validated['message'],
+        ]);
+
+        $ticket->update(['viewed_at' => null]);
+
+        return redirect()->route('support')->with('success', 'Reply sent successfully.');
     }
 
     public function destroy(Ticket $ticket)

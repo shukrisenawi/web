@@ -1,7 +1,15 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, Headphones, Plus, X, Save, Trash2, AlertCircle } from 'lucide-react';
+import { ArrowRight, Headphones, Plus, X, Save, Trash2, AlertCircle, MessageSquare, Send } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
+
+interface Reply {
+    id: number;
+    message: string;
+    user: string;
+    is_admin: boolean;
+    date: string;
+}
 
 interface Ticket {
     id: string;
@@ -15,6 +23,7 @@ interface Ticket {
     name?: string | null;
     email?: string | null;
     date: string;
+    replies: Reply[];
 }
 
 interface SupportProps {
@@ -47,7 +56,7 @@ export default function Support({ tickets }: SupportProps) {
     const { auth } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
     const [createOpen, setCreateOpen] = useState(false);
-    const [editId, setEditId] = useState<number | null>(null);
+    const [viewId, setViewId] = useState<number | null>(null);
 
     const createForm = useForm({
         name: auth?.user?.name ?? '',
@@ -58,7 +67,10 @@ export default function Support({ tickets }: SupportProps) {
         project_id: '',
     });
 
-    const editForm = useForm({ status: 'open', priority: 'medium' });
+    const updateForm = useForm({ status: 'open', priority: 'medium' });
+    const replyForm = useForm({ message: '' });
+
+    const ticket = viewId !== null ? tickets.find((t) => t.ticket_id === viewId) ?? null : null;
 
     const submitCreate = () => {
         createForm.post('/support', {
@@ -66,15 +78,22 @@ export default function Support({ tickets }: SupportProps) {
         });
     };
 
-    const openEdit = (t: Ticket) => {
-        editForm.setData({ status: t.status, priority: t.priority });
-        setEditId(t.ticket_id ?? null);
+    const openView = (t: Ticket) => {
+        updateForm.setData({ status: t.status, priority: t.priority });
+        setViewId(t.ticket_id ?? null);
     };
 
-    const submitEdit = () => {
-        if (editId === null) return;
-        editForm.put(`/support/${editId}`, {
-            onSuccess: () => setEditId(null),
+    const submitUpdate = () => {
+        if (viewId === null) return;
+        updateForm.put(`/support/${viewId}`, {
+            onSuccess: () => { /* stay open, replies will reload */ },
+        });
+    };
+
+    const submitReply = () => {
+        if (viewId === null) return;
+        replyForm.post(`/support/${viewId}/reply`, {
+            onSuccess: () => replyForm.reset('message'),
         });
     };
 
@@ -133,6 +152,12 @@ export default function Support({ tickets }: SupportProps) {
                                         <Badge color={ticketBadgeColor(t.status)}>
                                             {t.status.replace('_', ' ')}
                                         </Badge>
+                                        {t.replies.length > 0 && (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500">
+                                                <MessageSquare className="h-3 w-3" />
+                                                {t.replies.length}
+                                            </span>
+                                        )}
                                     </div>
                                     <h3 className="mt-2 font-semibold text-slate-900">{t.subject}</h3>
                                     {t.description && (
@@ -149,15 +174,15 @@ export default function Support({ tickets }: SupportProps) {
                                         {!isAdmin && t.name && <span>{t.name}</span>}
                                     </div>
                                 </div>
-                                {isAdmin && (
-                                    <div className="flex shrink-0 items-center gap-2">
-                                        <button
-                                            onClick={() => openEdit(t)}
-                                            className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50"
-                                            title="Update"
-                                        >
-                                            <Save className="h-4 w-4" />
-                                        </button>
+                                <div className="flex shrink-0 items-center gap-2">
+                                    <button
+                                        onClick={() => openView(t)}
+                                        className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50"
+                                        title="View & Reply"
+                                    >
+                                        <MessageSquare className="h-4 w-4" />
+                                    </button>
+                                    {isAdmin && (
                                         <button
                                             onClick={() => deleteTicket(t.ticket_id)}
                                             className="rounded-lg border border-slate-200 p-2 text-slate-400 hover:text-red-500"
@@ -165,8 +190,8 @@ export default function Support({ tickets }: SupportProps) {
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </button>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
                         </Card>
                     ))}
@@ -248,59 +273,133 @@ export default function Support({ tickets }: SupportProps) {
                 </div>
             )}
 
-            {isAdmin && editId !== null && (
+            {viewId !== null && ticket && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <Card className="w-full max-w-md">
-                        <div className="mb-4 flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-slate-900">Update Ticket</h3>
-                            <button onClick={() => setEditId(null)} className="text-slate-400 hover:text-slate-700">
+                    <Card className="flex max-h-[90vh] w-full max-w-2xl flex-col">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div className="flex items-center gap-2">
+                                <h3 className="text-lg font-bold text-slate-900">{ticket.subject}</h3>
+                                <Badge color={ticketBadgeColor(ticket.status)}>
+                                    {ticket.status.replace('_', ' ')}
+                                </Badge>
+                                <Badge color={priorityBadgeColor(ticket.priority)}>
+                                    {ticket.priority}
+                                </Badge>
+                            </div>
+                            <button onClick={() => setViewId(null)} className="text-slate-400 hover:text-slate-700">
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-700">
-                                <AlertCircle className="h-4 w-4" />
-                                Updating ticket status & priority
+
+                        <div className="-mx-5 flex-1 overflow-y-auto border-b border-slate-100 px-5 py-4">
+                            {/** Original ticket message */}
+                            <div className="mb-4 rounded-lg bg-slate-50 p-4">
+                                <div className="mb-1 flex items-center gap-2 text-xs text-slate-400">
+                                    <span className="font-mono font-semibold text-blue-600">{ticket.id}</span>
+                                    <span>{ticket.date}</span>
+                                    {ticket.name && <span>by {ticket.name}</span>}
+                                </div>
+                                {ticket.description && (
+                                    <p className="whitespace-pre-wrap text-sm text-slate-700">{ticket.description}</p>
+                                )}
+                                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-400">
+                                    {ticket.project && <span>Project: {ticket.project}</span>}
+                                    {ticket.email && <span>{ticket.email}</span>}
+                                </div>
                             </div>
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-700">Status</label>
-                                <select
-                                    value={editForm.data.status}
-                                    onChange={(e) => editForm.setData('status', e.target.value)}
-                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                >
-                                    <option value="open">Open</option>
-                                    <option value="in_progress">In Progress</option>
-                                    <option value="resolved">Resolved</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-700">Priority</label>
-                                <select
-                                    value={editForm.data.priority}
-                                    onChange={(e) => editForm.setData('priority', e.target.value)}
-                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                >
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                </select>
-                            </div>
-                            <div className="flex justify-end gap-2 pt-2">
-                                <button
-                                    onClick={() => setEditId(null)}
-                                    className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={submitEdit}
-                                    disabled={editForm.processing}
-                                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
-                                >
-                                    <Save className="h-4 w-4" /> Save
-                                </button>
-                            </div>
+
+                            {/** Replies thread */}
+                            {ticket.replies.length > 0 && (
+                                <div className="space-y-3">
+                                    <p className="text-xs font-semibold uppercase text-slate-400">Replies</p>
+                                    {ticket.replies.map((r) => (
+                                        <div
+                                            key={r.id}
+                                            className={`rounded-lg p-4 ${
+                                                r.is_admin
+                                                    ? 'ml-6 border border-blue-100 bg-blue-50'
+                                                    : 'mr-6 border border-slate-100 bg-white'
+                                            }`}
+                                        >
+                                            <div className="mb-1 flex items-center gap-2 text-xs">
+                                                <span className={`font-semibold ${r.is_admin ? 'text-blue-700' : 'text-slate-700'}`}>
+                                                    {r.is_admin ? 'Admin' : r.user}
+                                                </span>
+                                                <span className="text-slate-400">{r.date}</span>
+                                            </div>
+                                            <p className="whitespace-pre-wrap text-sm text-slate-700">{r.message}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {ticket.replies.length === 0 && (
+                                <p className="py-8 text-center text-sm text-slate-400">No replies yet.</p>
+                            )}
+                        </div>
+
+                        {/** Update + Reply footer */}
+                        <div className="pt-4">
+                            {isAdmin && (
+                                <>
+                                    <div className="mb-3 flex items-center gap-3">
+                                        <div className="flex items-center gap-2">
+                                            <label className="text-xs font-medium text-slate-600">Status</label>
+                                            <select
+                                                value={updateForm.data.status}
+                                                onChange={(e) => updateForm.setData('status', e.target.value)}
+                                                className="rounded-lg border border-slate-200 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+                                            >
+                                                <option value="open">Open</option>
+                                                <option value="in_progress">In Progress</option>
+                                                <option value="resolved">Resolved</option>
+                                            </select>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <label className="text-xs font-medium text-slate-600">Priority</label>
+                                            <select
+                                                value={updateForm.data.priority}
+                                                onChange={(e) => updateForm.setData('priority', e.target.value)}
+                                                className="rounded-lg border border-slate-200 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+                                            >
+                                                <option value="low">Low</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="high">High</option>
+                                            </select>
+                                        </div>
+                                        <button
+                                            onClick={submitUpdate}
+                                            disabled={updateForm.processing}
+                                            className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                                        >
+                                            <Save className="h-3 w-3" /> Save
+                                        </button>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <textarea
+                                            value={replyForm.data.message}
+                                            onChange={(e) => replyForm.setData('message', e.target.value)}
+                                            rows={2}
+                                            className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                            placeholder="Type your reply..."
+                                        />
+                                        <button
+                                            onClick={submitReply}
+                                            disabled={replyForm.processing || !replyForm.data.message.trim()}
+                                            className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                                        >
+                                            <Send className="h-4 w-4" /> Send
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+
+                            {!isAdmin && (
+                                <p className="text-center text-xs text-slate-400">
+                                    Our team will respond to your ticket shortly.
+                                </p>
+                            )}
                         </div>
                     </Card>
                 </div>

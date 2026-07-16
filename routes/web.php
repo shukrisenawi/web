@@ -91,6 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
 
         Route::put('/support/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
+        Route::post('/support/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
         Route::delete('/support/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
 
         Route::get('/manage-frontpage', [FrontpageController::class, 'index'])->name('frontpage.manage');
