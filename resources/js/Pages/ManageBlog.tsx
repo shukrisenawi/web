@@ -53,7 +53,7 @@ export default function ManageBlog({ posts }: ManageBlogProps) {
     const [isCreating, setIsCreating] = useState(false);
     const [showDelete, setShowDelete] = useState<Post | null>(null);
 
-    const { data, setData, post, put, processing, errors, reset } = useForm({ ...emptyPost });
+    const { data, setData, processing, errors, reset } = useForm({ ...emptyPost });
 
     const startCreate = () => {
         setEditing(null);
@@ -88,28 +88,25 @@ export default function ManageBlog({ posts }: ManageBlogProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('title', data.title);
-        formData.append('slug', data.slug);
-        formData.append('category', data.category);
-        formData.append('author', data.author);
-        formData.append('excerpt', data.excerpt);
-        formData.append('content', data.content);
-        formData.append('published_at', data.published_at);
-        formData.append('is_published', data.is_published ? '1' : '0');
-        if (data.image_file) {
-            formData.append('image', data.image_file);
-        }
+        const fd = new FormData();
+        fd.append('title', data.title);
+        fd.append('slug', data.slug);
+        fd.append('category', data.category);
+        fd.append('author', data.author);
+        fd.append('excerpt', data.excerpt);
+        fd.append('content', data.content);
+        fd.append('published_at', data.published_at);
+        fd.append('is_published', data.is_published ? '1' : '0');
+        if (data.image_file) fd.append('image', data.image_file);
 
         if (editing) {
-            put(`/manage-blog/${editing.slug}`, {
-                forceFormData: true,
+            fd.append('_method', 'PUT');
+            router.post(`/manage-blog/${editing.slug}`, fd, {
                 preserveScroll: true,
                 onSuccess: () => cancelForm(),
             });
         } else {
-            post('/manage-blog', {
-                forceFormData: true,
+            router.post('/manage-blog', fd, {
                 preserveScroll: true,
                 onSuccess: () => cancelForm(),
             });
