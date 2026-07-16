@@ -5,13 +5,13 @@ import {
     BarChart3,
     Calendar,
     Check,
-    Cloud,
     Code,
     Cpu,
     Database,
     DollarSign,
     FileText,
     Filter,
+    Gamepad2,
     Globe,
     Headphones,
     Layers,
@@ -20,6 +20,7 @@ import {
     Megaphone,
     MessageCircle,
     Palette,
+    Printer,
     Rocket,
     ScanLine,
     Search,
@@ -95,8 +96,15 @@ export default function ServiceDetail({ slug }: ServiceDetailProps) {
         return <WebDevelopmentDetail service={service} />;
     }
 
-    if (isWebSystem || isCloudSolutions || isCybersecurity) {
-        return <WebSystemDetail service={service} />;
+    const isGameDevelopment = slug === 'game-development';
+    const isITEquipment = slug === 'it-equipment-supply-setup';
+
+    if (isGameDevelopment) {
+        return <GameDevelopmentDetail service={service} />;
+    }
+
+    if (isITEquipment) {
+        return <ITEquipmentDetail service={service} />;
     }
 
     const features = [
@@ -1730,9 +1738,9 @@ function WebDevelopmentHeroIllustration() {
 
 function GameDevelopmentDetail({ service }: { service: any }) {
     const heroHighlights = [
-        { icon: Cloud, title: 'Cloud Native', desc: 'AWS, Azure & GCP ready' },
-        { icon: Shield, title: 'Secure by Design', desc: 'Security built into every layer' },
-        { icon: Zap, title: 'High Performance', desc: 'Fast, reliable infrastructure' },
+        { icon: Gamepad2, title: 'Multi-Platform', desc: 'PC, Console, Mobile & VR' },
+        { icon: Palette, title: 'Stunning Visuals', desc: 'Immersive art & animation' },
+        { icon: Zap, title: 'High Performance', desc: 'Smooth gameplay at scale' },
     ];
 
     const techStack = [
@@ -2135,11 +2143,11 @@ function ITEquipmentDetail({ service }: { service: any }) {
     ];
 
     const supplyServices = [
-        { icon: Cloud, title: 'Cloud Migration', desc: 'Seamless move to cloud platforms' },
-        { icon: Server, title: 'Infrastructure Setup', desc: 'Servers, storage and networking' },
-        { icon: Shield, title: 'Security Hardening', desc: 'Protect cloud resources and data' },
-        { icon: Wrench, title: 'DevOps Automation', desc: 'CI/CD and deployment pipelines' },
-        { icon: Headphones, title: 'Managed Support', desc: 'Ongoing monitoring and support' },
+        { icon: Printer, title: 'IT Equipment Supply', desc: 'Genuine products with official warranty' },
+        { icon: Settings, title: 'Installation & Configuration', desc: 'Professional setup and system configuration' },
+        { icon: Wifi, title: 'Network Setup', desc: 'LAN, Wi-Fi, VPN and network security' },
+        { icon: Server, title: 'System Integration', desc: 'Integrate hardware with your business systems' },
+        { icon: Wrench, title: 'Maintenance & Support', desc: 'Ongoing support and maintenance' },
     ];
 
     const whyChooseUs = [
