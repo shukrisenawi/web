@@ -52,11 +52,17 @@ const ticketBadgeColor = (status: string) => {
     }
 };
 
+const tabs = ['all', 'open', 'in_progress', 'resolved'] as const;
+type Tab = (typeof tabs)[number];
+
 export default function Support({ tickets }: SupportProps) {
     const { auth } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
     const [createOpen, setCreateOpen] = useState(false);
     const [viewId, setViewId] = useState<number | null>(null);
+    const [activeTab, setActiveTab] = useState<Tab>('all');
+
+    const filteredTickets = activeTab === 'all' ? tickets : tickets.filter((t) => t.status === activeTab);
 
     const createForm = useForm({
         name: auth?.user?.name ?? '',
@@ -137,8 +143,29 @@ export default function Support({ tickets }: SupportProps) {
                     </div>
                 </div>
 
+                {/** Tabs */}
+                <div className="mb-6 flex gap-1 rounded-xl bg-slate-100 p-1">
+                    {tabs.map((tab) => {
+                        const count = tab === 'all' ? tickets.length : tickets.filter((t) => t.status === tab).length;
+                        return (
+                            <button
+                                key={tab}
+                                onClick={() => setActiveTab(tab)}
+                                className={`flex-1 rounded-lg px-3 py-2 text-center text-sm font-medium transition-colors ${
+                                    activeTab === tab
+                                        ? 'bg-white text-slate-900 shadow-sm'
+                                        : 'text-slate-500 hover:text-slate-800'
+                                }`}
+                            >
+                                {tab === 'all' ? 'All' : tab.replace('_', ' ')}
+                                <span className="ml-1.5 text-xs opacity-60">({count})</span>
+                            </button>
+                        );
+                    })}
+                </div>
+
                 <div className="space-y-4">
-                    {tickets.map((t) => (
+                    {filteredTickets.map((t) => (
                         <Card key={t.id} className="flex flex-col gap-3">
                             <div className="flex items-start justify-between gap-3">
                                 <div className="min-w-0 flex-1">
@@ -197,7 +224,7 @@ export default function Support({ tickets }: SupportProps) {
                     ))}
                 </div>
 
-                {tickets.length === 0 && (
+                {filteredTickets.length === 0 && (
                     <div className="py-16 text-center">
                         <p className="text-lg font-semibold text-slate-900">No tickets yet</p>
                         <p className="text-sm text-slate-500">
