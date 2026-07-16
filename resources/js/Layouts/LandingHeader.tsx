@@ -1,6 +1,57 @@
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight, ChevronDown } from 'lucide-react';
+
+const servicesList = [
+    { title: 'Web Development', href: '/services/web-development' },
+    { title: 'Mobile Apps', href: '/services/mobile-apps' },
+    { title: 'Web System', href: '/services/web-system' },
+    { title: 'Digital Marketing', href: '/services/digital-marketing' },
+    { title: 'Game Development', href: '/services/game-development' },
+    { title: 'IT Equipment Supply & Setup', href: '/services/it-equipment-supply-setup' },
+];
+
+function ServicesDropdown() {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <div
+            className="relative"
+            onMouseEnter={() => setOpen(true)}
+            onMouseLeave={() => setOpen(false)}
+        >
+            <Link
+                href="/services"
+                aria-haspopup="true"
+                aria-expanded={open}
+                className="flex items-center gap-1 text-sm font-medium text-white/70 transition-colors hover:text-white"
+            >
+                Services
+                <ChevronDown
+                    className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`}
+                />
+            </Link>
+
+            <div
+                className={`absolute left-0 top-full z-50 w-64 pt-4 transition-opacity duration-200 ${
+                    open ? 'opacity-100 visible' : 'opacity-0 invisible'
+                }`}
+            >
+                <div className="rounded-xl border border-white/10 bg-slate-900 p-2 shadow-xl shadow-black/40">
+                    {servicesList.map((s) => (
+                        <Link
+                            key={s.href}
+                            href={s.href}
+                            className="block rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                        >
+                            {s.title}
+                        </Link>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
 
 export function Logo({ className = '' }: { className?: string }) {
     return (
@@ -47,17 +98,21 @@ export function LandingHeader() {
 
                     <nav className="hidden md:flex items-center gap-8">
                         {nav.map((item) => (
-                            <Link
-                                key={item.label}
-                                href={item.href}
-                                className={`text-sm font-medium transition-colors ${
-                                    isActive(item.href)
-                                        ? 'text-white'
-                                        : 'text-white/70 hover:text-white'
-                                }`}
-                            >
-                                {item.label}
-                            </Link>
+                            item.label === 'Services' ? (
+                                <ServicesDropdown key={item.label} />
+                            ) : (
+                                <Link
+                                    key={item.label}
+                                    href={item.href}
+                                    className={`text-sm font-medium transition-colors ${
+                                        isActive(item.href)
+                                            ? 'text-white'
+                                            : 'text-white/70 hover:text-white'
+                                    }`}
+                                >
+                                    {item.label}
+                                </Link>
+                            )
                         ))}
                     </nav>
 
@@ -84,18 +139,44 @@ export function LandingHeader() {
                 {open && (
                     <nav className="md:hidden border-t border-white/10 py-4 space-y-3">
                         {nav.map((item) => (
-                            <Link
-                                key={item.label}
-                                href={item.href}
-                                className={`block text-sm font-medium ${
-                                    isActive(item.href)
-                                        ? 'text-white'
-                                        : 'text-white/90 hover:text-white'
-                                }`}
-                                onClick={() => setOpen(false)}
-                            >
-                                {item.label}
-                            </Link>
+                            item.label === 'Services' ? (
+                                <div key={item.label}>
+                                    <Link
+                                        href={item.href}
+                                        className={`block text-sm font-medium ${
+                                            isActive(item.href) ? 'text-white' : 'text-white/90 hover:text-white'
+                                        }`}
+                                        onClick={() => setOpen(false)}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                    <div className="ml-3 mt-2 space-y-2 border-l border-white/10 pl-3">
+                                        {servicesList.map((s) => (
+                                            <Link
+                                                key={s.href}
+                                                href={s.href}
+                                                className="block text-sm text-white/70 hover:text-white"
+                                                onClick={() => setOpen(false)}
+                                            >
+                                                {s.title}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <Link
+                                    key={item.label}
+                                    href={item.href}
+                                    className={`block text-sm font-medium ${
+                                        isActive(item.href)
+                                            ? 'text-white'
+                                            : 'text-white/90 hover:text-white'
+                                    }`}
+                                    onClick={() => setOpen(false)}
+                                >
+                                    {item.label}
+                                </Link>
+                            )
                         ))}
                         <Link
                             href={ctaHref}
