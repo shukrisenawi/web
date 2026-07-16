@@ -1,8 +1,8 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
 import { ArrowRight, Check, Code, Rocket, ShieldCheck } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
+import { Clients } from '@/Components/Clients';
 
 function slugify(title: string): string {
     return title
@@ -57,27 +57,6 @@ const promotions = [
         variant: 'blue',
     },
 ];
-
-function ClientLogo({ name, logo }: { name: string; logo: string }) {
-    const [failed, setFailed] = useState(false);
-
-    if (failed) {
-        return (
-            <span className="text-lg font-bold tracking-tight text-slate-900">
-                {name}
-            </span>
-        );
-    }
-
-    return (
-        <img
-            src={logo}
-            alt={name}
-            onError={() => setFailed(true)}
-            className="h-9 w-auto object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
-        />
-    );
-}
 
 export default function Services() {
     const { frontpage } = usePage().props as any;
@@ -264,33 +243,7 @@ export default function Services() {
                     </div>
                 </section>
 
-                {/* Clients */}
-                <section className="border-y border-slate-100 bg-white py-10">
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
-                            <div className="text-center md:text-left">
-                                <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">Trusted By</p>
-                                <p className="font-bold text-slate-900">GREAT COMPANIES</p>
-                            </div>
-                            <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-                                {(c.clients || []).map((client: any, idx: number) => {
-                                    const name = client?.name || client;
-                                    const logo = client?.logo || null;
-                                    return logo ? (
-                                        <ClientLogo key={name + idx} name={name} logo={logo} />
-                                    ) : (
-                                        <span
-                                            key={name + idx}
-                                            className="text-lg font-bold tracking-tight text-slate-900"
-                                        >
-                                            {name}
-                                        </span>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <Clients />
 
                 {/* CTA */}
                 <section className="py-12 bg-white">
