@@ -39,24 +39,9 @@ Route::get('/blog', [\App\Http\Controllers\BlogPostController::class, 'publicInd
 
 Route::get('/blog/{post:slug}', [\App\Http\Controllers\BlogPostController::class, 'publicShow'])->name('blog.show');
 
-Route::get('/run-migration-2026-07-14', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate:rollback', ['--path' => 'database/migrations/2026_07_14_053556_update_frontpage_services_to_web_system.php', '--force' => true]);
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--path' => 'database/migrations/2026_07_14_053556_update_frontpage_services_to_web_system.php', '--force' => true]);
-        return \Illuminate\Support\Facades\Artisan::output();
-    } catch (\Throwable $e) {
-        return $e->getMessage();
-    }
-});
-
-Route::get('/run-seeder', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);
-        return \Illuminate\Support\Facades\Artisan::output();
-    } catch (\Throwable $e) {
-        return $e->getMessage();
-    }
-});
+Route::get('/contact', function () {
+    return inertia('Contact');
+})->name('contact');
 
 Route::post('/contact', [TicketController::class, 'storeFromContact'])->name('contact.submit');
 
