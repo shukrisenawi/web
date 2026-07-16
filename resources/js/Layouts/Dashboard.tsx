@@ -120,7 +120,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
         );
 
     return (
-        <div className="flex min-h-screen bg-slate-50">
+        <div className="flex min-h-screen bg-slate-50 print:bg-white">
             {/** Mobile sidebar overlay */}
             {sidebarOpen && (
                 <button
@@ -133,7 +133,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
 
             {/** Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-slate-950 text-white transition-transform duration-200 lg:translate-x-0 ${
+                className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-slate-950 text-white transition-transform duration-200 print:hidden lg:translate-x-0 ${
                     sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}
             >
@@ -196,9 +196,9 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
             </aside>
 
             {/** Main */}
-            <div className="flex min-h-screen flex-1 flex-col lg:pl-64">
+            <div className="flex min-h-screen flex-1 flex-col print:!pl-0 lg:pl-64">
                 {/** Top header */}
-                <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8">
+                <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 print:hidden sm:px-6 lg:px-8">
                     <div className="flex items-center gap-4">
                         <button
                             type="button"
@@ -281,7 +281,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                     </div>
                 </header>
 
-                <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+                <main className="flex-1 p-4 print:!p-0 sm:p-6 lg:p-8">{children}</main>
             </div>
         </div>
     );

@@ -51,7 +51,23 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
 
     return (
         <>
-            <Head title={`Invoice ${invoice.id}`} />
+            <Head title={`Invoice ${invoice.id}`}>
+                <style>{`
+                    @media print {
+                        .invoice-card {
+                            border: none !important;
+                            box-shadow: none !important;
+                            background: transparent !important;
+                            padding: 0 !important;
+                            max-width: 100% !important;
+                        }
+                        .invoice-card .border-b,
+                        .invoice-card .border-t {
+                            border-color: transparent !important;
+                        }
+                    }
+                `}</style>
+            </Head>
 
             <DashboardLayout title={`Invoice ${invoice.id}`}>
                 <div className="mb-6 flex items-center justify-between print:hidden">
@@ -89,7 +105,7 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                     </div>
                 </div>
 
-                <Card className="mx-auto max-w-2xl">
+                <Card className="invoice-card mx-auto max-w-2xl">
                     <div className="flex items-start justify-between border-b border-slate-100 pb-6">
                         <div>
                             <div className="flex items-center gap-2">
