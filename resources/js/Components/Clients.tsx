@@ -17,7 +17,7 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
             src={logo}
             alt={name}
             onError={() => setFailed(true)}
-            className="h-9 w-auto object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
+            className="h-9 w-auto object-contain opacity-90 transition hover:opacity-100"
         />
     );
 }

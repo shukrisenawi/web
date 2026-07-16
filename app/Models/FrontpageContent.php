@@ -56,7 +56,7 @@ class FrontpageContent extends Model
                 ['title' => 'Healthcare Portal', 'category' => 'Healthcare', 'image' => 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80', 'link' => '/work'],
                 ['title' => 'SaaS Analytics Tool', 'category' => 'SaaS', 'image' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80', 'link' => '/work'],
             ],
-            'clients_title' => 'Trusted by Industry Leaders',
+            'clients_title' => 'GREAT COMPANIES',
             'clients' => [
                 ['name' => 'AirAsia', 'logo' => '/images/logos/airasia.png'],
                 ['name' => 'Maybank', 'logo' => '/images/logos/maybank.jpg'],
