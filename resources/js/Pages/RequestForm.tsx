@@ -31,6 +31,29 @@ const inputClass =
     'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
 
+const INDUSTRIES = [
+    'Retail & E-Commerce',
+    'Food & Beverage (F&B)',
+    'Healthcare',
+    'Education',
+    'Finance',
+    'Manufacturing',
+    'Construction',
+    'Real Estate',
+    'Logistics',
+    'Travel & Tourism',
+    'Hotel & Hospitality',
+    'Government',
+    'NGO / Non-Profit',
+    'Religious Organization',
+    'Agriculture',
+    'Beauty & Wellness',
+    'Automotive',
+    'IT & Technology',
+    'Professional Services',
+    'Others',
+];
+
 export default function RequestForm() {
     const [step, setStep] = useState(1);
 
@@ -38,6 +61,7 @@ export default function RequestForm() {
         company_name: string;
         company_address: string;
         industry: string;
+        industry_other: string;
         contact_name: string;
         contact_mobile: string;
         contact_email: string;
@@ -56,6 +80,7 @@ export default function RequestForm() {
         company_name: '',
         company_address: '',
         industry: '',
+        industry_other: '',
         contact_name: '',
         contact_mobile: '',
         contact_email: '',
@@ -183,9 +208,33 @@ export default function RequestForm() {
                                 </div>
                                 <div>
                                     <label htmlFor="industry" className={labelClass}>Industry</label>
-                                    <input id="industry" type="text" value={data.industry} onChange={(e) => setData('industry', e.target.value)} className={inputClass} placeholder="e.g. Retail, Healthcare, Education" />
+                                    <select
+                                        id="industry"
+                                        value={data.industry}
+                                        onChange={(e) => setData('industry', e.target.value)}
+                                        className={inputClass}
+                                    >
+                                        <option value="">Select an industry…</option>
+                                        {INDUSTRIES.map((opt) => (
+                                            <option key={opt} value={opt}>{opt}</option>
+                                        ))}
+                                    </select>
                                     {errors.industry && <p className="mt-1 text-xs text-red-600">{errors.industry}</p>}
                                 </div>
+                                {data.industry === 'Others' && (
+                                    <div>
+                                        <label htmlFor="industry_other" className={labelClass}>Please specify your industry *</label>
+                                        <input
+                                            id="industry_other"
+                                            type="text"
+                                            value={data.industry_other}
+                                            onChange={(e) => setData('industry_other', e.target.value)}
+                                            className={inputClass}
+                                            placeholder="e.g. Media, Entertainment…"
+                                        />
+                                        {errors.industry_other && <p className="mt-1 text-xs text-red-600">{errors.industry_other}</p>}
+                                    </div>
+                                )}
 
                                 <div className="border-t border-slate-100 pt-5">
                                     <p className="mb-4 text-sm font-semibold text-slate-800">Contact Person &amp; Login</p>

@@ -24,6 +24,7 @@ class ProjectRequestController extends Controller
             'company_name' => ['required', 'string', 'max:255'],
             'company_address' => ['nullable', 'string', 'max:2000'],
             'industry' => ['nullable', 'string', 'max:255'],
+            'industry_other' => ['nullable', 'string', 'max:255'],
             'contact_name' => ['required', 'string', 'max:255'],
             'contact_mobile' => ['nullable', 'string', 'max:50'],
             'contact_email' => ['required', 'email', 'max:255', 'unique:users,email'],
@@ -56,11 +57,16 @@ class ProjectRequestController extends Controller
             'whatsapp' => $validated['contact_mobile'] ?? null,
         ]);
 
+        $industry = $validated['industry'] ?? null;
+        if ($industry === 'Others') {
+            $industry = 'Others: ' . ($validated['industry_other'] ?? '');
+        }
+
         $projectRequest = ProjectRequest::create([
             'user_id' => $user->id,
             'company_name' => $validated['company_name'],
             'company_address' => $validated['company_address'] ?? null,
-            'industry' => $validated['industry'] ?? null,
+            'industry' => $industry,
             'contact_name' => $validated['contact_name'],
             'contact_mobile' => $validated['contact_mobile'] ?? null,
             'contact_email' => $validated['contact_email'],
