@@ -28,7 +28,7 @@ class ProjectRequestController extends Controller
             'contact_name' => ['required', 'string', 'max:255'],
             'contact_mobile' => ['nullable', 'string', 'max:50'],
             'contact_email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::min(6)],
 
             // Project Requirements
             'system_type' => ['nullable', 'string', 'max:255'],

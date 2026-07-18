@@ -138,8 +138,11 @@ export default function RequestForm() {
             if (!data.password) {
                 setError('password', 'Sila isi kata laluan');
                 valid = false;
+            } else if (data.password.length < 6) {
+                setError('password', 'Kata laluan mesti sekurang-kurangnya 6 aksara');
+                valid = false;
             }
-            if (!data.password_confirmation) {
+            if (data.password && !data.password_confirmation) {
                 setError('password_confirmation', 'Sila sahkan kata laluan');
                 valid = false;
             }
