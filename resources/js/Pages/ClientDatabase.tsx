@@ -46,6 +46,7 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
     const [billingClient, setBillingClient] = useState<Client | null>(null);
     const [billingError, setBillingError] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
+    const [successInfo, setSuccessInfo] = useState({ client: '', project: '' });
 
     const filtered = clients.filter((c) => {
         const q = search.toLowerCase();
@@ -103,6 +104,9 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
             return;
         }
         setBillingError('');
+        const clientName = billingClient?.company ?? billingClient?.name ?? '';
+        const projectLabel = projects.find((p) => String(p.id) === billingForm.data.project_id)?.label ?? '';
+        setSuccessInfo({ client: clientName, project: projectLabel });
         billingForm.post('/invoices', {
             onSuccess: () => {
                 setBillingClient(null);
@@ -457,6 +461,10 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                             <CheckCircle2 className="h-10 w-10 text-green-600" />
                         </div>
                         <p className="text-lg font-bold text-slate-900">Invoice Berjaya Dijana!</p>
+                        <div className="text-center text-sm text-slate-600">
+                            <p>{successInfo.client}</p>
+                            {successInfo.project && <p className="text-slate-400">{successInfo.project}</p>}
+                        </div>
                         <button
                             type="button"
                             onClick={() => setShowSuccess(false)}
