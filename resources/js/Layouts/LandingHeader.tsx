@@ -80,8 +80,8 @@ export function LandingHeader() {
 
     const currentPath = typeof url === 'string' ? new URL(url, window.location.origin).pathname : window.location.pathname;
     const dashboardHref = '/dashboard';
-    const ctaHref = auth?.user ? dashboardHref : '/login';
-    const ctaText = auth?.user ? 'Dashboard' : "Let's Talk";
+    const ctaHref = auth?.user ? dashboardHref : '/request';
+    const ctaText = auth?.user ? 'Dashboard' : 'Request a Project';
 
     const isActive = (href: string) => {
         if (href === '/') {
