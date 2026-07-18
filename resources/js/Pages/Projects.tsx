@@ -1,5 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, FolderKanban, Plus, Search, X, Trash2, Save } from 'lucide-react';
+import { ArrowRight, FolderKanban, Plus, Search, X, Trash2, Save, Paperclip } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
@@ -270,6 +270,27 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                 <p className="mt-1 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
                                     <span className="font-semibold">Status:</span> {project.status_remark}
                                 </p>
+                            )}
+
+                            {project.files && project.files.length > 0 && (
+                                <div className="mt-3 space-y-1">
+                                    <span className="text-xs font-medium text-slate-500">Files</span>
+                                    {project.files.map((f) => (
+                                        <a
+                                            key={f.id}
+                                            href={f.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs text-blue-600 hover:bg-blue-50"
+                                        >
+                                            <Paperclip className="h-3 w-3 shrink-0" />
+                                            <span className="truncate">{f.filename}</span>
+                                            <span className="ml-auto shrink-0 text-[10px] text-slate-400">
+                                                {f.size > 1024 ? `${(f.size / 1024).toFixed(1)} KB` : `${f.size} B`}
+                                            </span>
+                                        </a>
+                                    ))}
+                                </div>
                             )}
 
                             {project.total_paid && parseFloat(project.total_paid) > 0 && (
