@@ -124,45 +124,45 @@ export default function RequestForm() {
 
         if (s === 1) {
             if (!data.company_name.trim()) {
-                setError('company_name', 'Sila isi nama syarikat');
+                setError('company_name', 'Please enter your company name');
                 valid = false;
             }
             if (!data.contact_name.trim()) {
-                setError('contact_name', 'Sila isi nama pegawai');
+                setError('contact_name', 'Please enter your contact name');
                 valid = false;
             }
             if (!data.contact_email.trim()) {
-                setError('contact_email', 'Sila isi alamat emel');
+                setError('contact_email', 'Please enter your email address');
                 valid = false;
             }
             if (!data.password) {
-                setError('password', 'Sila isi kata laluan');
+                setError('password', 'Please enter a password');
                 valid = false;
             } else if (data.password.length < 6) {
-                setError('password', 'Kata laluan mesti sekurang-kurangnya 6 aksara');
+                setError('password', 'Password must be at least 6 characters');
                 valid = false;
             }
             if (data.password && !data.password_confirmation) {
-                setError('password_confirmation', 'Sila sahkan kata laluan');
+                setError('password_confirmation', 'Please confirm your password');
                 valid = false;
             }
             if (data.password && data.password_confirmation && data.password !== data.password_confirmation) {
-                setError('password_confirmation', 'Kata laluan tidak sepadan');
+                setError('password_confirmation', 'Passwords do not match');
                 valid = false;
             }
             if (data.industry === 'Others' && !data.industry_other.trim()) {
-                setError('industry_other', 'Sila nyatakan industri');
+                setError('industry_other', 'Please specify your industry');
                 valid = false;
             }
         }
 
         if (s === 2) {
             if (!data.system_type) {
-                setError('system_type', 'Sila pilih jenis sistem');
+                setError('system_type', 'Please select a system type');
                 valid = false;
             }
             if (data.system_type === 'Other' && !data.system_type_other.trim()) {
-                setError('system_type_other', 'Sila nyatakan jenis sistem');
+                setError('system_type_other', 'Please specify the system type');
                 valid = false;
             }
         }

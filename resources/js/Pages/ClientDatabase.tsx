@@ -100,7 +100,7 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
             (it) => !it.description.trim() || !it.amount.trim() || parseFloat(it.amount) <= 0,
         );
         if (hasEmpty) {
-            setBillingError('Sila lengkapkan description dan amount untuk setiap item.');
+            setBillingError('Please fill in description and amount for every item.');
             return;
         }
         setBillingError('');
@@ -462,7 +462,7 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
                             <CheckCircle2 className="h-10 w-10 text-green-600" />
                         </div>
-                        <p className="text-lg font-bold text-slate-900">Invoice Berjaya Dijana!</p>
+                        <p className="text-lg font-bold text-slate-900">Invoice Generated Successfully!</p>
                         <div className="text-center text-sm text-slate-600">
                             <p className="font-semibold text-slate-800">{successInfo.invoiceNo}</p>
                             <p>{successInfo.client}</p>
