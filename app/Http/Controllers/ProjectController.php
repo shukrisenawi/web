@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -20,8 +21,8 @@ class ProjectController extends Controller
         $search = $request->query('search');
 
         $query = $user->isAdmin()
-            ? Project::query()->with('user')
-            : $user->projects();
+            ? Project::query()->with('user.projectRequests.files')
+            : $user->projects()->with('user.projectRequests.files');
 
         $projects = $query
             ->when($status, fn ($q) => $q->where('status', $status))
@@ -43,6 +44,15 @@ class ProjectController extends Controller
                 'payment_status' => $p->payment_status,
                 'icon_color' => $p->icon_color,
                 'created_at' => $p->created_at->format('M d, Y'),
+                'files' => $p->user?->projectRequests
+                    ->sortByDesc('created_at')
+                    ->first()?->files
+                    ->map(fn ($f) => [
+                        'id' => $f->id,
+                        'filename' => $f->filename,
+                        'size' => $f->size,
+                        'url' => Storage::url($f->path),
+                    ]) ?? [],
             ]);
 
         $props = [

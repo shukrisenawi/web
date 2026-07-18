@@ -1,7 +1,14 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, FolderKanban, Plus, Search, X, Trash2, Save } from 'lucide-react';
+import { ArrowRight, FolderKanban, Plus, Search, X, Trash2, Save, Paperclip } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
+
+interface RequestFile {
+    id: number;
+    filename: string;
+    size: number;
+    url: string;
+}
 
 interface Project {
     id: number;
@@ -18,6 +25,7 @@ interface Project {
     payment_status?: string;
     icon_color: string;
     created_at: string;
+    files: RequestFile[];
 }
 
 interface ProjectsProps {
@@ -236,6 +244,26 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                             </div>
 
                             <p className="mt-4 line-clamp-2 text-sm text-slate-600">{project.description}</p>
+
+                            {project.files && project.files.length > 0 && (
+                                <div className="mt-3 space-y-1">
+                                    {project.files.map((f) => (
+                                        <a
+                                            key={f.id}
+                                            href={f.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs text-blue-600 hover:bg-blue-50"
+                                        >
+                                            <Paperclip className="h-3 w-3" />
+                                            <span className="truncate">{f.filename}</span>
+                                            <span className="ml-auto shrink-0 text-[10px] text-slate-400">
+                                                {f.size > 1024 ? `${(f.size / 1024).toFixed(1)} KB` : `${f.size} B`}
+                                            </span>
+                                        </a>
+                                    ))}
+                                </div>
+                            )}
 
                             {project.key_person && (
                                 <p className="mt-2 text-xs text-slate-500">

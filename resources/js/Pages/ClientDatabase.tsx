@@ -1,7 +1,14 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, Building2, Search, FolderPlus, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowRight, Building2, Search, FolderPlus, FileText, ChevronDown, ChevronUp, Paperclip } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
+
+interface RequestFile {
+    id: number;
+    filename: string;
+    size: number;
+    url: string;
+}
 
 interface RequestInfo {
     industry: string | null;
@@ -14,6 +21,7 @@ interface RequestInfo {
     hosting_domain: string | null;
     additional_notes: string | null;
     status: string;
+    files: RequestFile[];
 }
 
 interface Client {
@@ -144,6 +152,28 @@ export default function ClientDatabase({ clients }: { clients: Client[] }) {
                                         <Field label="Hosting / Domain" value={c.request.hosting_domain} full />
                                         {c.business_address && <Field label="Address" value={c.business_address} full />}
                                         <Field label="Additional Notes" value={c.request.additional_notes} full />
+                                        {c.request.files.length > 0 && (
+                                            <div className="sm:col-span-2">
+                                                <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Attached Files</dt>
+                                                <dd className="mt-1 space-y-1">
+                                                    {c.request.files.map((f) => (
+                                                        <a
+                                                            key={f.id}
+                                                            href={f.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50"
+                                                        >
+                                                            <Paperclip className="h-3.5 w-3.5" />
+                                                            <span className="truncate">{f.filename}</span>
+                                                            <span className="ml-auto shrink-0 text-xs text-slate-400">
+                                                                {f.size > 1024 ? `${(f.size / 1024).toFixed(1)} KB` : `${f.size} B`}
+                                                            </span>
+                                                        </a>
+                                                    ))}
+                                                </dd>
+                                            </div>
+                                        )}
                                     </dl>
                                 </div>
                             )}
