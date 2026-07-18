@@ -32,6 +32,7 @@ class ProjectRequestController extends Controller
 
             // Project Requirements
             'system_type' => ['nullable', 'string', 'max:255'],
+            'system_type_other' => ['nullable', 'string', 'max:255'],
             'features' => ['nullable', 'string', 'max:5000'],
             'user_roles' => ['nullable', 'string', 'max:5000'],
             'integrations' => ['nullable', 'string', 'max:5000'],
@@ -62,6 +63,11 @@ class ProjectRequestController extends Controller
             $industry = 'Others: ' . ($validated['industry_other'] ?? '');
         }
 
+        $systemType = $validated['system_type'] ?? null;
+        if ($systemType === 'Other') {
+            $systemType = 'Other: ' . ($validated['system_type_other'] ?? '');
+        }
+
         $projectRequest = ProjectRequest::create([
             'user_id' => $user->id,
             'company_name' => $validated['company_name'],
@@ -70,7 +76,7 @@ class ProjectRequestController extends Controller
             'contact_name' => $validated['contact_name'],
             'contact_mobile' => $validated['contact_mobile'] ?? null,
             'contact_email' => $validated['contact_email'],
-            'system_type' => $validated['system_type'] ?? null,
+            'system_type' => $systemType,
             'features' => $validated['features'] ?? null,
             'user_roles' => $validated['user_roles'] ?? null,
             'integrations' => $validated['integrations'] ?? null,

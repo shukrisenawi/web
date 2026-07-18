@@ -68,6 +68,7 @@ export default function RequestForm() {
         password: string;
         password_confirmation: string;
         system_type: string;
+        system_type_other: string;
         features: string;
         user_roles: string;
         integrations: string;
@@ -87,6 +88,7 @@ export default function RequestForm() {
         password: '',
         password_confirmation: '',
         system_type: '',
+        system_type_other: '',
         features: '',
         user_roles: '',
         integrations: '',
@@ -99,7 +101,7 @@ export default function RequestForm() {
 
     const stepFields: Record<number, (keyof typeof data)[]> = {
         1: ['company_name', 'company_address', 'industry', 'contact_name', 'contact_mobile', 'contact_email', 'password', 'password_confirmation'],
-        2: ['system_type', 'features', 'user_roles', 'integrations'],
+        2: ['system_type', 'system_type_other', 'features', 'user_roles', 'integrations'],
         3: ['budget', 'deadline', 'hosting_domain'],
         4: ['additional_notes', 'files'],
     };
@@ -246,7 +248,7 @@ export default function RequestForm() {
                                         </div>
                                         <div>
                                             <label htmlFor="contact_mobile" className={labelClass}>Mobile</label>
-                                            <input id="contact_mobile" type="text" value={data.contact_mobile} onChange={(e) => setData('contact_mobile', e.target.value)} className={inputClass} placeholder="+60 12-345 6789" />
+                                            <input id="contact_mobile" type="tel" value={data.contact_mobile} onChange={(e) => setData('contact_mobile', e.target.value)} className={inputClass} placeholder="+60 12-345 6789" />
                                             {errors.contact_mobile && <p className="mt-1 text-xs text-red-600">{errors.contact_mobile}</p>}
                                         </div>
                                         <div className="sm:col-span-2">
@@ -256,12 +258,12 @@ export default function RequestForm() {
                                         </div>
                                         <div>
                                             <label htmlFor="password" className={labelClass}>Password *</label>
-                                            <input id="password" type="password" value={data.password} onChange={(e) => setData('password', e.target.value)} className={inputClass} placeholder="••••••••" />
+                                            <input id="password" type="password" autoComplete="new-password" value={data.password} onChange={(e) => setData('password', e.target.value)} className={inputClass} placeholder="••••••••" />
                                             {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password}</p>}
                                         </div>
                                         <div>
                                             <label htmlFor="password_confirmation" className={labelClass}>Confirm Password *</label>
-                                            <input id="password_confirmation" type="password" value={data.password_confirmation} onChange={(e) => setData('password_confirmation', e.target.value)} className={inputClass} placeholder="••••••••" />
+                                            <input id="password_confirmation" type="password" autoComplete="new-password" value={data.password_confirmation} onChange={(e) => setData('password_confirmation', e.target.value)} className={inputClass} placeholder="••••••••" />
                                         </div>
                                     </div>
                                 </div>
@@ -286,6 +288,20 @@ export default function RequestForm() {
                                     </select>
                                     {errors.system_type && <p className="mt-1 text-xs text-red-600">{errors.system_type}</p>}
                                 </div>
+                                {data.system_type === 'Other' && (
+                                    <div>
+                                        <label htmlFor="system_type_other" className={labelClass}>Please specify the system type *</label>
+                                        <input
+                                            id="system_type_other"
+                                            type="text"
+                                            value={data.system_type_other}
+                                            onChange={(e) => setData('system_type_other', e.target.value)}
+                                            className={inputClass}
+                                            placeholder="e.g. IoT Platform, Chatbot…"
+                                        />
+                                        {errors.system_type_other && <p className="mt-1 text-xs text-red-600">{errors.system_type_other}</p>}
+                                    </div>
+                                )}
                                 <div>
                                     <label htmlFor="features" className={labelClass}>Features / Modules</label>
                                     <textarea id="features" rows={4} value={data.features} onChange={(e) => setData('features', e.target.value)} className={inputClass} placeholder="e.g. Dashboard, reporting, inventory, payments…" />
@@ -364,10 +380,10 @@ export default function RequestForm() {
                                     </p>
                                     <dl className="grid gap-2 text-sm sm:grid-cols-2">
                                         <SummaryRow label="Company" value={data.company_name} />
-                                        <SummaryRow label="Industry" value={data.industry} />
+                                        <SummaryRow label="Industry" value={data.industry === 'Others' && data.industry_other ? `Others: ${data.industry_other}` : data.industry} />
                                         <SummaryRow label="Contact" value={data.contact_name} />
                                         <SummaryRow label="Email" value={data.contact_email} />
-                                        <SummaryRow label="System" value={data.system_type} />
+                                        <SummaryRow label="System" value={data.system_type === 'Other' && data.system_type_other ? `Other: ${data.system_type_other}` : data.system_type} />
                                         <SummaryRow label="Budget" value={data.budget} />
                                         <SummaryRow label="Deadline" value={data.deadline} />
                                         <SummaryRow label="Files" value={data.files.length ? `${data.files.length} file(s)` : ''} />
