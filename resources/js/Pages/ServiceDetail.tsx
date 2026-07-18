@@ -1861,7 +1861,11 @@ function GameDevelopmentDetail({ service }: { service: any }) {
                             </div>
 
                             <div className="relative">
-                                <GameDevelopmentHeroIllustration />
+                                <img
+                                    src="/images/game-hero.png"
+                                    alt="Game Development by Kenju Tech"
+                                    className="w-full rounded-2xl object-cover"
+                                />
                             </div>
                         </div>
 
