@@ -68,7 +68,7 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                             <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
                             <span className="font-bold">
                                 <span className="text-slate-900">KENJU</span>
-                                <span className="ml-1 text-blue-600">TECH</span>
+                                <span className="ml-2 text-blue-600">TECH</span>
                             </span>
                         </a>
                         <a

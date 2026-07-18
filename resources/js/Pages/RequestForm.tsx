@@ -110,7 +110,7 @@ export default function RequestForm() {
                             <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
                             <span>
                                 <span className="text-slate-900">KENJU</span>
-                                <span className="ml-1 text-blue-600">TECH</span>
+                                <span className="ml-2 text-blue-600">TECH</span>
                             </span>
                         </Link>
                         <h1 className="mt-6 text-2xl font-bold text-slate-900">Request a Project</h1>

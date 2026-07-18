@@ -61,7 +61,7 @@ export function Logo({ className = '' }: { className?: string }) {
             </div>
             <span>
                 <span className="text-white">KENJU</span>
-                <span className="ml-1 text-blue-600">TECH</span>
+                <span className="ml-2 text-blue-600">TECH</span>
             </span>
         </Link>
     );

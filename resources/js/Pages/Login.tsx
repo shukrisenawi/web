@@ -26,7 +26,7 @@ export default function Login() {
                             </div>
                             <span>
                                 <span className="text-slate-900">KENJU</span>
-                                <span className="ml-1 text-blue-600">TECH</span>
+                                <span className="ml-2 text-blue-600">TECH</span>
                             </span>
                         </Link>
                         <h1 className="mt-6 text-2xl font-bold text-slate-900">Welcome back</h1>
