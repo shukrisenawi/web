@@ -130,7 +130,7 @@ class InvoiceController extends Controller
             ]);
         }
 
-        return redirect()->route('invoices')->with('success', 'Invoice generated successfully.');
+        return redirect()->back()->with('success', 'Invoice generated successfully.');
     }
 
     private function nextInvoiceNo(): string
