@@ -196,17 +196,23 @@ class ProjectController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        if (! $user->isAdmin()) {
-            abort(403);
+        if ($user->isAdmin()) {
+            $validated = $request->validate([
+                'progress' => ['required', 'integer', 'min:0', 'max:100'],
+                'status' => ['required', Rule::in(['in_progress', 'completed', 'on_hold'])],
+                'payment_status' => ['required', Rule::in(['unpaid', 'partial', 'paid'])],
+                'key_person' => ['nullable', 'string', 'max:255'],
+                'status_remark' => ['nullable', 'string', 'max:5000'],
+            ]);
+        } else {
+            if ($project->user_id !== $user->id) {
+                abort(403);
+            }
+            $validated = $request->validate([
+                'title' => ['required', 'string', 'max:255'],
+                'description' => ['nullable', 'string', 'max:5000'],
+            ]);
         }
-
-        $validated = $request->validate([
-            'progress' => ['required', 'integer', 'min:0', 'max:100'],
-            'status' => ['required', Rule::in(['in_progress', 'completed', 'on_hold'])],
-            'payment_status' => ['required', Rule::in(['unpaid', 'partial', 'paid'])],
-            'key_person' => ['nullable', 'string', 'max:255'],
-            'status_remark' => ['nullable', 'string', 'max:5000'],
-        ]);
 
         $project->update($validated);
 

@@ -94,6 +94,8 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     });
 
     const editForm = useForm({
+        title: '',
+        description: '',
         progress: 0,
         status: 'in_progress',
         payment_status: 'unpaid',
@@ -141,6 +143,8 @@ export default function Projects({ projects, filters, clients = [], preselect_us
 
     const openEdit = (p: Project) => {
         editForm.setData({
+            title: p.title,
+            description: p.description ?? '',
             progress: p.progress,
             status: p.status,
             payment_status: p.payment_status ?? 'unpaid',
@@ -310,14 +314,14 @@ export default function Projects({ projects, filters, clients = [], preselect_us
 
                             <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
                                 <span className="text-xs text-slate-400">Started {project.created_at}</span>
-                                {isAdmin ? (
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => openEdit(project)}
-                                            className="text-sm font-semibold text-blue-600 hover:underline"
-                                        >
-                                            Update
-                                        </button>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => openEdit(project)}
+                                        className="text-sm font-semibold text-blue-600 hover:underline"
+                                    >
+                                        Update
+                                    </button>
+                                    {isAdmin && (
                                         <button
                                             onClick={() => deleteProject(project.id)}
                                             className="text-slate-400 hover:text-red-500"
@@ -325,15 +329,14 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </button>
-                                    </div>
-                                ) : (
+                                    )}
                                     <Link
                                         href={`/projects/${project.id}`}
                                         className="text-sm font-semibold text-blue-600 hover:underline"
                                     >
                                         View Details
                                     </Link>
-                                )}
+                                </div>
                             </div>
                         </Card>
                     ))}
@@ -486,55 +489,76 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                 </div>
             )}
 
-            {isAdmin && editId !== null && (
+            {editId !== null && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
                     <Card className="w-full max-w-md">
                         <div className="mb-4 flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-slate-900">Update Project</h3>
+                            <h3 className="text-lg font-bold text-slate-900">{isAdmin ? 'Update Project' : 'Edit Project Request'}</h3>
                             <button onClick={() => setEditId(null)} className="text-slate-400 hover:text-slate-700">
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
                         <div className="space-y-4">
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-700">
-                                    Progress: {editForm.data.progress}%
-                                </label>
-                                <input
-                                    type="range"
-                                    min={0}
-                                    max={100}
-                                    value={editForm.data.progress}
-                                    onChange={(e) => editForm.setData('progress', Number(e.target.value))}
-                                    className="w-full accent-blue-600"
-                                />
-                            </div>
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-700">Status</label>
-                                <select
-                                    value={editForm.data.status}
-                                    onChange={(e) => editForm.setData('status', e.target.value)}
-                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                >
-                                    <option value="in_progress">In Progress</option>
-                                    <option value="completed">Completed</option>
-                                    <option value="on_hold">On Hold</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-700">Payment Status</label>
-                                <select
-                                    value={editForm.data.payment_status}
-                                    onChange={(e) => editForm.setData('payment_status', e.target.value)}
-                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                >
-                                    <option value="unpaid">Unpaid</option>
-                                    <option value="partial">Partial</option>
-                                    <option value="paid">Paid</option>
-                                </select>
-                            </div>
+                            {!isAdmin && (
+                                <>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Project Title</label>
+                                        <input
+                                            value={editForm.data.title}
+                                            onChange={(e) => editForm.setData('title', e.target.value)}
+                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Description</label>
+                                        <textarea
+                                            value={editForm.data.description}
+                                            onChange={(e) => editForm.setData('description', e.target.value)}
+                                            rows={3}
+                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                        />
+                                    </div>
+                                </>
+                            )}
                             {isAdmin && (
                                 <>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">
+                                            Progress: {editForm.data.progress}%
+                                        </label>
+                                        <input
+                                            type="range"
+                                            min={0}
+                                            max={100}
+                                            value={editForm.data.progress}
+                                            onChange={(e) => editForm.setData('progress', Number(e.target.value))}
+                                            className="w-full accent-blue-600"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Status</label>
+                                        <select
+                                            value={editForm.data.status}
+                                            onChange={(e) => editForm.setData('status', e.target.value)}
+                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                        >
+                                            <option value="in_progress">In Progress</option>
+                                            <option value="completed">Completed</option>
+                                            <option value="on_hold">On Hold</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Payment Status</label>
+                                        <select
+                                            value={editForm.data.payment_status}
+                                            onChange={(e) => editForm.setData('payment_status', e.target.value)}
+                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                        >
+                                            <option value="unpaid">Unpaid</option>
+                                            <option value="partial">Partial</option>
+                                            <option value="paid">Paid</option>
+                                        </select>
+                                    </div>
                                     <div>
                                         <label className="mb-1 block text-sm font-medium text-slate-700">Key Person (PIC)</label>
                                         <input

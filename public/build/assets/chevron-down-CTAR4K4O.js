@@ -1,0 +1,1 @@
+import{n as e}from"./arrow-right-BG3KnaR2.js";var t=e(`chevron-down`,[[`path`,{d:`m6 9 6 6 6-6`,key:`qrunsl`}]]);export{t};
