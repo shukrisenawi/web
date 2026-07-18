@@ -104,11 +104,7 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pre
     };
 
     const makePayment = (inv: Invoice) => {
-        if (inv.payment_url) {
-            window.open(inv.payment_url, '_blank');
-        } else {
-            alert('Payment link is not available yet. Please contact our team.');
-        }
+        window.location.href = `/payment/${inv.id}`;
     };
 
     return (

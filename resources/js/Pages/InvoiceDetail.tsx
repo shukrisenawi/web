@@ -1,5 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, Printer, CreditCard, CheckCircle } from 'lucide-react';
+import { ArrowRight, Printer, CreditCard, CheckCircle, XCircle } from 'lucide-react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
 
 interface Invoice {
@@ -17,6 +17,7 @@ interface Invoice {
     status: string;
     payment_url?: string | null;
     items?: { description: string; amount: number }[];
+    proofs?: { id: number; payment_method: string; name: string; status: string; created_at: string }[];
 }
 
 const invoiceBadgeColor = (status: string) => {
@@ -37,11 +38,7 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
     const form = useForm({ status: invoice.status });
 
     const makePayment = () => {
-        if (invoice.payment_url) {
-            window.open(invoice.payment_url, '_blank');
-        } else {
-            alert('Payment link is not available yet. Please contact our team.');
-        }
+        window.location.href = `/payment/${invoice.id}`;
     };
 
     const updateStatus = () => {
@@ -193,6 +190,46 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                             >
                                 <CreditCard className="h-4 w-4" /> Make Payment
                             </button>
+                        </div>
+                    )}
+
+                    {isAdmin && invoice.proofs && invoice.proofs.length > 0 && (
+                        <div className="mt-6 border-t border-slate-100 pt-6 print:hidden">
+                            <h4 className="mb-3 text-sm font-semibold text-slate-900">Payment Proofs</h4>
+                            <div className="space-y-2">
+                                {invoice.proofs.map((p: any) => (
+                                    <div key={p.id} className="flex items-center justify-between rounded-lg border border-slate-100 p-3">
+                                        <div>
+                                            <p className="text-sm font-medium text-slate-900">{p.name} — {p.payment_method.replace('_', ' ')}</p>
+                                            <p className="text-xs text-slate-500">{p.created_at}</p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            {p.status === 'pending' ? (
+                                                <>
+                                                    <button
+                                                        onClick={() => router.put(`/payment-proofs/${p.id}/verify`, { status: 'verified' })}
+                                                        className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
+                                                    >
+                                                        <CheckCircle className="h-3.5 w-3.5" /> Verify
+                                                    </button>
+                                                    <button
+                                                        onClick={() => router.put(`/payment-proofs/${p.id}/verify`, { status: 'rejected' })}
+                                                        className="inline-flex items-center gap-1 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+                                                    >
+                                                        <XCircle className="h-3.5 w-3.5" /> Reject
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                                                    p.status === 'verified' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
+                                                }`}>
+                                                    {p.status}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </Card>

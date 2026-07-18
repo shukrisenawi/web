@@ -72,7 +72,7 @@ class InvoiceController extends Controller
             abort(403);
         }
 
-        $invoice->load('project', 'user', 'items');
+        $invoice->load('project', 'user', 'items', 'paymentProofs');
 
         return Inertia::render('InvoiceDetail', [
             'invoice' => $this->formatInvoice($invoice, true),
@@ -195,6 +195,13 @@ class InvoiceController extends Controller
             $data['items'] = $i->items->map(fn ($item) => [
                 'description' => $item->description,
                 'amount' => '$'.number_format($item->amount, 2),
+            ])->values();
+            $data['proofs'] = $i->paymentProofs->map(fn ($p) => [
+                'id' => $p->id,
+                'payment_method' => $p->payment_method,
+                'name' => $p->name,
+                'status' => $p->status,
+                'created_at' => $p->created_at->format('M d, Y'),
             ])->values();
         }
 
