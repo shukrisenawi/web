@@ -62,9 +62,10 @@ Route::middleware('guest')->group(function () {
     Route::get('/request', [ProjectRequestController::class, 'create'])->name('request.create');
     Route::post('/request', [ProjectRequestController::class, 'store'])->name('request.store');
 
-    Route::get('/payment/{invoiceNo}', [PaymentController::class, 'show'])->name('payment.show');
-    Route::post('/payment/proof', [PaymentController::class, 'storeProof'])->name('payment.proof.store');
 });
+
+Route::get('/payment/{invoiceNo}', [PaymentController::class, 'show'])->name('payment.show');
+Route::post('/payment/proof', [PaymentController::class, 'storeProof'])->name('payment.proof.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
