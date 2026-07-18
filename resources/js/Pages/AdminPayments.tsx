@@ -76,7 +76,11 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                             <tbody className="divide-y divide-slate-100">
                                 {filtered.map((p) => (
                                     <tr key={p.id} className="text-sm">
-                                        <td className="py-4 font-semibold text-blue-600">{p.invoice_no}</td>
+                                        <td className="py-4 font-semibold text-blue-600">
+                                            <Link href={`/invoices/${p.invoice_no}`} className="hover:underline">
+                                                {p.invoice_no}
+                                            </Link>
+                                        </td>
                                         <td className="py-4 text-slate-600">{p.client}</td>
                                         <td className="py-4">
                                             <p className="font-medium text-slate-900">{p.name}</p>
