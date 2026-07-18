@@ -231,7 +231,7 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
                                                 >
                                                     <Printer className="h-4 w-4" />
                                                 </Link>
-                                                {!isAdmin && (
+                                                {!isAdmin && inv.status !== 'paid' && (
                                                     <button
                                                         onClick={() => makePayment(inv)}
                                                         className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"
