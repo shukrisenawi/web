@@ -102,7 +102,7 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                         <div>
                             <div className="flex items-center gap-2">
                                 <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
-                                <span className="font-bold tracking-[0.3em]">
+                                <span className="font-bold">
                                     <span className="text-slate-900">KENJU</span>
                                     <span className="text-blue-600">TECH</span>
                                 </span>

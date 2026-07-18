@@ -142,7 +142,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                 <div className="flex h-16 shrink-0 items-center gap-2 px-6">
                     <Link href="/" className="flex items-center gap-2">
                         <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
-                        <span className="font-bold tracking-[0.3em]">
+                        <span className="font-bold">
                             <span className="text-white">KENJU</span>
                             <span className="text-blue-600">TECH</span>
                         </span>

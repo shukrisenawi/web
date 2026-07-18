@@ -59,9 +59,9 @@ export function Logo({ className = '' }: { className?: string }) {
             <div className="flex items-center text-blue-600">
                 <span className="font-mono text-2xl font-black">{'</>'}</span>
             </div>
-            <span className="tracking-[0.2em]">
-                <span className="text-white">K E N J U</span>
-                <span className="text-blue-600">T E C H</span>
+            <span>
+                <span className="text-white">KENJU</span>
+                <span className="text-blue-600">TECH</span>
             </span>
         </Link>
     );

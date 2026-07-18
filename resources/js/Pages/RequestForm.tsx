@@ -108,9 +108,9 @@ export default function RequestForm() {
                     <div className="mb-8 text-center">
                         <Link href="/" className="inline-flex items-center justify-center gap-2 text-xl font-bold tracking-wider">
                             <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
-                            <span className="tracking-[0.15em]">
-                                <span className="text-slate-900">K E N J U</span>
-                                <span className="text-blue-600">T E C H</span>
+                            <span>
+                                <span className="text-slate-900">KENJU</span>
+                                <span className="text-blue-600">TECH</span>
                             </span>
                         </Link>
                         <h1 className="mt-6 text-2xl font-bold text-slate-900">Request a Project</h1>

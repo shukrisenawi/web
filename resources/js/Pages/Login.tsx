@@ -24,9 +24,9 @@ export default function Login() {
                             <div className="flex items-center text-blue-600">
                                 <span className="font-mono text-2xl font-black">{'</>'}</span>
                             </div>
-                            <span className="tracking-[0.15em]">
-                                <span className="text-slate-900">K E N J U</span>
-                                <span className="text-blue-600">T E C H</span>
+                            <span>
+                                <span className="text-slate-900">KENJU</span>
+                                <span className="text-blue-600">TECH</span>
                             </span>
                         </Link>
                         <h1 className="mt-6 text-2xl font-bold text-slate-900">Welcome back</h1>

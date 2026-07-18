@@ -66,7 +66,7 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                     <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
                         <a href="/" className="flex items-center gap-2">
                             <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
-                            <span className="font-bold tracking-[0.3em]">
+                            <span className="font-bold">
                                 <span className="text-slate-900">KENJU</span>
                                 <span className="text-blue-600">TECH</span>
                             </span>

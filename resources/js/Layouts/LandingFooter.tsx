@@ -37,9 +37,9 @@ export function LandingFooter({ mode = 'light' }: { mode?: 'light' | 'dark' }) {
                             <div className="flex shrink-0 items-center text-blue-600">
                                 <span className="font-mono text-xl font-black">{'</>'}</span>
                             </div>
-                            <span className="tracking-[0.15em]">
-                                <span className={isDark ? 'text-white' : 'text-slate-900'}>K E N J U</span>
-                                <span className="text-blue-600">T E C H</span>
+                            <span>
+                                <span className={isDark ? 'text-white' : 'text-slate-900'}>KENJU</span>
+                                <span className="text-blue-600">TECH</span>
                             </span>
                         </Link>
                         <p className="mt-4 text-sm opacity-80 max-w-xs">
