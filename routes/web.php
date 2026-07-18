@@ -105,6 +105,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/support/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
 
         Route::get('/clients', [\App\Http\Controllers\ClientDatabaseController::class, 'index'])->name('clients');
+        Route::get('/requests', [\App\Http\Controllers\ClientDatabaseController::class, 'pending'])->name('requests');
 
         Route::get('/manage-frontpage', [FrontpageController::class, 'index'])->name('frontpage.manage');
         Route::post('/manage-frontpage', [FrontpageController::class, 'update'])->name('frontpage.update');

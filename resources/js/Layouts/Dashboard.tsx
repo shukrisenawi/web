@@ -17,7 +17,15 @@ import {
     Database,
 } from 'lucide-react';
 
-const clientSidebar = [
+interface SidebarItem {
+    label: string;
+    href: string;
+    icon: React.ComponentType<{ className?: string }>;
+    badge?: string;
+    exact?: boolean;
+}
+
+const clientSidebar: SidebarItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
     { label: 'Billing', href: '/invoices', icon: FileText },
@@ -25,10 +33,10 @@ const clientSidebar = [
     { label: 'Profile', href: '/profile', icon: Users },
 ];
 
-const adminSidebar = [
+const adminSidebar: SidebarItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
-    { label: 'Requests', href: '/clients', icon: FileText, badge: 'pendingRequestsCount' },
+    { label: 'Requests', href: '/requests', icon: FileText, badge: 'pendingRequestsCount' },
     { label: 'Database', href: '/clients', icon: Database },
     { label: 'Billing', href: '/invoices', icon: FileText },
     { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
@@ -161,7 +169,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
 
                 <nav className="mt-4 flex-1 overflow-y-auto px-4 space-y-1">
                     {sidebar.map((item) => {
-                        const active = item.href !== '#' && currentPath.startsWith(item.href);
+                        const active = item.href !== '#' && (item.exact ? currentPath === item.href : currentPath.startsWith(item.href));
                         const badgeCount = item.badge === 'unreadMessagesCount' ? (unreadMessagesCount ?? 0) : item.badge === 'pendingRequestsCount' ? (pendingRequestsCount ?? 0) : 0;
                         return (
                             <Link

@@ -50,7 +50,7 @@ class NotificationController extends Controller
                     'name' => $r->contact_name,
                     'email' => $r->contact_email,
                     'date' => $r->created_at->format('M d, Y'),
-                    'url' => route('clients'),
+                    'url' => route('requests'),
                 ]);
 
             $items = $items->concat($pendingRequests)->sortByDesc('date')->values();
