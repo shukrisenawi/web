@@ -1,6 +1,8 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, Building2, QrCode, Upload, CheckCircle, FileText, Info } from 'lucide-react';
 import { useState } from 'react';
+import { LandingHeader } from '@/Layouts/LandingHeader';
+import { LandingFooter } from '@/Layouts/LandingFooter';
 
 interface InvoiceItem {
     description: string;
@@ -61,24 +63,7 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
             <Head title={`Payment - ${invoice.id}`} />
 
             <div className="min-h-screen bg-white">
-                {/* Header */}
-                <header className="border-b border-slate-200 bg-white">
-                    <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-                        <a href="/" className="flex items-center gap-2">
-                            <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
-                            <span className="font-bold">
-                                <span className="text-slate-900">KENJU</span>
-                                <span className="ml-2 text-blue-600">TECH</span>
-                            </span>
-                        </a>
-                        <a
-                            href="/dashboard"
-                            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                        >
-                            Dashboard <ArrowRight className="h-4 w-4" />
-                        </a>
-                    </div>
-                </header>
+                <LandingHeader />
 
                 {/* Hero */}
                 <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 text-white">
@@ -407,10 +392,7 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                     </section>
                 )}
 
-                {/* Footer */}
-                <footer className="border-t border-slate-200 bg-slate-900 py-8 text-center text-sm text-slate-400">
-                    <p>&copy; {new Date().getFullYear()} Kenju Tech Sdn Bhd. All rights reserved.</p>
-                </footer>
+                <LandingFooter mode="dark" />
             </div>
         </>
     );
