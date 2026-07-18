@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FileUpload;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,39 +22,50 @@ class ProjectController extends Controller
         $search = $request->query('search');
 
         $query = $user->isAdmin()
-            ? Project::query()->with('user.projectRequests.files')
-            : $user->projects()->with('user.projectRequests.files');
+            ? Project::query()->with('user.projectRequests.files', 'fileUploads')
+            : $user->projects()->with('user.projectRequests.files', 'fileUploads');
 
         $projects = $query
             ->when($status, fn ($q) => $q->where('status', $status))
             ->when($search, fn ($q) => $q->where('title', 'like', "%{$search}%"))
             ->orderByDesc('created_at')
             ->get()
-            ->map(fn ($p) => [
-                'id' => $p->id,
-                'user_id' => $p->user_id,
-                'client' => $p->user?->company ?? $p->user?->name,
-                'title' => $p->title,
-                'category' => $p->category,
-                'service_type' => $p->service_type,
-                'description' => $p->description,
-                'key_person' => $p->key_person,
-                'status_remark' => $p->status_remark,
-                'progress' => $p->progress,
-                'status' => $p->status,
-                'payment_status' => $p->payment_status,
-                'icon_color' => $p->icon_color,
-                'created_at' => $p->created_at->format('M d, Y'),
-                'files' => $p->user?->projectRequests
+            ->map(function ($p) {
+                $requestFiles = $p->user?->projectRequests
                     ->sortByDesc('created_at')
                     ->first()?->files
                     ->map(fn ($f) => [
-                        'id' => $f->id,
+                        'id' => 'req_'.$f->id,
                         'filename' => $f->filename,
                         'size' => $f->size,
                         'url' => Storage::url($f->path),
-                    ]) ?? [],
-            ]);
+                    ]) ?? [];
+
+                $uploadedFiles = $p->fileUploads->map(fn ($f) => [
+                    'id' => 'up_'.$f->id,
+                    'filename' => $f->filename,
+                    'size' => $f->size,
+                    'url' => Storage::url($f->path),
+                ]);
+
+                return [
+                    'id' => $p->id,
+                    'user_id' => $p->user_id,
+                    'client' => $p->user?->company ?? $p->user?->name,
+                    'title' => $p->title,
+                    'category' => $p->category,
+                    'service_type' => $p->service_type,
+                    'description' => $p->description,
+                    'key_person' => $p->key_person,
+                    'status_remark' => $p->status_remark,
+                    'progress' => $p->progress,
+                    'status' => $p->status,
+                    'payment_status' => $p->payment_status,
+                    'icon_color' => $p->icon_color,
+                    'created_at' => $p->created_at->format('M d, Y'),
+                    'files' => collect($requestFiles)->concat($uploadedFiles)->values(),
+                ];
+            });
 
         $props = [
             'projects' => $projects,
@@ -190,5 +202,32 @@ class ProjectController extends Controller
         $project->delete();
 
         return redirect()->route('projects')->with('success', 'Project deleted successfully.');
+    }
+
+    public function uploadFile(Request $request, Project $project)
+    {
+        $user = Auth::user();
+
+        if (! $user->isAdmin() && $project->user_id !== $user->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'file' => ['required', 'file', 'max:20480'], // 20MB max
+        ]);
+
+        $file = $request->file('file');
+        $path = $file->store('project-files/'.$project->id, 'public');
+
+        FileUpload::create([
+            'project_id' => $project->id,
+            'uploaded_by' => $user->id,
+            'filename' => $file->getClientOriginalName(),
+            'path' => $path,
+            'size' => $file->getSize(),
+            'mime_type' => $file->getMimeType(),
+        ]);
+
+        return redirect()->back()->with('success', 'File uploaded successfully.');
     }
 }

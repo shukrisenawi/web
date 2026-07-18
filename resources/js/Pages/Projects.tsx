@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, FolderKanban, Plus, Search, X, Trash2, Save, Paperclip } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ArrowRight, FolderKanban, Plus, Search, X, Trash2, Save, Paperclip, Upload } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
 interface RequestFile {
@@ -80,6 +80,8 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const [search, setSearch] = useState(filters.search ?? '');
     const [createOpen, setCreateOpen] = useState(false);
     const [editId, setEditId] = useState<number | null>(null);
+    const [uploading, setUploading] = useState<number | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const createForm = useForm({
         user_id: preselect_user_id ?? '',
@@ -144,6 +146,24 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const deleteProject = (id: number) => {
         if (!confirm('Delete this project?')) return;
         router.delete(`/projects/${id}`);
+    };
+
+    const triggerUpload = (projectId: number) => {
+        setUploading(projectId);
+        fileInputRef.current?.click();
+    };
+
+    const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || uploading === null) return;
+        const formData = new FormData();
+        formData.append('file', file);
+        router.post(`/projects/${uploading}/files`, formData, {
+            onFinish: () => {
+                setUploading(null);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+            },
+        });
     };
 
     return (
@@ -245,8 +265,22 @@ export default function Projects({ projects, filters, clients = [], preselect_us
 
                             <p className="mt-4 line-clamp-2 text-sm text-slate-600">{project.description}</p>
 
-                            {project.files && project.files.length > 0 && (
+                            {(project.files.length > 0 || isAdmin) && (
                                 <div className="mt-3 space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs font-medium text-slate-500">Files</span>
+                                        {isAdmin && (
+                                            <button
+                                                type="button"
+                                                onClick={() => triggerUpload(project.id)}
+                                                disabled={uploading === project.id}
+                                                className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-2 py-1 text-[10px] font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                                            >
+                                                <Upload className="h-3 w-3" />
+                                                {uploading === project.id ? 'Uploading...' : 'Upload'}
+                                            </button>
+                                        )}
+                                    </div>
                                     {project.files.map((f) => (
                                         <a
                                             key={f.id}
@@ -262,6 +296,9 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                             </span>
                                         </a>
                                     ))}
+                                    {project.files.length === 0 && (
+                                        <p className="text-[10px] text-slate-400">No files yet.</p>
+                                    )}
                                 </div>
                             )}
 
@@ -326,6 +363,14 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                     </div>
                 )}
             </DashboardLayout>
+
+            <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                onChange={handleFileSelected}
+                accept="*/*"
+            />
 
             {createOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
