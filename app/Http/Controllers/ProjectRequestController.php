@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\ProjectRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -100,8 +101,42 @@ class ProjectRequestController extends Controller
             }
         }
 
+        $serviceTypeMap = [
+            'Web System' => 'web_system',
+            'Website' => 'website',
+            'Mobile App' => 'mobile_app',
+            'E-Commerce' => 'web_system',
+            'Digital Marketing' => 'digital_marketing',
+            'IT Solutions' => 'it_solutions',
+            'Game Development' => 'game_development',
+        ];
+        $rawSystemType = $validated['system_type'] ?? 'Web System';
+        $serviceType = $serviceTypeMap[$rawSystemType] ?? 'web_system';
+
+        $descriptionParts = array_filter([
+            $validated['features'] ?? null,
+            $validated['user_roles'] ? 'User Roles: '.$validated['user_roles'] : null,
+            $validated['integrations'] ? 'Integrations: '.$validated['integrations'] : null,
+            $validated['additional_notes'] ? 'Notes: '.$validated['additional_notes'] : null,
+        ]);
+        $description = implode("\n\n", $descriptionParts);
+
+        Project::create([
+            'user_id' => $user->id,
+            'title' => $validated['company_name'],
+            'category' => $industry,
+            'service_type' => $serviceType,
+            'description' => $description,
+            'key_person' => $validated['contact_name'],
+            'status_remark' => 'New request - pending review',
+            'progress' => 0,
+            'status' => 'in_progress',
+            'payment_status' => 'unpaid',
+            'icon_color' => '#2563eb',
+        ]);
+
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Your request has been submitted successfully. Our team will review it shortly.');
+        return redirect()->route('projects')->with('success', 'Your request has been submitted successfully. Our team will review it shortly.');
     }
 }
