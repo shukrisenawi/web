@@ -12,6 +12,35 @@ use Inertia\Inertia;
 
 class PaymentController extends Controller
 {
+    public function index()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $proofs = PaymentProof::with('invoice.user')
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'invoice_no' => $p->invoice->invoice_no,
+                'client' => $p->invoice->user?->company ?? $p->invoice->user?->name ?? 'N/A',
+                'payment_method' => $p->payment_method,
+                'name' => $p->name,
+                'email' => $p->email,
+                'amount' => '$' . number_format($p->invoice->amount, 2),
+                'status' => $p->status,
+                'created_at' => $p->created_at->format('M d, Y'),
+            ]);
+
+        return Inertia::render('AdminPayments', [
+            'proofs' => $proofs,
+        ]);
+    }
+
     public function show(string $invoiceNo)
     {
         $invoice = Invoice::where('invoice_no', $invoiceNo)->firstOrFail();

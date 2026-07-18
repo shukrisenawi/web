@@ -22,6 +22,7 @@ interface Project {
     progress: number;
     status: string;
     payment_status: string;
+    total_paid?: string;
     icon_color: string;
     created_at: string;
     milestones: Milestone[];
@@ -102,6 +103,13 @@ export default function ProjectShow({ project }: { project: Project }) {
                     {project.status_remark && (
                         <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
                             <span className="font-semibold">Status Update:</span> {project.status_remark}
+                        </p>
+                    )}
+
+                    {project.total_paid && parseFloat(project.total_paid) > 0 && (
+                        <p className="mt-4 text-sm">
+                            <span className="text-slate-500">Total Paid:</span>{' '}
+                            <span className="font-semibold text-emerald-600">${project.total_paid}</span>
                         </p>
                     )}
 

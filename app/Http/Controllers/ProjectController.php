@@ -22,8 +22,8 @@ class ProjectController extends Controller
         $search = $request->query('search');
 
         $query = $user->isAdmin()
-            ? Project::query()->with('user.projectRequests.files', 'fileUploads')
-            : $user->projects()->with('user.projectRequests.files', 'fileUploads');
+            ? Project::query()->with('user.projectRequests.files', 'fileUploads', 'invoices')
+            : $user->projects()->with('user.projectRequests.files', 'fileUploads', 'invoices');
 
         $projects = $query
             ->when($status, fn ($q) => $q->where('status', $status))
@@ -48,6 +48,8 @@ class ProjectController extends Controller
                     'url' => Storage::url($f->path),
                 ]);
 
+                $totalPaid = $p->invoices->where('status', 'paid')->sum('amount');
+
                 return [
                     'id' => $p->id,
                     'user_id' => $p->user_id,
@@ -61,6 +63,7 @@ class ProjectController extends Controller
                     'progress' => $p->progress,
                     'status' => $p->status,
                     'payment_status' => $p->payment_status,
+                    'total_paid' => number_format($totalPaid, 2),
                     'icon_color' => $p->icon_color,
                     'created_at' => $p->created_at->format('M d, Y'),
                     'files' => collect($requestFiles)->concat($uploadedFiles)->values(),
@@ -93,6 +96,8 @@ class ProjectController extends Controller
 
         $project->load(['milestones' => fn ($q) => $q->orderBy('due_date'), 'user', 'invoices']);
 
+        $totalPaid = $project->invoices->where('status', 'paid')->sum('amount');
+
         return Inertia::render('ProjectShow', [
             'project' => [
                 'id' => $project->id,
@@ -106,6 +111,7 @@ class ProjectController extends Controller
                 'progress' => $project->progress,
                 'status' => $project->status,
                 'payment_status' => $project->payment_status,
+                'total_paid' => number_format($totalPaid, 2),
                 'icon_color' => $project->icon_color,
                 'created_at' => $project->created_at->format('M d, Y'),
                 'milestones' => $project->milestones->map(fn ($m) => [
