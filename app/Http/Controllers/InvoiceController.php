@@ -54,6 +54,9 @@ class InvoiceController extends Controller
                 'clients' => User::where('role', User::ROLE_CLIENT)->get(['id', 'company', 'name'])->map(
                     fn ($u) => ['id' => $u->id, 'label' => $u->company ?? $u->name]
                 ),
+                'projects' => Project::with('user')->get(['id', 'title', 'user_id'])->map(
+                    fn ($p) => ['id' => $p->id, 'label' => $p->title, 'user_id' => $p->user_id]
+                ),
                 'preselect_user_id' => $request->query('user_id'),
             ]);
         }

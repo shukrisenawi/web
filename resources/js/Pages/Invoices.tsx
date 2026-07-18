@@ -28,6 +28,7 @@ interface InvoicesProps {
         total_revenue: string;
     };
     clients?: { id: number; label: string }[];
+    projects?: { id: number; label: string; user_id: number }[];
     preselect_user_id?: string | null;
 }
 
@@ -49,7 +50,7 @@ const invoiceBadgeColor = (status: string) => {
     }
 };
 
-export default function Invoices({ invoices, filters, widgets, clients = [], preselect_user_id }: InvoicesProps) {
+export default function Invoices({ invoices, filters, widgets, clients = [], projects = [], preselect_user_id }: InvoicesProps) {
     const { auth } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
     const currentStatus = filters.status ?? '';
@@ -68,6 +69,8 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pre
         status: 'pending',
         payment_url: '',
     });
+
+    const filteredProjects = projects.filter((p) => !form.data.user_id || p.user_id === Number(form.data.user_id));
 
     const total = form.data.items.reduce(
         (sum, it) => sum + (parseFloat(it.amount) || 0),
@@ -296,6 +299,21 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pre
                                 {form.errors.user_id && (
                                     <p className="mt-1 text-xs text-red-500">{form.errors.user_id}</p>
                                 )}
+                            </div>
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">Project</label>
+                                <select
+                                    value={form.data.project_id}
+                                    onChange={(e) => form.setData('project_id', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                >
+                                    <option value="">Select project (optional)...</option>
+                                    {filteredProjects.map((p) => (
+                                        <option key={p.id} value={p.id}>
+                                            {p.label}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
