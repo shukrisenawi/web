@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\ProjectRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -68,6 +69,9 @@ class ClientDatabaseController extends Controller
 
         return Inertia::render('ClientDatabase', [
             'clients' => $clients,
+            'projects' => Project::with('user')->get(['id', 'title', 'user_id'])->map(
+                fn ($p) => ['id' => $p->id, 'label' => $p->title, 'user_id' => $p->user_id]
+            ),
         ]);
     }
 
@@ -88,6 +92,9 @@ class ClientDatabaseController extends Controller
 
         return Inertia::render('ClientDatabase', [
             'clients' => $clients,
+            'projects' => Project::with('user')->get(['id', 'title', 'user_id'])->map(
+                fn ($p) => ['id' => $p->id, 'label' => $p->title, 'user_id' => $p->user_id]
+            ),
         ]);
     }
 }
