@@ -81,6 +81,8 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const [search, setSearch] = useState(filters.search ?? '');
     const [createOpen, setCreateOpen] = useState(false);
     const [editId, setEditId] = useState<number | null>(null);
+    const [createFiles, setCreateFiles] = useState<File[]>([]);
+
     const createForm = useForm({
         user_id: preselect_user_id ?? '',
         title: '',
@@ -114,12 +116,26 @@ export default function Projects({ projects, filters, clients = [], preselect_us
 
     const openCreate = () => {
         createForm.reset();
+        setCreateFiles([]);
         setCreateOpen(true);
     };
 
     const submitCreate = () => {
-        createForm.post('/projects', {
-            onSuccess: () => setCreateOpen(false),
+        const formData = new FormData();
+        formData.append('title', createForm.data.title);
+        formData.append('service_type', createForm.data.service_type);
+        formData.append('description', createForm.data.description ?? '');
+        formData.append('request_quotation', createForm.data.request_quotation ? '1' : '0');
+        if (createForm.data.user_id) formData.append('user_id', createForm.data.user_id);
+        if (createForm.data.key_person) formData.append('key_person', createForm.data.key_person);
+        if (createForm.data.status_remark) formData.append('status_remark', createForm.data.status_remark);
+        createFiles.forEach((f) => formData.append('files[]', f));
+
+        router.post('/projects', formData, {
+            onSuccess: () => {
+                setCreateOpen(false);
+                setCreateFiles([]);
+            },
         });
     };
 
@@ -415,6 +431,18 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                     Request a quotation instead of a package
                                 </label>
                             )}
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">Upload Files</label>
+                                <input
+                                    type="file"
+                                    multiple
+                                    onChange={(e) => setCreateFiles(Array.from(e.target.files ?? []))}
+                                    className="w-full text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-blue-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
+                                />
+                                {createFiles.length > 0 && (
+                                    <p className="mt-1 text-xs text-slate-500">{createFiles.length} file(s) selected</p>
+                                )}
+                            </div>
                             <div className="flex justify-end gap-2 pt-2">
                                 <button
                                     type="button"

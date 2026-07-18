@@ -144,6 +144,9 @@ class ProjectController extends Controller
             $rules['status_remark'] = ['nullable', 'string', 'max:5000'];
         }
 
+        $rules['files'] = ['nullable', 'array'];
+        $rules['files.*'] = ['file', 'max:20480'];
+
         $validated = $request->validate($rules);
 
         $serviceLabels = [
@@ -157,7 +160,7 @@ class ProjectController extends Controller
 
         $ownerId = $user->isAdmin() ? $validated['user_id'] : $user->id;
 
-        Project::create([
+        $project = Project::create([
             'user_id' => $ownerId,
             'title' => $validated['title'],
             'category' => $serviceLabels[$validated['service_type']],
@@ -170,6 +173,20 @@ class ProjectController extends Controller
             'payment_status' => 'unpaid',
             'icon_color' => '#2563eb',
         ]);
+
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $path = $file->store('project-files/'.$project->id, 'public');
+                FileUpload::create([
+                    'project_id' => $project->id,
+                    'uploaded_by' => $user->id,
+                    'filename' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'size' => $file->getSize(),
+                    'mime_type' => $file->getMimeType(),
+                ]);
+            }
+        }
 
         return redirect()->route('projects')->with('success', 'Project created successfully.');
     }
