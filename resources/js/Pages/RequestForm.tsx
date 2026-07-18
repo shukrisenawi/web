@@ -260,7 +260,7 @@ export default function RequestForm() {
                         {step === 1 && (
                             <div className="space-y-5">
                                 <div>
-                                    <label htmlFor="company_name" className={labelClass}>Company Name *</label>
+                                    <label htmlFor="company_name" className={labelClass}>Company Name <span className="text-red-500">*</span></label>
                                     <input id="company_name" type="text" value={data.company_name} onChange={(e) => setData('company_name', e.target.value)} className={inputClass} placeholder="Acme Corporation" />
                                     {errors.company_name && <p className="mt-1 text-xs text-red-600">{errors.company_name}</p>}
                                 </div>
@@ -286,7 +286,7 @@ export default function RequestForm() {
                                 </div>
                                 {data.industry === 'Others' && (
                                     <div>
-                                        <label htmlFor="industry_other" className={labelClass}>Please specify your industry *</label>
+                                        <label htmlFor="industry_other" className={labelClass}>Please specify your industry <span className="text-red-500">*</span></label>
                                         <input
                                             id="industry_other"
                                             type="text"
@@ -303,7 +303,7 @@ export default function RequestForm() {
                                     <p className="mb-4 text-sm font-semibold text-slate-800">Contact Person &amp; Login</p>
                                     <div className="grid gap-5 sm:grid-cols-2">
                                         <div>
-                                            <label htmlFor="contact_name" className={labelClass}>Contact Name *</label>
+                                            <label htmlFor="contact_name" className={labelClass}>Contact Name <span className="text-red-500">*</span></label>
                                             <input id="contact_name" type="text" value={data.contact_name} onChange={(e) => setData('contact_name', e.target.value)} className={inputClass} placeholder="John Doe" />
                                             {errors.contact_name && <p className="mt-1 text-xs text-red-600">{errors.contact_name}</p>}
                                         </div>
@@ -313,17 +313,17 @@ export default function RequestForm() {
                                             {errors.contact_mobile && <p className="mt-1 text-xs text-red-600">{errors.contact_mobile}</p>}
                                         </div>
                                         <div className="sm:col-span-2">
-                                            <label htmlFor="contact_email" className={labelClass}>Email Address * (used to sign in)</label>
+                                            <label htmlFor="contact_email" className={labelClass}>Email Address <span className="text-red-500">*</span> (used to sign in)</label>
                                             <input id="contact_email" type="email" value={data.contact_email} onChange={(e) => setData('contact_email', e.target.value)} className={inputClass} placeholder="you@company.com" />
                                             {errors.contact_email && <p className="mt-1 text-xs text-red-600">{errors.contact_email}</p>}
                                         </div>
                                         <div>
-                                            <label htmlFor="password" className={labelClass}>Password *</label>
+                                            <label htmlFor="password" className={labelClass}>Password <span className="text-red-500">*</span></label>
                                             <input id="password" type="password" autoComplete="new-password" value={data.password} onChange={(e) => setData('password', e.target.value)} className={inputClass} placeholder="••••••••" />
                                             {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password}</p>}
                                         </div>
                                         <div>
-                                            <label htmlFor="password_confirmation" className={labelClass}>Confirm Password *</label>
+                                            <label htmlFor="password_confirmation" className={labelClass}>Confirm Password <span className="text-red-500">*</span></label>
                                             <input id="password_confirmation" type="password" autoComplete="new-password" value={data.password_confirmation} onChange={(e) => setData('password_confirmation', e.target.value)} className={inputClass} placeholder="••••••••" />
                                             {errors.password_confirmation && <p className="mt-1 text-xs text-red-600">{errors.password_confirmation}</p>}
                                         </div>
@@ -352,7 +352,7 @@ export default function RequestForm() {
                                 </div>
                                 {data.system_type === 'Other' && (
                                     <div>
-                                        <label htmlFor="system_type_other" className={labelClass}>Please specify the system type *</label>
+                                        <label htmlFor="system_type_other" className={labelClass}>Please specify the system type <span className="text-red-500">*</span></label>
                                         <input
                                             id="system_type_other"
                                             type="text"
