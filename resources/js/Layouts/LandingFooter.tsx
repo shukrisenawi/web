@@ -135,7 +135,7 @@ export function LandingFooter({ mode = 'light' }: { mode?: 'light' | 'dark' }) {
                 </div>
 
                 <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-current/10 pt-8 text-sm opacity-70 md:flex-row">
-                    <p>© 2025 Kenju Tech. All rights reserved.</p>
+                    <p>© 2027 Kenju Tech. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link href="#" className="hover:opacity-100">Privacy Policy</Link>
                         <Link href="#" className="hover:opacity-100">Terms & Conditions</Link>
