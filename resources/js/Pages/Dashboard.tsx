@@ -12,6 +12,7 @@ import {
     MessageSquare,
     CheckCircle2,
     Upload,
+    Users,
 } from 'lucide-react';
 import { DashboardLayout, Card, Badge, Progress, ActionMenu } from '@/Layouts/Dashboard';
 
@@ -38,7 +39,9 @@ const statConfig: Record<string, { icon: React.ElementType; color: string }> = {
     'Active Projects': { icon: FolderKanban, color: 'bg-blue-50 text-blue-600' },
     'Projects Completed': { icon: CheckSquare, color: 'bg-purple-50 text-purple-600' },
     'Total Spent': { icon: Wallet, color: 'bg-emerald-50 text-emerald-600' },
+    'Total Billing': { icon: Wallet, color: 'bg-emerald-50 text-emerald-600' },
     'Open Tickets': { icon: Ticket, color: 'bg-amber-50 text-amber-600' },
+    'Total Clients': { icon: Users, color: 'bg-pink-50 text-pink-600' },
 };
 
 const statusBadgeColor = (status: string) => {
@@ -96,11 +99,12 @@ export default function Dashboard({
                 </div>
 
                 {/** Stats */}
-                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
                     {stats.map((stat) => {
                         const config = statConfig[stat.label];
                         if (!config) return null;
                         const Icon = config.icon;
+                        const href = stat.label === 'Total Clients' ? '/clients' : '/projects';
                         return (
                             <Card key={stat.label} className="flex flex-col">
                                 <div className="flex items-start justify-between">
@@ -110,7 +114,7 @@ export default function Dashboard({
                                 </div>
                                 <p className="mt-4 text-sm text-slate-500">{stat.label}</p>
                                 <p className="text-3xl font-bold text-slate-900">{stat.value}</p>
-                                <Link href="/projects" className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">
+                                <Link href={href} className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">
                                     {stat.sub}
                                     <ArrowRight className="h-3 w-3" />
                                 </Link>
