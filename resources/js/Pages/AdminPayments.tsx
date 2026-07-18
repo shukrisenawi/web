@@ -11,6 +11,7 @@ interface Proof {
     name: string;
     email: string;
     amount: string;
+    proof_url: string | null;
     status: string;
     created_at: string;
 }
@@ -66,6 +67,7 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                                     <th className="pb-3 font-medium">Submitted By</th>
                                     <th className="pb-3 font-medium">Method</th>
                                     <th className="pb-3 font-medium">Amount</th>
+                                    <th className="pb-3 font-medium">Proof</th>
                                     <th className="pb-3 font-medium">Date</th>
                                     <th className="pb-3 font-medium">Status</th>
                                     <th className="pb-3 font-medium">Actions</th>
@@ -82,6 +84,20 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                                         </td>
                                         <td className="py-4 text-slate-600 capitalize">{p.payment_method.replace('_', ' ')}</td>
                                         <td className="py-4 font-semibold text-slate-900">{p.amount}</td>
+                                        <td className="py-4">
+                                            {p.proof_url ? (
+                                                <a
+                                                    href={p.proof_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50"
+                                                >
+                                                    View
+                                                </a>
+                                            ) : (
+                                                <span className="text-xs text-slate-400">—</span>
+                                            )}
+                                        </td>
                                         <td className="py-4 text-slate-500">{p.created_at}</td>
                                         <td className="py-4">
                                             <Badge color={p.status === 'verified' ? 'green' : p.status === 'rejected' ? 'red' : 'amber'}>

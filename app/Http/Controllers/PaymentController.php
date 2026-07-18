@@ -32,6 +32,7 @@ class PaymentController extends Controller
                 'name' => $p->name,
                 'email' => $p->email,
                 'amount' => '$' . number_format($p->invoice->amount, 2),
+                'proof_url' => $p->proof_path ? Storage::url($p->proof_path) : null,
                 'status' => $p->status,
                 'created_at' => $p->created_at->format('M d, Y'),
             ]);
