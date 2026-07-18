@@ -48,9 +48,13 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
 
     const submit = () => {
         form.post('/payment/proof', {
+            forceFormData: true,
             onSuccess: () => {
                 setSubmitted(true);
                 form.reset();
+            },
+            onError: (err) => {
+                console.error('Payment form errors:', err);
             },
         });
     };
@@ -255,6 +259,11 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                             </div>
 
                             <div className="space-y-4">
+                                {form.hasErrors && (
+                                    <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">
+                                        Please fix the errors below and try again.
+                                    </div>
+                                )}
                                 <div className="grid gap-4 sm:grid-cols-2">
                                     <div>
                                         <label className="mb-1 block text-sm font-medium text-slate-700">Invoice Number *</label>
