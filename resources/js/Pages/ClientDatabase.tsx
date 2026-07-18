@@ -39,12 +39,13 @@ interface Client {
 }
 
 export default function ClientDatabase({ clients, projects = [] }: { clients: Client[]; projects?: { id: number; label: string; user_id: number }[] }) {
-    const { auth, flash } = usePage().props as any;
+    const { auth } = usePage().props as any;
     void auth;
     const [search, setSearch] = useState('');
     const [expanded, setExpanded] = useState<number | null>(null);
     const [billingClient, setBillingClient] = useState<Client | null>(null);
     const [billingError, setBillingError] = useState('');
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const filtered = clients.filter((c) => {
         const q = search.toLowerCase();
@@ -105,6 +106,8 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
         billingForm.post('/invoices', {
             onSuccess: () => {
                 setBillingClient(null);
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 3000);
             },
         });
     };
@@ -127,13 +130,6 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
             <Head title="Client Database" />
 
             <DashboardLayout title="Database">
-                {flash?.success && (
-                    <div className="mb-4 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700">
-                        <CheckCircle2 className="h-5 w-5" />
-                        <span className="text-sm font-medium">{flash.success}</span>
-                    </div>
-                )}
-
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900">Client Database</h2>
@@ -445,6 +441,30 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                             </div>
                         </div>
                     </Card>
+                </div>
+            )}
+
+            {showSuccess && (
+                // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions
+                <div role="dialog" className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowSuccess(false)} onKeyDown={(e) => { if (e.key === 'Escape') setShowSuccess(false); }}>
+                    <div
+                        role="dialog"
+                        className="flex flex-col items-center gap-4 rounded-2xl bg-white px-10 py-8 shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => { if (e.key === 'Escape') setShowSuccess(false); }}
+                    >
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                            <CheckCircle2 className="h-10 w-10 text-green-600" />
+                        </div>
+                        <p className="text-lg font-bold text-slate-900">Invoice Berjaya Dijana!</p>
+                        <button
+                            type="button"
+                            onClick={() => setShowSuccess(false)}
+                            className="rounded-lg bg-green-600 px-5 py-2 text-sm font-semibold text-white hover:bg-green-700"
+                        >
+                            Tutup
+                        </button>
+                    </div>
                 </div>
             )}
         </>
