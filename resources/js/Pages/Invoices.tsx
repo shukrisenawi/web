@@ -54,6 +54,7 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pre
     const isAdmin = auth?.user?.isAdmin;
     const currentStatus = filters.status ?? '';
     const [createOpen, setCreateOpen] = useState(false);
+    const preselected = !!preselect_user_id;
 
     const form = useForm({
         user_id: preselect_user_id ?? '',
@@ -275,7 +276,12 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pre
                                 <select
                                     value={form.data.user_id}
                                     onChange={(e) => form.setData('user_id', e.target.value)}
-                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    disabled={preselected}
+                                    className={`w-full rounded-lg border px-3 py-2 text-sm focus:border-blue-500 focus:outline-none ${
+                                        preselected
+                                            ? 'cursor-not-allowed border-slate-300 bg-slate-100 text-slate-600'
+                                            : 'border-slate-200'
+                                    }`}
                                 >
                                     <option value="">Select existing client...</option>
                                     {clients.map((c) => (
@@ -284,6 +290,9 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pre
                                         </option>
                                     ))}
                                 </select>
+                                {preselected && (
+                                    <p className="mt-1 text-xs text-slate-400">Client locked from previous selection.</p>
+                                )}
                                 {form.errors.user_id && (
                                     <p className="mt-1 text-xs text-red-500">{form.errors.user_id}</p>
                                 )}
