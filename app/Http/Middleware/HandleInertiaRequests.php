@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\FrontpageContent;
+use App\Models\ProjectRequest;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -62,6 +63,9 @@ class HandleInertiaRequests extends Middleware
                 ? ($request->user()->isAdmin()
                     ? Ticket::whereNull('admin_viewed_at')->count()
                     : $request->user()->tickets()->whereNull('viewed_at')->count())
+                : 0,
+            'pendingRequestsCount' => $request->user()?->isAdmin()
+                ? ProjectRequest::where('status', 'pending')->count()
                 : 0,
         ];
     }

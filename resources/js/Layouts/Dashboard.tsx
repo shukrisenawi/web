@@ -28,6 +28,7 @@ const clientSidebar = [
 const adminSidebar = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
+    { label: 'Requests', href: '/clients', icon: FileText, badge: 'pendingRequestsCount' },
     { label: 'Database', href: '/clients', icon: Database },
     { label: 'Billing', href: '/invoices', icon: FileText },
     { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
@@ -38,6 +39,7 @@ const adminSidebar = [
 
 interface NotificationItem {
     id: string;
+    type: string;
     subject: string;
     description: string | null;
     name: string | null;
@@ -47,7 +49,7 @@ interface NotificationItem {
 }
 
 export function DashboardLayout({ children, title }: { children: React.ReactNode; title?: string }) {
-    const { auth, url, unreadMessagesCount } = usePage().props as any;
+    const { auth, url, unreadMessagesCount, pendingRequestsCount } = usePage().props as any;
     const user = auth?.user ?? { name: 'John Doe', email: 'john.doe@email.com', company: 'Acme Corporation', isAdmin: false };
     const sidebar = user?.isAdmin ? adminSidebar : clientSidebar;
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -160,7 +162,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                 <nav className="mt-4 flex-1 overflow-y-auto px-4 space-y-1">
                     {sidebar.map((item) => {
                         const active = item.href !== '#' && currentPath.startsWith(item.href);
-                        const badgeCount = item.badge === 'unreadMessagesCount' ? (unreadMessagesCount ?? 0) : 0;
+                        const badgeCount = item.badge === 'unreadMessagesCount' ? (unreadMessagesCount ?? 0) : item.badge === 'pendingRequestsCount' ? (pendingRequestsCount ?? 0) : 0;
                         return (
                             <Link
                                 key={item.label}
@@ -261,7 +263,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                                                     onClick={() => setNotifOpen(false)}
                                                     className="block border-b border-slate-100 px-4 py-3 transition-colors hover:bg-slate-50"
                                                 >
-                                                    <p className="text-sm font-semibold text-slate-900">New message: {n.subject}</p>
+                                                    <p className="text-sm font-semibold text-slate-900">{n.type === 'project_request' ? 'New request' : 'New message'}: {n.subject}</p>
                                                     <p className="text-xs text-slate-500">{n.name} · {n.email}</p>
                                                     {n.description && (
                                                         <p className="mt-1 line-clamp-2 text-xs text-slate-600">{n.description}</p>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProjectRequest;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -15,15 +16,16 @@ class NotificationController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        $query = $user->isAdmin()
+        $ticketQuery = $user->isAdmin()
             ? Ticket::whereNull('admin_viewed_at')
             : $user->tickets()->whereNull('viewed_at');
 
-        $unread = $query
+        $ticketNotifications = $ticketQuery
             ->with('project', 'user')
             ->orderByDesc('created_at')
             ->get()
             ->map(fn ($t) => [
+                'type' => 'ticket',
                 'id' => $t->ticket_no,
                 'subject' => $t->subject,
                 'description' => $t->description,
@@ -33,9 +35,30 @@ class NotificationController extends Controller
                 'url' => route('support') . '?ticket=' . $t->ticket_no,
             ]);
 
+        $items = collect($ticketNotifications);
+
+        if ($user->isAdmin()) {
+            $pendingRequests = ProjectRequest::where('status', 'pending')
+                ->with('user')
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(fn ($r) => [
+                    'type' => 'project_request',
+                    'id' => (string) $r->id,
+                    'subject' => 'New project request: ' . $r->company_name,
+                    'description' => $r->features ? substr($r->features, 0, 200) : null,
+                    'name' => $r->contact_name,
+                    'email' => $r->contact_email,
+                    'date' => $r->created_at->format('M d, Y'),
+                    'url' => route('clients'),
+                ]);
+
+            $items = $items->concat($pendingRequests)->sortByDesc('date')->values();
+        }
+
         return response()->json([
-            'count' => $unread->count(),
-            'items' => $unread,
+            'count' => $items->count(),
+            'items' => $items,
         ]);
     }
 
