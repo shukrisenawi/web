@@ -58,6 +58,7 @@ class InvoiceController extends Controller
                     fn ($p) => ['id' => $p->id, 'label' => $p->title, 'user_id' => $p->user_id]
                 ),
                 'preselect_user_id' => $request->query('user_id'),
+                'preselect_project_id' => $request->query('project_id'),
             ]);
         }
 

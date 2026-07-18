@@ -33,6 +33,7 @@ interface Client {
     whatsapp: string | null;
     projects_count: number;
     invoices_count: number;
+    latest_project_id?: number | null;
     joined: string;
     request: RequestInfo | null;
 }
@@ -53,7 +54,7 @@ export default function ClientDatabase({ clients }: { clients: Client[] }) {
     });
 
     const newProject = (id: number) => router.get('/projects', { user_id: id, new: 1 });
-    const newBilling = (id: number) => router.get('/invoices', { user_id: id, new: 1 });
+    const newBilling = (c: Client) => router.get('/invoices', { user_id: c.id, project_id: c.latest_project_id ?? '', new: 1 });
 
     return (
         <>
@@ -117,7 +118,7 @@ export default function ClientDatabase({ clients }: { clients: Client[] }) {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => newBilling(c.id)}
+                                        onClick={() => newBilling(c)}
                                         className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                                     >
                                         <FileText className="h-3.5 w-3.5" /> Create Billing

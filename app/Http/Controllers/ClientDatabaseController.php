@@ -13,11 +13,13 @@ class ClientDatabaseController extends Controller
     {
         return $query
             ->withCount(['projects', 'invoices'])
+            ->with(['projects' => fn ($q) => $q->latest()->limit(1)])
             ->with(['projectRequests' => fn ($q) => $q->with('files')->latest()])
             ->orderByDesc('created_at')
             ->get()
             ->map(function ($c) {
                 $request = $c->projectRequests->first();
+                $latestProject = $c->projects->first();
 
                 return [
                     'id' => $c->id,
@@ -28,6 +30,7 @@ class ClientDatabaseController extends Controller
                     'whatsapp' => $c->whatsapp,
                     'projects_count' => $c->projects_count,
                     'invoices_count' => $c->invoices_count,
+                    'latest_project_id' => $latestProject?->id,
                     'joined' => $c->created_at->format('M d, Y'),
                     'request' => $request ? [
                         'industry' => $request->industry,

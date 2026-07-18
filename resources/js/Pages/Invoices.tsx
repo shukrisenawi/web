@@ -30,6 +30,7 @@ interface InvoicesProps {
     clients?: { id: number; label: string }[];
     projects?: { id: number; label: string; user_id: number }[];
     preselect_user_id?: string | null;
+    preselect_project_id?: string | null;
 }
 
 const statusOptions = [
@@ -50,12 +51,13 @@ const invoiceBadgeColor = (status: string) => {
     }
 };
 
-export default function Invoices({ invoices, filters, widgets, clients = [], projects = [], preselect_user_id }: InvoicesProps) {
+export default function Invoices({ invoices, filters, widgets, clients = [], projects = [], preselect_user_id, preselect_project_id }: InvoicesProps) {
     const { auth } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
     const currentStatus = filters.status ?? '';
     const [createOpen, setCreateOpen] = useState(false);
     const preselected = !!preselect_user_id;
+    const preselectedProject = !!preselect_project_id;
 
     const form = useForm({
         user_id: preselect_user_id ?? '',
@@ -87,6 +89,7 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
         const params = new URLSearchParams(window.location.search);
         if (params.get('new') === '1') {
             if (preselect_user_id) form.setData('user_id', preselect_user_id);
+            if (preselect_project_id) form.setData('project_id', preselect_project_id);
             setCreateOpen(true);
         }
     }, []);
@@ -305,7 +308,12 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
                                 <select
                                     value={form.data.project_id}
                                     onChange={(e) => form.setData('project_id', e.target.value)}
-                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    disabled={preselectedProject}
+                                    className={`w-full rounded-lg border px-3 py-2 text-sm focus:border-blue-500 focus:outline-none ${
+                                        preselectedProject
+                                            ? 'cursor-not-allowed border-slate-300 bg-slate-100 text-slate-600'
+                                            : 'border-slate-200'
+                                    }`}
                                 >
                                     <option value="">Select project (optional)...</option>
                                     {filteredProjects.map((p) => (
@@ -314,6 +322,9 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
                                         </option>
                                     ))}
                                 </select>
+                                {preselectedProject && (
+                                    <p className="mt-1 text-xs text-slate-400">Project linked from client selection.</p>
+                                )}
                             </div>
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
