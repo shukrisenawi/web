@@ -144,7 +144,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                         <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
                         <span className="font-bold">
                             <span className="text-white">KENJU</span>
-                            <span className="text-blue-600">TECH</span>
+                            <span className="ml-1 text-blue-600">TECH</span>
                         </span>
                     </Link>
                     <button

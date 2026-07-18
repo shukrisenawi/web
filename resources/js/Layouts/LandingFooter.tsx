@@ -39,7 +39,7 @@ export function LandingFooter({ mode = 'light' }: { mode?: 'light' | 'dark' }) {
                             </div>
                             <span>
                                 <span className={isDark ? 'text-white' : 'text-slate-900'}>KENJU</span>
-                                <span className="text-blue-600">TECH</span>
+                                <span className="ml-1 text-blue-600">TECH</span>
                             </span>
                         </Link>
                         <p className="mt-4 text-sm opacity-80 max-w-xs">
