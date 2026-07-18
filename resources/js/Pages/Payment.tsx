@@ -190,10 +190,18 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                 </div>
                                 <p className="mt-3 text-center text-xs text-slate-400">Accepted via:</p>
                                 <div className="mt-2 flex items-center justify-center gap-3">
-                                    {['MAE', 'Boost', 'Touch \'n Go', 'DuitNow QR'].map((app) => (
-                                        <span key={app} className="rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-medium text-slate-600">
-                                            {app}
-                                        </span>
+                                    {[
+                                        { src: '/images/mae-logo.png', alt: 'MAE' },
+                                        { src: '/images/boost-logo.png', alt: 'Boost' },
+                                        { src: '/images/tng-logo.png', alt: "Touch 'n Go" },
+                                        { src: '/images/duitnow-logo.png', alt: 'DuitNow QR' },
+                                    ].map((logo) => (
+                                        <img
+                                            key={logo.alt}
+                                            src={logo.src}
+                                            alt={logo.alt}
+                                            className="h-8 w-auto rounded-lg bg-slate-100 px-2 py-1.5 object-contain"
+                                        />
                                     ))}
                                 </div>
                             </div>
