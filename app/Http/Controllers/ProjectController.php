@@ -36,6 +36,8 @@ class ProjectController extends Controller
                 'category' => $p->category,
                 'service_type' => $p->service_type,
                 'description' => $p->description,
+                'key_person' => $p->key_person,
+                'status_remark' => $p->status_remark,
                 'progress' => $p->progress,
                 'status' => $p->status,
                 'payment_status' => $p->payment_status,
@@ -43,10 +45,19 @@ class ProjectController extends Controller
                 'created_at' => $p->created_at->format('M d, Y'),
             ]);
 
-        return Inertia::render('Projects', [
+        $props = [
             'projects' => $projects,
             'filters' => ['status' => $status, 'search' => $search],
-        ]);
+        ];
+
+        if ($user->isAdmin()) {
+            $props['clients'] = User::where('role', User::ROLE_CLIENT)
+                ->get(['id', 'company', 'name'])
+                ->map(fn ($u) => ['id' => $u->id, 'label' => $u->company ?? $u->name]);
+            $props['preselect_user_id'] = $request->query('user_id');
+        }
+
+        return Inertia::render('Projects', $props);
     }
 
     public function show(Project $project)
@@ -68,6 +79,8 @@ class ProjectController extends Controller
                 'category' => $project->category,
                 'service_type' => $project->service_type,
                 'description' => $project->description,
+                'key_person' => $project->key_person,
+                'status_remark' => $project->status_remark,
                 'progress' => $project->progress,
                 'status' => $project->status,
                 'payment_status' => $project->payment_status,
@@ -89,12 +102,21 @@ class ProjectController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        $validated = $request->validate([
+        $rules = [
             'title' => ['required', 'string', 'max:255'],
             'service_type' => ['required', Rule::in(['web_system', 'website', 'mobile_app', 'digital_marketing', 'it_solutions', 'game_development'])],
             'description' => ['nullable', 'string', 'max:5000'],
             'request_quotation' => ['boolean'],
-        ]);
+        ];
+
+        // #4 - Admin creates a project linked to a specific client.
+        if ($user->isAdmin()) {
+            $rules['user_id'] = ['required', Rule::exists('users', 'id')];
+            $rules['key_person'] = ['nullable', 'string', 'max:255'];
+            $rules['status_remark'] = ['nullable', 'string', 'max:5000'];
+        }
+
+        $validated = $request->validate($rules);
 
         $serviceLabels = [
             'web_system' => 'Web System',
@@ -105,18 +127,23 @@ class ProjectController extends Controller
             'game_development' => 'Game Development',
         ];
 
-        $project = $user->projects()->create([
+        $ownerId = $user->isAdmin() ? $validated['user_id'] : $user->id;
+
+        Project::create([
+            'user_id' => $ownerId,
             'title' => $validated['title'],
             'category' => $serviceLabels[$validated['service_type']],
             'service_type' => $validated['service_type'],
-            'description' => $validated['description'],
+            'description' => $validated['description'] ?? null,
+            'key_person' => $user->isAdmin() ? ($validated['key_person'] ?? null) : null,
+            'status_remark' => $user->isAdmin() ? ($validated['status_remark'] ?? null) : null,
             'progress' => 0,
             'status' => 'in_progress',
             'payment_status' => 'unpaid',
             'icon_color' => '#2563eb',
         ]);
 
-        return redirect()->route('projects')->with('success', 'Project created successfully. Our team will review your request.');
+        return redirect()->route('projects')->with('success', 'Project created successfully.');
     }
 
     public function update(Request $request, Project $project)
@@ -132,6 +159,8 @@ class ProjectController extends Controller
             'progress' => ['required', 'integer', 'min:0', 'max:100'],
             'status' => ['required', Rule::in(['in_progress', 'completed', 'on_hold'])],
             'payment_status' => ['required', Rule::in(['unpaid', 'partial', 'paid'])],
+            'key_person' => ['nullable', 'string', 'max:255'],
+            'status_remark' => ['nullable', 'string', 'max:5000'],
         ]);
 
         $project->update($validated);

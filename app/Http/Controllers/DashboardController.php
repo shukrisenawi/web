@@ -31,6 +31,8 @@ class DashboardController extends Controller
             ->whereIn('status', ['open', 'in_progress'])
             ->count();
 
+        $totalClients = $isAdmin ? User::where('role', User::ROLE_CLIENT)->count() : 0;
+
         $milestoneQuery = $isAdmin
             ? \App\Models\Project::query()->with('milestones')
             : $user->projects()->with('milestones');
@@ -105,12 +107,13 @@ class DashboardController extends Controller
             ]);
 
         return Inertia::render('Dashboard', [
-            'stats' => [
+            'stats' => array_values(array_filter([
                 ['label' => 'Active Projects', 'value' => $activeProjects, 'sub' => 'View all projects'],
                 ['label' => 'Projects Completed', 'value' => $completedProjects, 'sub' => 'View completed'],
                 ['label' => $isAdmin ? 'Total Billing' : 'Total Spent', 'value' => '$'.number_format($totalSpent, 2), 'sub' => 'View invoices'],
                 ['label' => 'Open Tickets', 'value' => $openTickets, 'sub' => 'View tickets'],
-            ],
+                $isAdmin ? ['label' => 'Total Clients', 'value' => $totalClients, 'sub' => 'View database'] : null,
+            ])),
             'projects' => $projects->map(fn ($p) => [
                 'id' => $p->id,
                 'title' => $p->title,

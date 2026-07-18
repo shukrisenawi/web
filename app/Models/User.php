@@ -64,4 +64,9 @@ use Illuminate\Notifications\Notifiable;
     {
         return $this->hasMany(ActivityLog::class);
     }
+
+    public function projectRequests(): HasMany
+    {
+        return $this->hasMany(ProjectRequest::class);
+    }
 }

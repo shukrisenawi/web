@@ -17,6 +17,8 @@ interface Project {
     category: string;
     service_type: string | null;
     description: string | null;
+    key_person: string | null;
+    status_remark: string | null;
     progress: number;
     status: string;
     payment_status: string;
@@ -91,6 +93,17 @@ export default function ProjectShow({ project }: { project: Project }) {
                     </div>
 
                     <p className="mt-4 text-sm text-slate-600">{project.description}</p>
+
+                    {project.key_person && (
+                        <p className="mt-3 text-sm text-slate-600">
+                            <span className="font-semibold">Key Person:</span> {project.key_person}
+                        </p>
+                    )}
+                    {project.status_remark && (
+                        <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+                            <span className="font-semibold">Status Update:</span> {project.status_remark}
+                        </p>
+                    )}
 
                     <div className="mt-6">
                         <div className="mb-2 flex items-center justify-between text-sm">

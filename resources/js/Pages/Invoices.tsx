@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, FileText, Plus, Printer, CreditCard, X, Trash2, Save } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
 
 interface Invoice {
@@ -28,6 +28,7 @@ interface InvoicesProps {
         total_revenue: string;
     };
     clients?: { id: number; label: string }[];
+    preselect_user_id?: string | null;
 }
 
 const statusOptions = [
@@ -48,29 +49,53 @@ const invoiceBadgeColor = (status: string) => {
     }
 };
 
-export default function Invoices({ invoices, filters, widgets, clients = [] }: InvoicesProps) {
+export default function Invoices({ invoices, filters, widgets, clients = [], preselect_user_id }: InvoicesProps) {
     const { auth } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
     const currentStatus = filters.status ?? '';
     const [createOpen, setCreateOpen] = useState(false);
 
     const form = useForm({
-        user_id: '',
+        user_id: preselect_user_id ?? '',
         project_id: '',
         company_name: '',
         company_address: '',
         company_no: '',
         invoice_no: '',
         issue_date: new Date().toISOString().slice(0, 10),
-        amount: '',
+        items: [{ description: '', amount: '' }] as { description: string; amount: string }[],
         status: 'pending',
         payment_url: '',
     });
+
+    const total = form.data.items.reduce(
+        (sum, it) => sum + (parseFloat(it.amount) || 0),
+        0,
+    );
 
     const submit = () => {
         form.post('/invoices', {
             onSuccess: () => setCreateOpen(false),
         });
+    };
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('new') === '1') {
+            if (preselect_user_id) form.setData('user_id', preselect_user_id);
+            setCreateOpen(true);
+        }
+    }, []);
+
+    const setItem = (idx: number, key: 'description' | 'amount', value: string) => {
+        const items = [...form.data.items];
+        items[idx] = { ...items[idx], [key]: value };
+        form.setData('items', items);
+    };
+    const addItem = () => form.setData('items', [...form.data.items, { description: '', amount: '' }]);
+    const removeItem = (idx: number) => {
+        if (form.data.items.length === 1) return;
+        form.setData('items', form.data.items.filter((_, i) => i !== idx));
     };
 
     const deleteInvoice = (id: string) => {
@@ -273,12 +298,9 @@ export default function Invoices({ invoices, filters, widgets, clients = [] }: I
                                     <input
                                         value={form.data.invoice_no}
                                         onChange={(e) => form.setData('invoice_no', e.target.value)}
-                                        placeholder="INV-2026-001"
+                                        placeholder="Auto-generated if blank"
                                         className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                                     />
-                                    {form.errors.invoice_no && (
-                                        <p className="mt-1 text-xs text-red-500">{form.errors.invoice_no}</p>
-                                    )}
                                 </div>
                                 <div>
                                     <label className="mb-1 block text-sm font-medium text-slate-700">Issue Date</label>
@@ -290,32 +312,65 @@ export default function Invoices({ invoices, filters, widgets, clients = [] }: I
                                     />
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-slate-700">Amount (RM)</label>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        value={form.data.amount}
-                                        onChange={(e) => form.setData('amount', e.target.value)}
-                                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                    />
-                                    {form.errors.amount && (
-                                        <p className="mt-1 text-xs text-red-500">{form.errors.amount}</p>
-                                    )}
-                                </div>
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-slate-700">Status</label>
-                                    <select
-                                        value={form.data.status}
-                                        onChange={(e) => form.setData('status', e.target.value)}
-                                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+
+                            <div>
+                                <div className="mb-1 flex items-center justify-between">
+                                    <label className="block text-sm font-medium text-slate-700">Invoice Items</label>
+                                    <button
+                                        type="button"
+                                        onClick={addItem}
+                                        className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline"
                                     >
-                                        <option value="pending">Pending</option>
-                                        <option value="paid">Paid</option>
-                                        <option value="overdue">Overdue</option>
-                                    </select>
+                                        <Plus className="h-3.5 w-3.5" /> Add item
+                                    </button>
                                 </div>
+                                <div className="space-y-2">
+                                    {form.data.items.map((it, idx) => (
+                                        <div key={idx} className="flex items-center gap-2">
+                                            <input
+                                                value={it.description}
+                                                onChange={(e) => setItem(idx, 'description', e.target.value)}
+                                                placeholder="Item description"
+                                                className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                            />
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={it.amount}
+                                                onChange={(e) => setItem(idx, 'amount', e.target.value)}
+                                                placeholder="0.00"
+                                                className="w-32 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeItem(idx)}
+                                                disabled={form.data.items.length === 1}
+                                                className="rounded-lg border border-slate-200 p-2 text-slate-400 hover:text-red-500 disabled:opacity-40"
+                                                title="Remove"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-2 flex justify-end">
+                                    <span className="text-sm font-semibold text-slate-900">
+                                        Total: RM {total.toFixed(2)}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">Status</label>
+                                <select
+                                    value={form.data.status}
+                                    onChange={(e) => form.setData('status', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                >
+                                    <option value="pending">Pending</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="overdue">Overdue</option>
+                                </select>
                             </div>
                             <div>
                                 <label className="mb-1 block text-sm font-medium text-slate-700">

@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, FolderKanban, Plus, Search, X, Trash2, Save } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
 interface Project {
@@ -11,6 +11,8 @@ interface Project {
     category: string;
     service_type?: string | null;
     description: string | null;
+    key_person?: string | null;
+    status_remark?: string | null;
     progress: number;
     status: string;
     payment_status?: string;
@@ -21,6 +23,8 @@ interface Project {
 interface ProjectsProps {
     projects: Project[];
     filters: { status: string | null; search: string | null };
+    clients?: { id: number; label: string }[];
+    preselect_user_id?: string | null;
 }
 
 const statusOptions = [
@@ -61,7 +65,7 @@ const paymentBadgeColor = (status?: string) => {
     }
 };
 
-export default function Projects({ projects, filters }: ProjectsProps) {
+export default function Projects({ projects, filters, clients = [], preselect_user_id }: ProjectsProps) {
     const { auth } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
     const [status, setStatus] = useState(filters.status ?? '');
@@ -70,9 +74,12 @@ export default function Projects({ projects, filters }: ProjectsProps) {
     const [editId, setEditId] = useState<number | null>(null);
 
     const createForm = useForm({
+        user_id: preselect_user_id ?? '',
         title: '',
         service_type: 'web_system',
         description: '',
+        key_person: '',
+        status_remark: '',
         request_quotation: false,
     });
 
@@ -80,7 +87,18 @@ export default function Projects({ projects, filters }: ProjectsProps) {
         progress: 0,
         status: 'in_progress',
         payment_status: 'unpaid',
+        key_person: '',
+        status_remark: '',
     });
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('new') === '1') {
+            if (preselect_user_id) createForm.setData('user_id', preselect_user_id);
+            setCreateOpen(true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleFilter = () => {
         router.get('/projects', { status, search }, { preserveState: true, replace: true });
@@ -102,6 +120,8 @@ export default function Projects({ projects, filters }: ProjectsProps) {
             progress: p.progress,
             status: p.status,
             payment_status: p.payment_status ?? 'unpaid',
+            key_person: p.key_person ?? '',
+            status_remark: p.status_remark ?? '',
         });
         setEditId(p.id);
     };
@@ -135,14 +155,13 @@ export default function Projects({ projects, filters }: ProjectsProps) {
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        {!isAdmin && (
-                            <button
-                                onClick={openCreate}
-                                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                            >
-                                <Plus className="h-4 w-4" /> New Project
-                            </button>
-                        )}
+                        <button
+                            type="button"
+                            onClick={openCreate}
+                            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                        >
+                            <Plus className="h-4 w-4" /> New Project
+                        </button>
                         <Link
                             href="/dashboard"
                             className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
@@ -218,6 +237,17 @@ export default function Projects({ projects, filters }: ProjectsProps) {
 
                             <p className="mt-4 line-clamp-2 text-sm text-slate-600">{project.description}</p>
 
+                            {project.key_person && (
+                                <p className="mt-2 text-xs text-slate-500">
+                                    <span className="font-semibold">Key Person:</span> {project.key_person}
+                                </p>
+                            )}
+                            {project.status_remark && (
+                                <p className="mt-1 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                                    <span className="font-semibold">Status:</span> {project.status_remark}
+                                </p>
+                            )}
+
                             <div className="mt-6">
                                 <div className="mb-2 flex items-center justify-between text-sm">
                                     <span className="text-slate-500">Progress</span>
@@ -269,16 +299,36 @@ export default function Projects({ projects, filters }: ProjectsProps) {
                 )}
             </DashboardLayout>
 
-            {createOpen && !isAdmin && (
+            {createOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <Card className="w-full max-w-lg">
+                    <Card className="max-h-[90vh] w-full max-w-lg overflow-y-auto">
                         <div className="mb-4 flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-slate-900">New Project Request</h3>
-                            <button onClick={() => setCreateOpen(false)} className="text-slate-400 hover:text-slate-700">
+                            <h3 className="text-lg font-bold text-slate-900">
+                                {isAdmin ? 'New Project' : 'New Project Request'}
+                            </h3>
+                            <button type="button" onClick={() => setCreateOpen(false)} className="text-slate-400 hover:text-slate-700">
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
                         <div className="space-y-4">
+                            {isAdmin && (
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700">Client</label>
+                                    <select
+                                        value={createForm.data.user_id}
+                                        onChange={(e) => createForm.setData('user_id', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    >
+                                        <option value="">Select a client...</option>
+                                        {clients.map((c) => (
+                                            <option key={c.id} value={c.id}>{c.label}</option>
+                                        ))}
+                                    </select>
+                                    {createForm.errors.user_id && (
+                                        <p className="mt-1 text-xs text-red-500">{createForm.errors.user_id}</p>
+                                    )}
+                                </div>
+                            )}
                             <div>
                                 <label className="mb-1 block text-sm font-medium text-slate-700">Project Title</label>
                                 <input
@@ -315,27 +365,54 @@ export default function Projects({ projects, filters }: ProjectsProps) {
                                     placeholder="Tell us about your project..."
                                 />
                             </div>
-                            <label className="flex items-center gap-2 text-sm text-slate-600">
-                                <input
-                                    type="checkbox"
-                                    checked={createForm.data.request_quotation}
-                                    onChange={(e) => createForm.setData('request_quotation', e.target.checked)}
-                                />
-                                Request a quotation instead of a package
-                            </label>
+                            {isAdmin && (
+                                <>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Key Person (PIC)</label>
+                                        <input
+                                            value={createForm.data.key_person}
+                                            onChange={(e) => createForm.setData('key_person', e.target.value)}
+                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                            placeholder="e.g. Ahmad (Project Manager)"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Status Remark</label>
+                                        <textarea
+                                            value={createForm.data.status_remark}
+                                            onChange={(e) => createForm.setData('status_remark', e.target.value)}
+                                            rows={2}
+                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                            placeholder="Note visible to the client about current status..."
+                                        />
+                                    </div>
+                                </>
+                            )}
+                            {!isAdmin && (
+                                <label className="flex items-center gap-2 text-sm text-slate-600">
+                                    <input
+                                        type="checkbox"
+                                        checked={createForm.data.request_quotation}
+                                        onChange={(e) => createForm.setData('request_quotation', e.target.checked)}
+                                    />
+                                    Request a quotation instead of a package
+                                </label>
+                            )}
                             <div className="flex justify-end gap-2 pt-2">
                                 <button
+                                    type="button"
                                     onClick={() => setCreateOpen(false)}
                                     className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
                                 >
                                     Cancel
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={submitCreate}
                                     disabled={createForm.processing}
                                     className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
                                 >
-                                    <Save className="h-4 w-4" /> Submit Request
+                                    <Save className="h-4 w-4" /> {isAdmin ? 'Create Project' : 'Submit Request'}
                                 </button>
                             </div>
                         </div>
@@ -390,6 +467,29 @@ export default function Projects({ projects, filters }: ProjectsProps) {
                                     <option value="paid">Paid</option>
                                 </select>
                             </div>
+                            {isAdmin && (
+                                <>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Key Person (PIC)</label>
+                                        <input
+                                            value={editForm.data.key_person}
+                                            onChange={(e) => editForm.setData('key_person', e.target.value)}
+                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                            placeholder="e.g. Ahmad (Project Manager)"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Status Remark</label>
+                                        <textarea
+                                            value={editForm.data.status_remark}
+                                            onChange={(e) => editForm.setData('status_remark', e.target.value)}
+                                            rows={2}
+                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                            placeholder="Note visible to the client about current status..."
+                                        />
+                                    </div>
+                                </>
+                            )}
                             <div className="flex justify-end gap-2 pt-2">
                                 <button
                                     onClick={() => setEditId(null)}

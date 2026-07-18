@@ -14,12 +14,13 @@ import {
     LogOut,
     ArrowRight,
     MoreVertical,
+    Database,
 } from 'lucide-react';
 
 const clientSidebar = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
-    { label: 'Invoices', href: '/invoices', icon: FileText },
+    { label: 'Billing', href: '/invoices', icon: FileText },
     { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
     { label: 'Profile', href: '/profile', icon: Users },
 ];
@@ -27,6 +28,7 @@ const clientSidebar = [
 const adminSidebar = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
+    { label: 'Database', href: '/clients', icon: Database },
     { label: 'Billing', href: '/invoices', icon: FileText },
     { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
     { label: 'Website Content', href: '/manage-frontpage', icon: Home },
@@ -192,6 +194,14 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                             <ArrowRight className="h-4 w-4" />
                         </Link>
                     </div>
+                    <Link
+                        href="/logout"
+                        method="post"
+                        as="button"
+                        className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-900 hover:text-white"
+                    >
+                        <LogOut className="h-4 w-4" /> Sign Out
+                    </Link>
                 </div>
             </aside>
 

@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
     /** Client + Admin shared: Support */
     Route::get('/support', [TicketController::class, 'index'])->name('support');
     Route::post('/support', [TicketController::class, 'store'])->name('tickets.store');
+    Route::post('/support/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
 
     /** Admin only */
     Route::middleware('role:admin')->group(function () {
@@ -95,8 +96,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
 
         Route::put('/support/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
-        Route::post('/support/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
         Route::delete('/support/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
+
+        Route::get('/clients', [\App\Http\Controllers\ClientDatabaseController::class, 'index'])->name('clients');
 
         Route::get('/manage-frontpage', [FrontpageController::class, 'index'])->name('frontpage.manage');
         Route::post('/manage-frontpage', [FrontpageController::class, 'update'])->name('frontpage.update');

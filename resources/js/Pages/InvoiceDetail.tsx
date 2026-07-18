@@ -16,6 +16,7 @@ interface Invoice {
     amount_raw: number;
     status: string;
     payment_url?: string | null;
+    items?: { description: string; amount: number }[];
 }
 
 const invoiceBadgeColor = (status: string) => {
@@ -160,12 +161,23 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                             <span className="font-medium text-slate-600">Description</span>
                             <span className="font-medium text-slate-600">Amount</span>
                         </div>
-                        <div className="flex items-center justify-between py-3 text-sm">
-                            <span className="text-slate-900">
-                                {invoice.project ?? 'Professional Services'}
-                            </span>
-                            <span className="font-semibold text-slate-900">{invoice.amount}</span>
-                        </div>
+                        {invoice.items && invoice.items.length > 0 ? (
+                            invoice.items.map((it, i) => (
+                                <div key={i} className="flex items-center justify-between py-3 text-sm">
+                                    <span className="text-slate-900">{it.description || 'Item'}</span>
+                                    <span className="font-semibold text-slate-900">
+                                        RM {Number(it.amount).toFixed(2)}
+                                    </span>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="flex items-center justify-between py-3 text-sm">
+                                <span className="text-slate-900">
+                                    {invoice.project ?? 'Professional Services'}
+                                </span>
+                                <span className="font-semibold text-slate-900">{invoice.amount}</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex items-center justify-between border-t border-slate-100 pt-6">

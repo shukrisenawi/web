@@ -24,6 +24,7 @@ interface Ticket {
     email?: string | null;
     date: string;
     replies: Reply[];
+    can_reply?: boolean;
 }
 
 interface SupportProps {
@@ -380,63 +381,65 @@ export default function Support({ tickets }: SupportProps) {
                         {/** Update + Reply footer */}
                         <div className="pt-4">
                             {isAdmin && (
-                                <>
-                                    <div className="mb-3 flex items-center gap-3">
-                                        <div className="flex items-center gap-2">
-                                            <label className="text-xs font-medium text-slate-600">Status</label>
-                                            <select
-                                                value={updateForm.data.status}
-                                                onChange={(e) => updateForm.setData('status', e.target.value)}
-                                                className="rounded-lg border border-slate-200 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
-                                            >
-                                                <option value="open">Open</option>
-                                                <option value="in_progress">In Progress</option>
-                                                <option value="resolved">Resolved</option>
-                                            </select>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <label className="text-xs font-medium text-slate-600">Priority</label>
-                                            <select
-                                                value={updateForm.data.priority}
-                                                onChange={(e) => updateForm.setData('priority', e.target.value)}
-                                                className="rounded-lg border border-slate-200 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
-                                            >
-                                                <option value="low">Low</option>
-                                                <option value="medium">Medium</option>
-                                                <option value="high">High</option>
-                                            </select>
-                                        </div>
-                                        <button
-                                            onClick={submitUpdate}
-                                            disabled={updateForm.processing}
-                                            className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                                <div className="mb-3 flex items-center gap-3">
+                                    <div className="flex items-center gap-2">
+                                        <label className="text-xs font-medium text-slate-600">Status</label>
+                                        <select
+                                            value={updateForm.data.status}
+                                            onChange={(e) => updateForm.setData('status', e.target.value)}
+                                            className="rounded-lg border border-slate-200 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
                                         >
-                                            <Save className="h-3 w-3" /> Save
-                                        </button>
+                                            <option value="open">Open</option>
+                                            <option value="in_progress">In Progress</option>
+                                            <option value="resolved">Resolved</option>
+                                        </select>
                                     </div>
-
-                                    <div className="flex gap-2">
-                                        <textarea
-                                            value={replyForm.data.message}
-                                            onChange={(e) => replyForm.setData('message', e.target.value)}
-                                            rows={2}
-                                            className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                            placeholder="Type your reply..."
-                                        />
-                                        <button
-                                            onClick={submitReply}
-                                            disabled={replyForm.processing || !replyForm.data.message.trim()}
-                                            className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                                    <div className="flex items-center gap-2">
+                                        <label className="text-xs font-medium text-slate-600">Priority</label>
+                                        <select
+                                            value={updateForm.data.priority}
+                                            onChange={(e) => updateForm.setData('priority', e.target.value)}
+                                            className="rounded-lg border border-slate-200 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
                                         >
-                                            <Send className="h-4 w-4" /> Send
-                                        </button>
+                                            <option value="low">Low</option>
+                                            <option value="medium">Medium</option>
+                                            <option value="high">High</option>
+                                        </select>
                                     </div>
-                                </>
+                                    <button
+                                        onClick={submitUpdate}
+                                        disabled={updateForm.processing}
+                                        className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                                    >
+                                        <Save className="h-3 w-3" /> Save
+                                    </button>
+                                </div>
                             )}
 
-                            {!isAdmin && (
-                                <p className="text-center text-xs text-slate-400">
-                                    Our team will respond to your ticket shortly.
+                            {ticket.can_reply ? (
+                                <div className="flex gap-2">
+                                    <textarea
+                                        value={replyForm.data.message}
+                                        onChange={(e) => replyForm.setData('message', e.target.value)}
+                                        rows={2}
+                                        className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                        placeholder={isAdmin ? 'Type your reply...' : 'Type your reply... (locked until admin responds)'}
+                                    />
+                                    <button
+                                        onClick={submitReply}
+                                        disabled={replyForm.processing || !replyForm.data.message.trim()}
+                                        className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                                    >
+                                        <Send className="h-4 w-4" /> Send
+                                    </button>
+                                </div>
+                            ) : (
+                                <p className="rounded-lg bg-slate-50 px-4 py-3 text-center text-xs text-slate-400">
+                                    {ticket.status === 'resolved'
+                                        ? 'This ticket is resolved. Reopen it via a new ticket if needed.'
+                                        : isAdmin
+                                          ? 'You cannot reply until the client responds.'
+                                          : 'Waiting for our team to respond before you can reply again.'}
                                 </p>
                             )}
                         </div>

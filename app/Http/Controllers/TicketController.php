@@ -26,6 +26,8 @@ class TicketController extends Controller
             ? Ticket::query()->with('project', 'user')
             : $user->tickets()->with('project', 'user');
 
+        $isAdmin = $user->isAdmin();
+
         $tickets = $query
             ->with('replies.user')
             ->orderByDesc('created_at')
@@ -36,6 +38,9 @@ class TicketController extends Controller
                 'subject' => $t->subject,
                 'description' => $t->description,
                 'status' => $t->status,
+                'last_reply_by' => $t->last_reply_by,
+                'can_reply' => $t->status !== 'resolved'
+                    && ($isAdmin || $t->last_reply_by !== 'client'),
                 'priority' => $t->priority,
                 'project' => $t->project?->title,
                 'client' => $t->user?->company ?? $t->user?->name,
@@ -99,8 +104,21 @@ class TicketController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        if (! $user->isAdmin()) {
+        $isAdmin = $user->isAdmin();
+
+        if (! $isAdmin && $ticket->user_id !== $user->id) {
             abort(403);
+        }
+
+        // #6 - Case closed once resolved: nobody can reply.
+        if ($ticket->status === 'resolved') {
+            return back()->with('error', 'This ticket is closed and can no longer receive replies.');
+        }
+
+        // #6 - Client can only reply if it is their turn (they never replied,
+        // or the admin replied last). Admins can always reply.
+        if (! $isAdmin && $ticket->last_reply_by === 'client') {
+            return back()->with('error', 'Please wait for our team to respond before replying again.');
         }
 
         $validated = $request->validate([
@@ -112,7 +130,12 @@ class TicketController extends Controller
             'message' => $validated['message'],
         ]);
 
-        $ticket->update(['viewed_at' => null]);
+        $ticket->update([
+            'last_reply_by' => $isAdmin ? 'admin' : 'client',
+            'status' => $ticket->status === 'open' ? 'in_progress' : $ticket->status,
+            'viewed_at' => $isAdmin ? null : $ticket->viewed_at,
+            'admin_viewed_at' => $isAdmin ? $ticket->admin_viewed_at : null,
+        ]);
 
         return redirect()->route('support')->with('success', 'Reply sent successfully.');
     }

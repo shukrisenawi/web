@@ -72,7 +72,7 @@ class InvoiceController extends Controller
             abort(403);
         }
 
-        $invoice->load('project', 'user');
+        $invoice->load('project', 'user', 'items');
 
         return Inertia::render('InvoiceDetail', [
             'invoice' => $this->formatInvoice($invoice, true),
@@ -91,30 +91,52 @@ class InvoiceController extends Controller
         $validated = $request->validate([
             'user_id' => ['required', Rule::exists('users', 'id')],
             'project_id' => ['nullable', Rule::exists('projects', 'id')],
-            'company_name' => ['nullable', 'string', 'max:255'],
             'company_address' => ['nullable', 'string', 'max:1000'],
             'company_no' => ['nullable', 'string', 'max:255'],
-            'invoice_no' => ['required', 'string', 'max:255', 'unique:invoices,invoice_no'],
             'issue_date' => ['required', 'date'],
-            'amount' => ['required', 'numeric', 'min:0'],
             'status' => ['required', Rule::in(['paid', 'pending', 'overdue'])],
             'payment_url' => ['nullable', 'url', 'max:1000'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.description' => ['required', 'string', 'max:255'],
+            'items.*.amount' => ['required', 'numeric', 'min:0'],
         ]);
+
+        $total = collect($validated['items'])->sum(fn ($i) => (float) $i['amount']);
+
+        $client = User::find($validated['user_id']);
 
         $invoice = Invoice::create([
             'user_id' => $validated['user_id'],
             'project_id' => $validated['project_id'] ?: null,
-            'invoice_no' => $validated['invoice_no'],
+            'invoice_no' => $this->nextInvoiceNo(),
             'issue_date' => $validated['issue_date'],
-            'amount' => $validated['amount'],
+            'amount' => $total,
             'status' => $validated['status'],
-            'company_name' => $validated['company_name'],
-            'company_address' => $validated['company_address'],
+            'company_name' => $client?->company ?? $client?->name,
+            'company_address' => $validated['company_address'] ?? $client?->business_address,
             'company_no' => $validated['company_no'],
             'payment_url' => $validated['payment_url'],
         ]);
 
+        foreach ($validated['items'] as $item) {
+            $invoice->items()->create([
+                'description' => $item['description'],
+                'amount' => $item['amount'],
+            ]);
+        }
+
         return redirect()->route('invoices')->with('success', 'Invoice generated successfully.');
+    }
+
+    private function nextInvoiceNo(): string
+    {
+        $latest = Invoice::where('invoice_no', 'like', 'INV-'.date('Y').'-%')
+            ->orderByDesc('id')
+            ->first();
+
+        $next = $latest ? ((int) substr($latest->invoice_no, -3)) + 1 : 1;
+
+        return 'INV-'.date('Y').'-'.str_pad((string) $next, 3, '0', STR_PAD_LEFT);
     }
 
     public function update(Request $request, Invoice $invoice)
@@ -170,6 +192,10 @@ class InvoiceController extends Controller
 
         if ($full) {
             $data['issue_date'] = $i->issue_date->format('M d, Y');
+            $data['items'] = $i->items->map(fn ($item) => [
+                'description' => $item->description,
+                'amount' => '$'.number_format($item->amount, 2),
+            ])->values();
         }
 
         return $data;
