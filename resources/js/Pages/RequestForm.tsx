@@ -57,7 +57,7 @@ const INDUSTRIES = [
 export default function RequestForm() {
     const [step, setStep] = useState(1);
 
-    const { data, setData, post, processing, errors } = useForm<{
+    const { data, setData, post, processing, errors, setError, clearErrors } = useForm<{
         company_name: string;
         company_address: string;
         industry: string;
@@ -118,7 +118,60 @@ export default function RequestForm() {
         setData('files', data.files.filter((_, i) => i !== index));
     };
 
-    const next = () => setStep((s) => Math.min(4, s + 1));
+    const validateStep = (s: number): boolean => {
+        clearErrors();
+        let valid = true;
+
+        if (s === 1) {
+            if (!data.company_name.trim()) {
+                setError('company_name', 'Sila isi nama syarikat');
+                valid = false;
+            }
+            if (!data.contact_name.trim()) {
+                setError('contact_name', 'Sila isi nama pegawai');
+                valid = false;
+            }
+            if (!data.contact_email.trim()) {
+                setError('contact_email', 'Sila isi alamat emel');
+                valid = false;
+            }
+            if (!data.password) {
+                setError('password', 'Sila isi kata laluan');
+                valid = false;
+            }
+            if (!data.password_confirmation) {
+                setError('password_confirmation', 'Sila sahkan kata laluan');
+                valid = false;
+            }
+            if (data.password && data.password_confirmation && data.password !== data.password_confirmation) {
+                setError('password_confirmation', 'Kata laluan tidak sepadan');
+                valid = false;
+            }
+            if (data.industry === 'Others' && !data.industry_other.trim()) {
+                setError('industry_other', 'Sila nyatakan industri');
+                valid = false;
+            }
+        }
+
+        if (s === 2) {
+            if (!data.system_type) {
+                setError('system_type', 'Sila pilih jenis sistem');
+                valid = false;
+            }
+            if (data.system_type === 'Other' && !data.system_type_other.trim()) {
+                setError('system_type_other', 'Sila nyatakan jenis sistem');
+                valid = false;
+            }
+        }
+
+        return valid;
+    };
+
+    const next = () => {
+        if (validateStep(step)) {
+            setStep((s) => Math.min(4, s + 1));
+        }
+    };
     const prev = () => setStep((s) => Math.max(1, s - 1));
 
     const handleSubmit = () => {
@@ -162,8 +215,8 @@ export default function RequestForm() {
                                 <div key={s.id} className="flex flex-1 items-center">
                                     <button
                                         type="button"
-                                        onClick={() => setStep(s.id)}
-                                        className="flex flex-col items-center gap-2 text-center"
+                                        onClick={() => s.id <= step && setStep(s.id)}
+                                        className={`flex flex-col items-center gap-2 text-center ${s.id > step ? 'cursor-not-allowed opacity-50' : ''}`}
                                     >
                                         <span
                                             className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-colors ${
@@ -269,6 +322,7 @@ export default function RequestForm() {
                                         <div>
                                             <label htmlFor="password_confirmation" className={labelClass}>Confirm Password *</label>
                                             <input id="password_confirmation" type="password" autoComplete="new-password" value={data.password_confirmation} onChange={(e) => setData('password_confirmation', e.target.value)} className={inputClass} placeholder="••••••••" />
+                                            {errors.password_confirmation && <p className="mt-1 text-xs text-red-600">{errors.password_confirmation}</p>}
                                         </div>
                                     </div>
                                 </div>
