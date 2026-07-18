@@ -1,5 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, Building2, Search, FolderPlus, FileText, ChevronDown, ChevronUp, Paperclip, Plus, X, Trash2, Save } from 'lucide-react';
+import { ArrowRight, Building2, Search, FolderPlus, FileText, ChevronDown, ChevronUp, Paperclip, Plus, X, Trash2, Save, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
 
@@ -39,11 +39,12 @@ interface Client {
 }
 
 export default function ClientDatabase({ clients, projects = [] }: { clients: Client[]; projects?: { id: number; label: string; user_id: number }[] }) {
-    const { auth } = usePage().props as any;
+    const { auth, flash } = usePage().props as any;
     void auth;
     const [search, setSearch] = useState('');
     const [expanded, setExpanded] = useState<number | null>(null);
     const [billingClient, setBillingClient] = useState<Client | null>(null);
+    const [billingError, setBillingError] = useState('');
 
     const filtered = clients.filter((c) => {
         const q = search.toLowerCase();
@@ -75,6 +76,8 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
     );
 
     const openBilling = (c: Client) => {
+        billingForm.clearErrors();
+        setBillingError('');
         billingForm.setData({
             user_id: String(c.id),
             project_id: String(c.latest_project_id ?? ''),
@@ -91,6 +94,14 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
     };
 
     const submitBilling = () => {
+        const hasEmpty = billingForm.data.items.some(
+            (it) => !it.description.trim() || !it.amount.trim() || parseFloat(it.amount) <= 0,
+        );
+        if (hasEmpty) {
+            setBillingError('Sila lengkapkan description dan amount untuk setiap item.');
+            return;
+        }
+        setBillingError('');
         billingForm.post('/invoices', {
             onSuccess: () => {
                 setBillingClient(null);
@@ -116,6 +127,13 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
             <Head title="Client Database" />
 
             <DashboardLayout title="Database">
+                {flash?.success && (
+                    <div className="mb-4 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+                        <CheckCircle2 className="h-5 w-5" />
+                        <span className="text-sm font-medium">{flash.success}</span>
+                    </div>
+                )}
+
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900">Client Database</h2>
@@ -254,6 +272,24 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
+
+                        {billingError && (
+                            <div className="mb-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+                                <AlertCircle className="h-5 w-5 shrink-0" />
+                                <span className="text-sm font-medium">{billingError}</span>
+                            </div>
+                        )}
+                        {Object.keys(billingForm.errors).length > 0 && (
+                            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+                                {Object.entries(billingForm.errors).map(([key, msg]) => (
+                                    <p key={key} className="flex items-center gap-2 text-sm">
+                                        <AlertCircle className="h-4 w-4 shrink-0" />
+                                        <span>{msg}</span>
+                                    </p>
+                                ))}
+                            </div>
+                        )}
+
                         <div className="space-y-3">
                             <div>
                                 <label htmlFor="modal-client" className="mb-1 block text-sm font-medium text-slate-700">Client</label>
