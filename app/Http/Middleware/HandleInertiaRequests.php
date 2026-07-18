@@ -57,6 +57,7 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),
+                'invoice_no' => $request->session()->get('invoice_no'),
             ],
             'frontpage' => FrontpageContent::getCurrent()->toArray(),
             'unreadMessagesCount' => $request->user()

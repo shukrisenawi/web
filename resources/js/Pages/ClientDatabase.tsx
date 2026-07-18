@@ -39,14 +39,14 @@ interface Client {
 }
 
 export default function ClientDatabase({ clients, projects = [] }: { clients: Client[]; projects?: { id: number; label: string; user_id: number }[] }) {
-    const { auth } = usePage().props as any;
+    const { auth, flash } = usePage().props as any;
     void auth;
     const [search, setSearch] = useState('');
     const [expanded, setExpanded] = useState<number | null>(null);
     const [billingClient, setBillingClient] = useState<Client | null>(null);
     const [billingError, setBillingError] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
-    const [successInfo, setSuccessInfo] = useState({ client: '', project: '' });
+    const [successInfo, setSuccessInfo] = useState({ client: '', project: '', invoiceNo: '' });
 
     const filtered = clients.filter((c) => {
         const q = search.toLowerCase();
@@ -106,9 +106,11 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
         setBillingError('');
         const clientName = billingClient?.company ?? billingClient?.name ?? '';
         const projectLabel = projects.find((p) => String(p.id) === billingForm.data.project_id)?.label ?? '';
-        setSuccessInfo({ client: clientName, project: projectLabel });
+        setSuccessInfo({ client: clientName, project: projectLabel, invoiceNo: '' });
         billingForm.post('/invoices', {
-            onSuccess: () => {
+            onSuccess: (page) => {
+                const no = (page.props.flash as any)?.invoice_no ?? '';
+                setSuccessInfo((prev) => ({ ...prev, invoiceNo: no }));
                 setBillingClient(null);
                 setShowSuccess(true);
                 setTimeout(() => setShowSuccess(false), 3000);
@@ -462,6 +464,7 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                         </div>
                         <p className="text-lg font-bold text-slate-900">Invoice Berjaya Dijana!</p>
                         <div className="text-center text-sm text-slate-600">
+                            <p className="font-semibold text-slate-800">{successInfo.invoiceNo}</p>
                             <p>{successInfo.client}</p>
                             {successInfo.project && <p className="text-slate-400">{successInfo.project}</p>}
                         </div>
