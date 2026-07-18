@@ -182,12 +182,11 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                 </div>
                                 <p className="mb-3 text-xs font-semibold text-blue-600">Scan & Pay</p>
                                 <div className="flex items-center justify-center rounded-xl bg-slate-50 p-6">
-                                    <div className="flex h-40 w-40 items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-white">
-                                        <div className="text-center">
-                                            <QrCode className="mx-auto h-16 w-16 text-slate-300" />
-                                            <p className="mt-2 text-xs text-slate-400">QR Code</p>
-                                        </div>
-                                    </div>
+                                    <img
+                                        src="/images/qr.png"
+                                        alt="QR Code Payment"
+                                        className="h-40 w-40 rounded-xl object-contain"
+                                    />
                                 </div>
                                 <p className="mt-3 text-center text-xs text-slate-400">Accepted via:</p>
                                 <div className="mt-2 flex items-center justify-center gap-3">
