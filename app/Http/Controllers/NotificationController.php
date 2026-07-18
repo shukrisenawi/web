@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PaymentProof;
 use App\Models\ProjectRequest;
 use App\Models\Ticket;
 use App\Models\User;
@@ -53,7 +54,22 @@ class NotificationController extends Controller
                     'url' => route('requests'),
                 ]);
 
-            $items = $items->concat($pendingRequests)->sortByDesc('date')->values();
+            $pendingProofs = PaymentProof::where('status', 'pending')
+                ->with('invoice.user')
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(fn ($p) => [
+                    'type' => 'payment_proof',
+                    'id' => (string) $p->id,
+                    'subject' => 'Payment proof: ' . $p->invoice->invoice_no,
+                    'description' => $p->invoice?->items->first()?->description ?? 'Payment proof submitted',
+                    'name' => $p->name,
+                    'email' => $p->email,
+                    'date' => $p->created_at->format('M d, Y'),
+                    'url' => route('invoices') . '?status=pending',
+                ]);
+
+            $items = $items->concat($pendingRequests)->concat($pendingProofs)->sortByDesc('date')->values();
         }
 
         return response()->json([
