@@ -304,31 +304,6 @@ export default function Dashboard({
                         })}
                     </div>
                 </Card>
-
-                {/** CTA */}
-                <div className="mt-6">
-                    <div className="relative overflow-hidden rounded-3xl bg-slate-950 px-6 py-8 text-white sm:px-8 sm:py-10">
-                        <div className="relative z-10 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
-                            <div className="max-w-md">
-                                <h2 className="text-2xl font-bold">
-                                    Let's build something great{' '}
-                                    <span className="text-blue-500">together.</span>
-                                </h2>
-                                <p className="mt-2 text-sm text-slate-300">
-                                    Have a project in mind? Let's talk about how we can help you achieve your goals.
-                                </p>
-                            </div>
-                            <Link
-                                href="/contact"
-                                className="rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 inline-flex items-center gap-2"
-                            >
-                                Start a New Project
-                                <ArrowRight className="h-4 w-4" />
-                            </Link>
-                        </div>
-                        <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-blue-600/20 blur-3xl"></div>
-                    </div>
-                </div>
             </DashboardLayout>
         </>
     );
