@@ -302,11 +302,6 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                     <span className="font-semibold">Key Person:</span> {project.key_person}
                                 </p>
                             )}
-                            {project.status_remark && (
-                                <p className="mt-1 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                                    <span className="font-semibold">Status:</span> {project.status_remark}
-                                </p>
-                            )}
 
                             {project.files && project.files.length > 0 && (
                                 <div className="mt-3 space-y-1">

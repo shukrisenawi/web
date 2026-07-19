@@ -109,11 +109,6 @@ export default function ProjectShow({ project }: { project: Project }) {
                             <span className="font-semibold">Key Person:</span> {project.key_person}
                         </p>
                     )}
-                    {project.status_remark && (
-                        <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
-                            <span className="font-semibold">Status Update:</span> {project.status_remark}
-                        </p>
-                    )}
 
                     {project.total_paid && parseFloat(project.total_paid) > 0 && (
                         <p className="mt-4 text-sm">
