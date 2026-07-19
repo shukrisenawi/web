@@ -150,6 +150,10 @@ export default function RequestForm() {
                 setError('password_confirmation', 'Passwords do not match');
                 valid = false;
             }
+            if (!data.industry) {
+                setError('industry', 'Please select your industry');
+                valid = false;
+            }
             if (data.industry === 'Others' && !data.industry_other.trim()) {
                 setError('industry_other', 'Please specify your industry');
                 valid = false;
@@ -163,6 +167,33 @@ export default function RequestForm() {
             }
             if (data.system_type === 'Other' && !data.system_type_other.trim()) {
                 setError('system_type_other', 'Please specify the system type');
+                valid = false;
+            }
+            if (!data.features.trim()) {
+                setError('features', 'Please describe the features/modules');
+                valid = false;
+            }
+            if (!data.user_roles.trim()) {
+                setError('user_roles', 'Please enter user roles');
+                valid = false;
+            }
+            if (!data.integrations.trim()) {
+                setError('integrations', 'Please enter integrations');
+                valid = false;
+            }
+        }
+
+        if (s === 3) {
+            if (!data.budget.trim()) {
+                setError('budget', 'Please enter your budget');
+                valid = false;
+            }
+            if (!data.deadline) {
+                setError('deadline', 'Please select a deadline');
+                valid = false;
+            }
+            if (!data.hosting_domain.trim()) {
+                setError('hosting_domain', 'Please describe your hosting/domain needs');
                 valid = false;
             }
         }
@@ -270,7 +301,7 @@ export default function RequestForm() {
                                     {errors.company_address && <p className="mt-1 text-xs text-red-600">{errors.company_address}</p>}
                                 </div>
                                 <div>
-                                    <label htmlFor="industry" className={labelClass}>Industry</label>
+                                    <label htmlFor="industry" className={labelClass}>Industry <span className="text-red-500">*</span></label>
                                     <select
                                         id="industry"
                                         value={data.industry}
@@ -336,7 +367,7 @@ export default function RequestForm() {
                         {step === 2 && (
                             <div className="space-y-5">
                                 <div>
-                                    <label htmlFor="system_type" className={labelClass}>Type of System</label>
+                                    <label htmlFor="system_type" className={labelClass}>Type of System <span className="text-red-500">*</span></label>
                                     <select id="system_type" value={data.system_type} onChange={(e) => setData('system_type', e.target.value)} className={inputClass}>
                                         <option value="">Select a type…</option>
                                         <option value="Web System">Web System</option>
@@ -365,17 +396,17 @@ export default function RequestForm() {
                                     </div>
                                 )}
                                 <div>
-                                    <label htmlFor="features" className={labelClass}>Features / Modules</label>
+                                    <label htmlFor="features" className={labelClass}>Features / Modules <span className="text-red-500">*</span></label>
                                     <textarea id="features" rows={4} value={data.features} onChange={(e) => setData('features', e.target.value)} className={inputClass} placeholder="e.g. Dashboard, reporting, inventory, payments…" />
                                     {errors.features && <p className="mt-1 text-xs text-red-600">{errors.features}</p>}
                                 </div>
                                 <div>
-                                    <label htmlFor="user_roles" className={labelClass}>User Roles</label>
+                                    <label htmlFor="user_roles" className={labelClass}>User Roles <span className="text-red-500">*</span></label>
                                     <textarea id="user_roles" rows={3} value={data.user_roles} onChange={(e) => setData('user_roles', e.target.value)} className={inputClass} placeholder="e.g. Admin, Staff, Customer…" />
                                     {errors.user_roles && <p className="mt-1 text-xs text-red-600">{errors.user_roles}</p>}
                                 </div>
                                 <div>
-                                    <label htmlFor="integrations" className={labelClass}>Integrations</label>
+                                    <label htmlFor="integrations" className={labelClass}>Integrations <span className="text-red-500">*</span></label>
                                     <textarea id="integrations" rows={3} value={data.integrations} onChange={(e) => setData('integrations', e.target.value)} className={inputClass} placeholder="e.g. Payment gateway, WhatsApp, SMS, ERP…" />
                                     {errors.integrations && <p className="mt-1 text-xs text-red-600">{errors.integrations}</p>}
                                 </div>
@@ -386,17 +417,17 @@ export default function RequestForm() {
                         {step === 3 && (
                             <div className="space-y-5">
                                 <div>
-                                    <label htmlFor="budget" className={labelClass}>Budget</label>
+                                    <label htmlFor="budget" className={labelClass}>Budget <span className="text-red-500">*</span></label>
                                     <input id="budget" type="text" value={data.budget} onChange={(e) => setData('budget', e.target.value)} className={inputClass} placeholder="e.g. RM 10,000 - RM 20,000" />
                                     {errors.budget && <p className="mt-1 text-xs text-red-600">{errors.budget}</p>}
                                 </div>
                                 <div>
-                                    <label htmlFor="deadline" className={labelClass}>Deadline</label>
+                                    <label htmlFor="deadline" className={labelClass}>Deadline <span className="text-red-500">*</span></label>
                                     <input id="deadline" type="date" value={data.deadline} onChange={(e) => setData('deadline', e.target.value)} className={inputClass} />
                                     {errors.deadline && <p className="mt-1 text-xs text-red-600">{errors.deadline}</p>}
                                 </div>
                                 <div>
-                                    <label htmlFor="hosting_domain" className={labelClass}>Hosting / Domain Needs</label>
+                                    <label htmlFor="hosting_domain" className={labelClass}>Hosting / Domain Needs <span className="text-red-500">*</span></label>
                                     <textarea id="hosting_domain" rows={3} value={data.hosting_domain} onChange={(e) => setData('hosting_domain', e.target.value)} className={inputClass} placeholder="Do you have a domain / hosting, or need us to arrange it?" />
                                     {errors.hosting_domain && <p className="mt-1 text-xs text-red-600">{errors.hosting_domain}</p>}
                                 </div>

@@ -24,7 +24,7 @@ class ProjectRequestController extends Controller
             // Business Information
             'company_name' => ['required', 'string', 'max:255'],
             'company_address' => ['nullable', 'string', 'max:2000'],
-            'industry' => ['nullable', 'string', 'max:255'],
+            'industry' => ['required', 'string', 'max:255'],
             'industry_other' => ['nullable', 'string', 'max:255'],
             'contact_name' => ['required', 'string', 'max:255'],
             'contact_mobile' => ['nullable', 'string', 'max:50'],
@@ -32,16 +32,16 @@ class ProjectRequestController extends Controller
             'password' => ['required', 'confirmed', Password::min(6)],
 
             // Project Requirements
-            'system_type' => ['nullable', 'string', 'max:255'],
+            'system_type' => ['required', 'string', 'max:255'],
             'system_type_other' => ['nullable', 'string', 'max:255'],
-            'features' => ['nullable', 'string', 'max:5000'],
-            'user_roles' => ['nullable', 'string', 'max:5000'],
-            'integrations' => ['nullable', 'string', 'max:5000'],
+            'features' => ['required', 'string', 'max:5000'],
+            'user_roles' => ['required', 'string', 'max:5000'],
+            'integrations' => ['required', 'string', 'max:5000'],
 
             // Budget & Timeline
-            'budget' => ['nullable', 'string', 'max:255'],
-            'deadline' => ['nullable', 'date'],
-            'hosting_domain' => ['nullable', 'string', 'max:2000'],
+            'budget' => ['required', 'string', 'max:255'],
+            'deadline' => ['required', 'date'],
+            'hosting_domain' => ['required', 'string', 'max:2000'],
 
             // Review & Submit
             'additional_notes' => ['nullable', 'string', 'max:5000'],

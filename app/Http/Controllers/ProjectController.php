@@ -57,6 +57,14 @@ class ProjectController extends Controller
                     'title' => $p->title,
                     'category' => $p->category,
                     'service_type' => $p->service_type,
+                    'system_type' => $p->system_type,
+                    'features' => $p->features,
+                    'user_roles' => $p->user_roles,
+                    'integrations' => $p->integrations,
+                    'budget' => $p->budget,
+                    'deadline' => $p->deadline?->format('Y-m-d'),
+                    'hosting_domain' => $p->hosting_domain,
+                    'additional_notes' => $p->additional_notes,
                     'description' => $p->description,
                     'key_person' => $p->key_person,
                     'status_remark' => $p->status_remark,
@@ -105,6 +113,14 @@ class ProjectController extends Controller
                 'title' => $project->title,
                 'category' => $project->category,
                 'service_type' => $project->service_type,
+                'system_type' => $project->system_type,
+                'features' => $project->features,
+                'user_roles' => $project->user_roles,
+                'integrations' => $project->integrations,
+                'budget' => $project->budget,
+                'deadline' => $project->deadline?->format('Y-m-d'),
+                'hosting_domain' => $project->hosting_domain,
+                'additional_notes' => $project->additional_notes,
                 'description' => $project->description,
                 'key_person' => $project->key_person,
                 'status_remark' => $project->status_remark,
@@ -133,6 +149,15 @@ class ProjectController extends Controller
         $rules = [
             'title' => ['required', 'string', 'max:255'],
             'service_type' => ['required', Rule::in(['web_system', 'website', 'mobile_app', 'digital_marketing', 'it_solutions', 'game_development'])],
+            'system_type' => ['nullable', 'string', 'max:255'],
+            'system_type_other' => ['nullable', 'string', 'max:255'],
+            'features' => ['nullable', 'string', 'max:5000'],
+            'user_roles' => ['nullable', 'string', 'max:5000'],
+            'integrations' => ['nullable', 'string', 'max:5000'],
+            'budget' => ['nullable', 'string', 'max:255'],
+            'deadline' => ['nullable', 'date'],
+            'hosting_domain' => ['nullable', 'string', 'max:2000'],
+            'additional_notes' => ['nullable', 'string', 'max:5000'],
             'description' => ['nullable', 'string', 'max:5000'],
             'request_quotation' => ['boolean'],
         ];
@@ -160,11 +185,24 @@ class ProjectController extends Controller
 
         $ownerId = $user->isAdmin() ? $validated['user_id'] : $user->id;
 
+        $systemType = $validated['system_type'] ?? null;
+        if ($systemType === 'Other' && !empty($validated['system_type_other'])) {
+            $systemType = 'Other: ' . $validated['system_type_other'];
+        }
+
         $project = Project::create([
             'user_id' => $ownerId,
             'title' => $validated['title'],
             'category' => $serviceLabels[$validated['service_type']],
             'service_type' => $validated['service_type'],
+            'system_type' => $systemType,
+            'features' => $validated['features'] ?? null,
+            'user_roles' => $validated['user_roles'] ?? null,
+            'integrations' => $validated['integrations'] ?? null,
+            'budget' => $validated['budget'] ?? null,
+            'deadline' => !empty($validated['deadline']) ? $validated['deadline'] : null,
+            'hosting_domain' => $validated['hosting_domain'] ?? null,
+            'additional_notes' => $validated['additional_notes'] ?? null,
             'description' => $validated['description'] ?? null,
             'key_person' => $user->isAdmin() ? ($validated['key_person'] ?? null) : null,
             'status_remark' => $user->isAdmin() ? ($validated['status_remark'] ?? null) : null,

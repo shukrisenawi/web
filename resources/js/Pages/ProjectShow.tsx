@@ -16,6 +16,14 @@ interface Project {
     title: string;
     category: string;
     service_type: string | null;
+    system_type?: string | null;
+    features?: string | null;
+    user_roles?: string | null;
+    integrations?: string | null;
+    budget?: string | null;
+    deadline?: string | null;
+    hosting_domain?: string | null;
+    additional_notes?: string | null;
     description: string | null;
     key_person: string | null;
     status_remark: string | null;

@@ -102,6 +102,10 @@ export default function Profile({ user }: ProfileProps) {
 
     const handleProfileSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (profileForm.data.industry === 'Others' && !profileForm.data.industry_other.trim()) {
+            profileForm.setError('industry_other', 'Please specify your industry');
+            return;
+        }
         profileForm.post('/profile', {
             forceFormData: true,
         });
@@ -258,7 +262,7 @@ export default function Profile({ user }: ProfileProps) {
                             </div>
 
                             <div>
-                                <label htmlFor="industry" className={labelClass}>Industry</label>
+                                <label htmlFor="industry" className={labelClass}>Industry <span className="text-red-500">*</span></label>
                                 <select
                                     id="industry"
                                     value={profileForm.data.industry}
@@ -275,7 +279,7 @@ export default function Profile({ user }: ProfileProps) {
 
                             {profileForm.data.industry === 'Others' && (
                                 <div>
-                                    <label htmlFor="industry_other" className={labelClass}>Please specify your industry</label>
+                                    <label htmlFor="industry_other" className={labelClass}>Please specify your industry <span className="text-red-500">*</span></label>
                                     <input
                                         id="industry_other"
                                         type="text"

@@ -52,7 +52,7 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'company' => ['nullable', 'string', 'max:255'],
-            'industry' => ['nullable', 'string', 'max:255'],
+            'industry' => ['required', 'string', 'max:255'],
             'industry_other' => ['nullable', 'string', 'max:255'],
             'business_address' => ['nullable', 'string', 'max:1000'],
             'business_no' => ['nullable', 'string', 'max:255'],
