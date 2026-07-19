@@ -75,6 +75,7 @@ class ProjectController extends Controller
                     'icon_color' => $p->icon_color,
                     'created_at' => $p->created_at->format('M d, Y'),
                     'files' => collect($requestFiles)->concat($uploadedFiles)->values(),
+                    'has_invoice' => $p->invoices->isNotEmpty(),
                 ];
             });
 

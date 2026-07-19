@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, Building2, FolderKanban, Plus, Search, Paperclip, Trash2 } from 'lucide-react';
+import { ArrowRight, Building2, FolderKanban, Plus, Search, Paperclip, Trash2, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
@@ -38,6 +38,7 @@ interface Project {
     icon_color: string;
     created_at: string;
     files: RequestFile[];
+    has_invoice: boolean;
 }
 
 interface ProjectsProps {
@@ -327,12 +328,29 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                             <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
                                 <span className="text-xs text-slate-400">Started {project.created_at}</span>
                                 <div className="flex items-center gap-2">
+                                    {isAdmin && !project.has_invoice && (
+                                        <Link
+                                            href={`/invoices?user_id=${project.user_id}&project_id=${project.id}&new=1`}
+                                            className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:underline"
+                                        >
+                                            <FileText className="h-3.5 w-3.5" /> Invoice
+                                        </Link>
+                                    )}
                                     <Link
                                         href={`/projects/${project.id}/edit`}
                                         className="text-sm font-semibold text-blue-600 hover:underline"
                                     >
                                         Update
                                     </Link>
+                                    {isAdmin && project.has_invoice && (
+                                        <Link
+                                            href={`/invoices?user_id=${project.user_id}&project_id=${project.id}`}
+                                            className="text-xs text-slate-400 hover:text-blue-600"
+                                            title="View invoices"
+                                        >
+                                            <FileText className="h-4 w-4" />
+                                        </Link>
+                                    )}
                                     {isAdmin && (
                                         <button
                                             onClick={() => deleteProject(project.id)}
