@@ -76,7 +76,7 @@ class NotificationController extends Controller
                     'name' => $i->user?->company ?? $i->user?->name,
                     'email' => $i->user?->email,
                     'date' => $i->paid_at->format('M d, Y'),
-                    'url' => route('invoices.show', $i),
+                    'url' => route('payments'),
                 ]);
 
             $items = $items->concat($paidInvoices);
