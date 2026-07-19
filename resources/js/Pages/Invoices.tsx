@@ -52,7 +52,7 @@ const invoiceBadgeColor = (status: string) => {
 };
 
 export default function Invoices({ invoices, filters, widgets, clients = [], projects = [], preselect_user_id, preselect_project_id }: InvoicesProps) {
-    const { auth, success, invoice_no } = usePage().props as any;
+    const { auth, flash } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
     const currentStatus = filters.status ?? '';
     const [createOpen, setCreateOpen] = useState(false);
@@ -61,8 +61,8 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
     const preselectedProject = !!preselect_project_id;
 
     useEffect(() => {
-        if (success) setShowSuccess(true);
-    }, [success]);
+        if (flash?.success) setShowSuccess(true);
+    }, [flash]);
 
     const form = useForm({
         user_id: preselect_user_id ?? '',
@@ -282,7 +282,7 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
                         </div>
                         <h3 className="text-lg font-bold text-slate-900">Invoice Generated!</h3>
                         <p className="mt-1 text-sm text-slate-500">
-                            Invoice <span className="font-semibold text-blue-600">{invoice_no}</span> has been created successfully.
+                            Invoice <span className="font-semibold text-blue-600">{flash?.invoice_no}</span> has been created successfully.
                         </p>
                         <div className="mt-6 flex justify-center gap-2">
                             <button
@@ -293,7 +293,7 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
                                 Close
                             </button>
                             <Link
-                                href={`/invoices/${invoice_no}`}
+                                href={`/invoices/${flash?.invoice_no}`}
                                 className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700"
                             >
                                 View Invoice
