@@ -1,5 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, Check, CheckCircle2, Clock4, FileText, Layers, Save, X } from 'lucide-react';
+import { ArrowRight, Check, CheckCircle2, Clock4, FileText, Layers, Save } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card } from '@/Layouts/Dashboard';
 
@@ -45,6 +45,11 @@ interface ProjectData {
     description: string | null;
     request_quotation?: boolean;
     fileUploads?: FileUpload[];
+    progress?: number;
+    status?: string;
+    payment_status?: string;
+    key_person?: string | null;
+    status_remark?: string | null;
 }
 
 interface Props {
@@ -61,12 +66,14 @@ function parseSystemType(raw: string | null): { system_type: string; system_type
 }
 
 export default function ProjectEdit({ project, services = [], systemTypes = [] }: Props) {
+    const { auth } = usePage().props as any;
+    const isAdmin = auth?.user?.isAdmin;
     const sysTypes = systemTypes.length > 0 ? systemTypes : SYSTEM_TYPES;
     const parsed = parseSystemType(project.system_type);
 
     const [step, setStep] = useState(1);
 
-    const form = useForm({
+    const baseData: any = {
         title: project.title,
         service_type: project.service_type,
         system_type: parsed.system_type,
@@ -80,7 +87,19 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
         additional_notes: project.additional_notes ?? '',
         description: project.description ?? '',
         request_quotation: false,
-    });
+    };
+
+    if (isAdmin) {
+        Object.assign(baseData, {
+            progress: project.progress ?? 0,
+            status: project.status ?? 'in_progress',
+            payment_status: project.payment_status ?? 'unpaid',
+            key_person: project.key_person ?? '',
+            status_remark: project.status_remark ?? '',
+        });
+    }
+
+    const form = useForm(baseData);
 
     const validateStep = (s: number) => {
         form.clearErrors();
@@ -101,9 +120,15 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
     const prevStep = () => setStep((s) => Math.max(1, s - 1));
 
     const submitUpdate = () => {
-        form.put(`/projects/${project.id}`, {
-            onSuccess: () => {},
-        });
+        if (isAdmin) {
+            form.put(`/projects/${project.id}`, {
+                onSuccess: () => {},
+            });
+        } else {
+            form.put(`/projects/${project.id}`, {
+                onSuccess: () => {},
+            });
+        }
     };
 
     return (
@@ -333,6 +358,68 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
                                         <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Deadline</dt><dd className="text-slate-700">{form.data.deadline || <span className="text-slate-300">—</span>}</dd></div>
                                     </dl>
                                 </div>
+                                {isAdmin && (
+                                    <div className="border-t border-slate-100 pt-5">
+                                        <h3 className="text-sm font-semibold text-slate-800">Admin Settings</h3>
+                                        <p className="mb-4 text-xs text-slate-500">Internal project management details.</p>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className={labelClass}>Progress: {form.data.progress}%</label>
+                                                <input
+                                                    type="range"
+                                                    min={0}
+                                                    max={100}
+                                                    value={form.data.progress}
+                                                    onChange={(e) => form.setData('progress', Number(e.target.value))}
+                                                    className="w-full accent-blue-600"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className={labelClass}>Status</label>
+                                                <select
+                                                    value={form.data.status}
+                                                    onChange={(e) => form.setData('status', e.target.value)}
+                                                    className={inputClass}
+                                                >
+                                                    <option value="in_progress">In Progress</option>
+                                                    <option value="completed">Completed</option>
+                                                    <option value="on_hold">On Hold</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className={labelClass}>Payment Status</label>
+                                                <select
+                                                    value={form.data.payment_status}
+                                                    onChange={(e) => form.setData('payment_status', e.target.value)}
+                                                    className={inputClass}
+                                                >
+                                                    <option value="unpaid">Unpaid</option>
+                                                    <option value="partial">Partial</option>
+                                                    <option value="paid">Paid</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className={labelClass}>Key Person (PIC)</label>
+                                                <input
+                                                    value={form.data.key_person}
+                                                    onChange={(e) => form.setData('key_person', e.target.value)}
+                                                    className={inputClass}
+                                                    placeholder="e.g. Ahmad (Project Manager)"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className={labelClass}>Status Remark</label>
+                                                <textarea
+                                                    value={form.data.status_remark}
+                                                    onChange={(e) => form.setData('status_remark', e.target.value)}
+                                                    rows={2}
+                                                    className={inputClass}
+                                                    placeholder="Note visible to the client about current status..."
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 

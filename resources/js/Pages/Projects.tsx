@@ -1,6 +1,6 @@
-import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, Building2, FolderKanban, Plus, Search, X, Save, Paperclip, Trash2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { ArrowRight, Building2, FolderKanban, Plus, Search, Paperclip, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
 const inputClass = 'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
@@ -90,73 +90,8 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const isAdmin = auth?.user?.isAdmin;
     const [status, setStatus] = useState(filters.status ?? '');
     const [search, setSearch] = useState(filters.search ?? '');
-    const [createOpen, setCreateOpen] = useState(false);
-    const [createFiles, setCreateFiles] = useState<File[]>([]);
-
-    const createForm = useForm({
-        user_id: preselect_user_id ?? '',
-        title: '',
-        service_type: 'web_system',
-        system_type: '',
-        system_type_other: '',
-        features: '',
-        user_roles: '',
-        integrations: '',
-        budget: '',
-        deadline: '',
-        hosting_domain: '',
-        additional_notes: '',
-        description: '',
-        key_person: '',
-        status_remark: '',
-        request_quotation: false,
-    });
-
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('new') === '1') {
-            if (preselect_user_id) createForm.setData('user_id', preselect_user_id);
-            setCreateOpen(true);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     const handleFilter = () => {
         router.get('/projects', { status, search }, { preserveState: true, replace: true });
-    };
-
-    const openCreate = () => {
-        createForm.reset();
-        setCreateFiles([]);
-        setCreateOpen(true);
-    };
-
-    const submitCreate = () => {
-        const formData = new FormData();
-        formData.append('title', createForm.data.title);
-        formData.append('service_type', createForm.data.service_type);
-        formData.append('system_type', createForm.data.system_type);
-        formData.append('system_type_other', createForm.data.system_type_other);
-        formData.append('features', createForm.data.features);
-        formData.append('user_roles', createForm.data.user_roles);
-        formData.append('integrations', createForm.data.integrations);
-        formData.append('budget', createForm.data.budget);
-        formData.append('deadline', createForm.data.deadline);
-        formData.append('hosting_domain', createForm.data.hosting_domain);
-        formData.append('additional_notes', createForm.data.additional_notes);
-        formData.append('description', createForm.data.description ?? '');
-        formData.append('request_quotation', createForm.data.request_quotation ? '1' : '0');
-        if (createForm.data.user_id) formData.append('user_id', createForm.data.user_id);
-        if (createForm.data.key_person) formData.append('key_person', createForm.data.key_person);
-        if (createForm.data.status_remark) formData.append('status_remark', createForm.data.status_remark);
-        createFiles.forEach((f) => { formData.append('files[]', f); });
-
-        router.post('/projects', formData, {
-            onSuccess: () => {
-                setCreateOpen(false);
-                setCreateFiles([]);
-            },
-        });
     };
 
     const deleteProject = (id: number) => {
@@ -181,22 +116,12 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        {isAdmin ? (
-                            <button
-                                type="button"
-                                onClick={openCreate}
-                                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                            >
-                                <Plus className="h-4 w-4" /> New Project
-                            </button>
-                        ) : (
-                            <Link
-                                href="/projects/create"
-                                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                            >
-                                <Plus className="h-4 w-4" /> New Project
-                            </Link>
-                        )}
+                        <Link
+                            href="/projects/create"
+                            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                        >
+                            <Plus className="h-4 w-4" /> New Project
+                        </Link>
                         <Link
                             href="/dashboard"
                             className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
@@ -393,137 +318,6 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                     </div>
                 )}
             </DashboardLayout>
-
-
-
-            {createOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <Card className="max-h-[90vh] w-full max-w-lg overflow-y-auto">
-                        <div className="mb-6 flex items-center justify-between">
-                            <div>
-                                <h3 className="text-lg font-bold text-slate-900">{isAdmin ? 'New Project' : 'New Project Request'}</h3>
-                                <p className="text-sm text-slate-500">
-                                    {isAdmin ? 'Create a project for a client.' : 'Fill in the details to get started.'}
-                                </p>
-                            </div>
-                            <button type="button" onClick={() => setCreateOpen(false)} className="text-slate-400 hover:text-slate-700">
-                                <X className="h-5 w-5" />
-                            </button>
-                        </div>
-
-                        {isAdmin && (
-                            <div className="mb-5 space-y-4">
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-slate-700">Client</label>
-                                    <select
-                                        value={createForm.data.user_id}
-                                        onChange={(e) => createForm.setData('user_id', e.target.value)}
-                                        className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
-                                    >
-                                        <option value="">Select a client...</option>
-                                        {clients.map((c) => (
-                                            <option key={c.id} value={c.id}>{c.label}</option>
-                                        ))}
-                                    </select>
-                                    {createForm.errors.user_id && (
-                                        <p className="mt-1 text-xs text-red-500">{createForm.errors.user_id}</p>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-
-                        {isAdmin && (
-                            <>
-                                <div className="space-y-5">
-                                    <div>
-                                        <label className={labelClass}>Project Title <span className="text-red-500">*</span></label>
-                                        <input
-                                            value={createForm.data.title}
-                                            onChange={(e) => createForm.setData('title', e.target.value)}
-                                            className={inputClass}
-                                            placeholder="e.g. Company Website Revamp"
-                                        />
-                                        {createForm.errors.title && <p className="mt-1 text-xs text-red-500">{createForm.errors.title}</p>}
-                                    </div>
-                                    <div>
-                                        <label className={labelClass}>Service <span className="text-red-500">*</span></label>
-                                        <select
-                                            value={createForm.data.service_type}
-                                            onChange={(e) => createForm.setData('service_type', e.target.value)}
-                                            className={inputClass}
-                                        >
-                                            {serviceOptions.map((o) => (
-                                                <option key={o.value} value={o.value}>{o.label}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className={labelClass}>Description</label>
-                                        <textarea
-                                            value={createForm.data.description}
-                                            onChange={(e) => createForm.setData('description', e.target.value)}
-                                            rows={4}
-                                            className={inputClass}
-                                            placeholder="Describe what you want to build…"
-                                        />
-                                    </div>
-                                    <div className="border-t border-slate-100 pt-5">
-                                        <h3 className="text-sm font-semibold text-slate-800">Admin Settings</h3>
-                                        <p className="mb-4 text-xs text-slate-500">Internal project management details.</p>
-                                        <div className="space-y-4">
-                                            <div>
-                                                <label className={labelClass}>Key Person (PIC)</label>
-                                                <input
-                                                    value={createForm.data.key_person}
-                                                    onChange={(e) => createForm.setData('key_person', e.target.value)}
-                                                    className={inputClass}
-                                                    placeholder="e.g. Ahmad (Project Manager)"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className={labelClass}>Status Remark</label>
-                                                <textarea
-                                                    value={createForm.data.status_remark}
-                                                    onChange={(e) => createForm.setData('status_remark', e.target.value)}
-                                                    rows={2}
-                                                    className={inputClass}
-                                                    placeholder="Note visible to the client about current status..."
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="border-t border-slate-100 pt-5">
-                                        <label className="mt-1 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 px-4 py-6 text-center transition-colors hover:border-blue-400 hover:bg-blue-50/40">
-                                            <Paperclip className="h-6 w-6 text-slate-400" />
-                                            <span className="text-sm text-slate-600">Click to upload files</span>
-                                            <span className="text-xs text-slate-400">Max 20MB per file</span>
-                                            <input type="file" multiple onChange={(e) => setCreateFiles(Array.from(e.target.files ?? []))} className="hidden" />
-                                        </label>
-                                        {createFiles.length > 0 && (
-                                            <div className="mt-3 space-y-2">
-                                                {createFiles.map((f, i) => (
-                                                    <div key={i} className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-sm">
-                                                        <span className="truncate text-slate-700">{f.name}</span>
-                                                        <button type="button" onClick={() => setCreateFiles(createFiles.filter((_, idx) => idx !== i))} className="ml-3 text-slate-400 hover:text-red-600">
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </button>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center justify-between border-t border-slate-100 pt-5">
-                                        <button type="button" onClick={() => setCreateOpen(false)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancel</button>
-                                        <button type="button" onClick={submitCreate} disabled={createForm.processing} className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">
-                                            <Save className="h-4 w-4" /> Create Project
-                                        </button>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                    </Card>
-                </div>
-            )}
 
         </>
     );

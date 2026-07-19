@@ -376,6 +376,33 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
                                         <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Files</dt><dd className="text-slate-700">{createFiles.length ? `${createFiles.length} file(s)` : <span className="text-slate-300">—</span>}</dd></div>
                                     </dl>
                                 </div>
+                                {isAdmin && (
+                                    <div className="border-t border-slate-100 pt-5">
+                                        <h3 className="text-sm font-semibold text-slate-800">Admin Settings</h3>
+                                        <p className="mb-4 text-xs text-slate-500">Internal project management details.</p>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className={labelClass}>Key Person (PIC)</label>
+                                                <input
+                                                    value={form.data.key_person}
+                                                    onChange={(e) => form.setData('key_person', e.target.value)}
+                                                    className={inputClass}
+                                                    placeholder="e.g. Ahmad (Project Manager)"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className={labelClass}>Status Remark</label>
+                                                <textarea
+                                                    value={form.data.status_remark}
+                                                    onChange={(e) => form.setData('status_remark', e.target.value)}
+                                                    rows={2}
+                                                    className={inputClass}
+                                                    placeholder="Note visible to the client about current status..."
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
