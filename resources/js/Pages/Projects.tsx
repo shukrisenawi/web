@@ -197,8 +197,6 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                 </div>
                             </div>
 
-                            <p className="mt-4 line-clamp-2 text-sm text-slate-600">{project.description}</p>
-
                             <div className="mt-3 space-y-1">
                                 {project.system_type && (
                                     <p className="text-xs text-slate-500">

@@ -101,8 +101,6 @@ export default function ProjectShow({ project }: { project: Project }) {
                         </div>
                     </div>
 
-                    <p className="mt-4 text-sm text-slate-600">{project.description}</p>
-
                     {project.key_person && (
                         <p className="mt-3 text-sm text-slate-600">
                             <span className="font-semibold">Key Person:</span> {project.key_person}
