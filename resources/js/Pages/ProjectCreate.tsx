@@ -24,7 +24,7 @@ const STEPS = [
 ];
 
 interface Props {
-    clients?: { id: number; name: string; email: string; company_name: string | null }[];
+    clients?: { id: number; name: string; email: string; company: string | null }[];
     services?: { value: string; label: string }[];
     systemTypes?: { value: string; label: string }[];
 }
@@ -132,7 +132,7 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
                                     >
                                         <option value="">Select a client...</option>
                                         {clients.map((c) => (
-                                            <option key={c.id} value={c.id}>{c.name} ({c.company_name || c.email})</option>
+                                            <option key={c.id} value={c.id}>{c.name} ({c.company || c.email})</option>
                                         ))}
                                     </select>
                                     {form.errors.user_id && (

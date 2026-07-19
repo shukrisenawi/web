@@ -100,7 +100,7 @@ class ProjectController extends Controller
 
         return Inertia::render('ProjectCreate', [
             'clients' => $user->isAdmin()
-                ? User::where('role', 'client')->select('id', 'name', 'email', 'company_name')->get()
+                ? User::where('role', 'client')->select('id', 'name', 'email', 'company')->get()
                 : null,
             'services' => Project::getServices(),
             'systemTypes' => Project::getSystemTypes(),
