@@ -1,5 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, FileText, Plus, Printer, CreditCard, X, Trash2, Save } from 'lucide-react';
+import { ArrowRight, FileText, Plus, Printer, CreditCard, X, Trash2, Save, CheckCircle2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
 
@@ -52,12 +52,17 @@ const invoiceBadgeColor = (status: string) => {
 };
 
 export default function Invoices({ invoices, filters, widgets, clients = [], projects = [], preselect_user_id, preselect_project_id }: InvoicesProps) {
-    const { auth } = usePage().props as any;
+    const { auth, success, invoice_no } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
     const currentStatus = filters.status ?? '';
     const [createOpen, setCreateOpen] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     const preselected = !!preselect_user_id;
     const preselectedProject = !!preselect_project_id;
+
+    useEffect(() => {
+        if (success) setShowSuccess(true);
+    }, [success]);
 
     const form = useForm({
         user_id: preselect_user_id ?? '',
@@ -266,6 +271,37 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
                     )}
                 </Card>
             </DashboardLayout>
+
+            {showSuccess && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <Card className="w-full max-w-sm text-center">
+                        <div className="mb-2 flex justify-center">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
+                                <CheckCircle2 className="h-7 w-7 text-emerald-600" />
+                            </div>
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-900">Invoice Generated!</h3>
+                        <p className="mt-1 text-sm text-slate-500">
+                            Invoice <span className="font-semibold text-blue-600">{invoice_no}</span> has been created successfully.
+                        </p>
+                        <div className="mt-6 flex justify-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setShowSuccess(false)}
+                                className="rounded-lg border border-slate-200 px-6 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                            >
+                                Close
+                            </button>
+                            <Link
+                                href={`/invoices/${invoice_no}`}
+                                className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                            >
+                                View Invoice
+                            </Link>
+                        </div>
+                    </Card>
+                </div>
+            )}
 
             {isAdmin && createOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
