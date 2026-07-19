@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, Building2, FolderKanban, Plus, Search, Paperclip, Trash2, FileText } from 'lucide-react';
+import { ArrowRight, Building2, FolderKanban, Plus, Search, Paperclip, Trash2, FileText, Pencil, Eye } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
@@ -338,9 +338,10 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                     )}
                                     <Link
                                         href={`/projects/${project.id}/edit`}
-                                        className="text-sm font-semibold text-blue-600 hover:underline"
+                                        className="text-slate-400 hover:text-blue-600"
+                                        title="Update"
                                     >
-                                        Update
+                                        <Pencil className="h-4 w-4" />
                                     </Link>
                                     {isAdmin && project.has_invoice && (
                                         <Link
@@ -362,9 +363,10 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                     )}
                                     <Link
                                         href={`/projects/${project.id}`}
-                                        className="text-sm font-semibold text-blue-600 hover:underline"
+                                        className="text-slate-400 hover:text-blue-600"
+                                        title="View Details"
                                     >
-                                        View Details
+                                        <Eye className="h-4 w-4" />
                                     </Link>
                                 </div>
                             </div>
