@@ -3,6 +3,7 @@ import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { Hero } from '@/Components/Hero';
 import { ServicesGrid } from '@/Components/ServicesGrid';
+import { Promotions } from '@/Components/Promotions';
 import { CurrentProjects } from '@/Components/CurrentProjects';
 import { Clients } from '@/Components/Clients';
 import { Stats } from '@/Components/Stats';
@@ -19,6 +20,7 @@ export default function Home() {
                 <Hero />
                 <Clients />
                 <ServicesGrid />
+                <Promotions />
                 <CurrentProjects />
                 <Stats />
                 <Cta />
