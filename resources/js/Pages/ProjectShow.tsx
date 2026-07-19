@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, FolderKanban, ListChecks, CheckCircle2, Pencil } from 'lucide-react';
+import { ArrowRight, FolderKanban, ListChecks, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
@@ -169,11 +169,9 @@ export default function ProjectShow({ project }: { project: Project }) {
                                     <button
                                         type="button"
                                         onClick={() => { setEditing(true); setProgressValue(project.progress); }}
-                                        className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600"
-                                        title="Edit progress"
-                                    >
-                                        <Pencil className="h-3.5 w-3.5" />
-                                    </button>
+                                        className="absolute inset-0 cursor-pointer"
+                                        title="Click to update progress"
+                                    />
                                 )}
                             </div>
                         )}
