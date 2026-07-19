@@ -1,5 +1,6 @@
-import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowRight, FolderKanban, ListChecks, CheckCircle2 } from 'lucide-react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { ArrowRight, FolderKanban, ListChecks, CheckCircle2, Pencil } from 'lucide-react';
+import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
 interface Milestone {
@@ -61,6 +62,8 @@ const paymentBadgeColor = (status: string) => {
 export default function ProjectShow({ project }: { project: Project }) {
     const { auth } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
+    const [editing, setEditing] = useState(false);
+    const [progressValue, setProgressValue] = useState(project.progress);
 
     return (
         <>
@@ -122,9 +125,58 @@ export default function ProjectShow({ project }: { project: Project }) {
                     <div className="mt-6">
                         <div className="mb-2 flex items-center justify-between text-sm">
                             <span className="text-slate-500">Progress</span>
-                            <span className="font-semibold text-slate-700">{project.progress}%</span>
+                            {editing ? (
+                                <span className="font-semibold text-blue-600">{progressValue}%</span>
+                            ) : (
+                                <span className="font-semibold text-slate-700">{project.progress}%</span>
+                            )}
                         </div>
-                        <Progress value={project.progress} />
+                        {isAdmin && editing ? (
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={100}
+                                    value={progressValue}
+                                    onChange={(e) => setProgressValue(Number(e.target.value))}
+                                    onMouseUp={() => {
+                                        router.put(`/projects/${project.id}`, {
+                                            progress: progressValue,
+                                            status: project.status,
+                                            payment_status: project.payment_status,
+                                            key_person: project.key_person ?? '',
+                                            status_remark: project.status_remark ?? '',
+                                        }, {
+                                            preserveState: true,
+                                            preserveScroll: true,
+                                            onSuccess: () => setEditing(false),
+                                        });
+                                    }}
+                                    className="w-full accent-blue-600"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => { setEditing(false); setProgressValue(project.progress); }}
+                                    className="text-xs text-slate-400 hover:text-slate-600"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="relative">
+                                <Progress value={project.progress} />
+                                {isAdmin && (
+                                    <button
+                                        type="button"
+                                        onClick={() => { setEditing(true); setProgressValue(project.progress); }}
+                                        className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600"
+                                        title="Edit progress"
+                                    >
+                                        <Pencil className="h-3.5 w-3.5" />
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </Card>
 
