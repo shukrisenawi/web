@@ -1,5 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, Check, CheckCircle2, Clock4, FileText, Layers, Save } from 'lucide-react';
+import { ArrowRight, Check, CheckCircle2, Clock4, FileText, Layers, Paperclip, Save, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card } from '@/Layouts/Dashboard';
 
@@ -335,6 +335,65 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
                                 <div>
                                     <h2 className="mb-1 text-lg font-semibold text-slate-900">Review &amp; Submit</h2>
                                     <p className="text-sm text-slate-500">Review your changes &amp; confirm.</p>
+                                </div>
+                                <div>
+                                    <span className={labelClass}>Project Files</span>
+                                    {project.fileUploads && project.fileUploads.length > 0 && (
+                                        <div className="mt-2 space-y-2">
+                                            {project.fileUploads.map((f) => (
+                                                <div key={f.id} className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-sm">
+                                                    <a
+                                                        href={f.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-2 truncate text-blue-600 hover:underline"
+                                                    >
+                                                        <Paperclip className="h-3 w-3 shrink-0" />
+                                                        <span className="truncate">{f.filename}</span>
+                                                        <span className="ml-auto shrink-0 text-[10px] text-slate-400">
+                                                            {f.size > 1024 ? `${(f.size / 1024).toFixed(1)} KB` : `${f.size} B`}
+                                                        </span>
+                                                    </a>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            if (confirm('Delete this file?')) {
+                                                                router.delete(`/projects/${project.id}/files/${f.id}`, {
+                                                                    preserveState: true,
+                                                                    preserveScroll: true,
+                                                                });
+                                                            }
+                                                        }}
+                                                        className="ml-2 shrink-0 text-slate-400 hover:text-red-600"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    <label className="mt-2 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 px-4 py-6 text-center transition-colors hover:border-blue-400 hover:bg-blue-50/40">
+                                        <Paperclip className="h-6 w-6 text-slate-400" />
+                                        <span className="text-sm text-slate-600">Click to upload new files</span>
+                                        <span className="text-xs text-slate-400">Max 20MB per file</span>
+                                        <input
+                                            type="file"
+                                            multiple
+                                            onChange={(e) => {
+                                                const files = Array.from(e.target.files ?? []);
+                                                files.forEach((f) => {
+                                                    const formData = new FormData();
+                                                    formData.append('file', f);
+                                                    router.post(`/projects/${project.id}/files`, formData, {
+                                                        preserveState: true,
+                                                        preserveScroll: true,
+                                                    });
+                                                });
+                                                e.target.value = '';
+                                            }}
+                                            className="hidden"
+                                        />
+                                    </label>
                                 </div>
                                 <div>
                                     <label htmlFor="additional-notes" className={labelClass}>Additional Notes</label>

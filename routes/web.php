@@ -84,6 +84,7 @@ Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name
 Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::post('/projects/{project}/files', [ProjectController::class, 'uploadFile'])->name('projects.files.upload');
+    Route::delete('/projects/{project}/files/{file}', [ProjectController::class, 'deleteFile'])->name('projects.files.delete');
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
 
     /** Client + Admin shared: Invoices */

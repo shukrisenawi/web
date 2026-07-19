@@ -162,8 +162,16 @@ class ProjectController extends Controller
             abort(403);
         }
 
+        $project->load('user:id,name,email,company', 'fileUploads');
+        $project->fileUploads->transform(fn ($f) => [
+            'id' => $f->id,
+            'filename' => $f->filename,
+            'size' => $f->size,
+            'url' => Storage::url($f->path),
+        ]);
+
         return Inertia::render('ProjectEdit', [
-            'project' => $project->load('user:id,name,email,company', 'fileUploads'),
+            'project' => $project,
             'services' => Project::getServices(),
             'systemTypes' => Project::getSystemTypes(),
         ]);
@@ -340,5 +348,22 @@ class ProjectController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'File uploaded successfully.');
+    }
+
+    public function deleteFile(Project $project, FileUpload $file)
+    {
+        $user = Auth::user();
+        if (! $user->isAdmin() && $project->user_id !== $user->id) {
+            abort(403);
+        }
+
+        if ($file->project_id !== $project->id) {
+            abort(404);
+        }
+
+        Storage::disk('public')->delete($file->path);
+        $file->delete();
+
+        return redirect()->back()->with('success', 'File deleted successfully.');
     }
 }
