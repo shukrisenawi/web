@@ -16,8 +16,8 @@ export default function Home() {
                 <LandingHeader />
 
                 <Hero />
-                <ServicesGrid />
                 <Clients />
+                <ServicesGrid />
                 <Stats />
                 <Cta />
 
