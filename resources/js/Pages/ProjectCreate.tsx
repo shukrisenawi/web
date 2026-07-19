@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, Check, CheckCircle2, Clock4, FileText, Layers, Paperclip, Save, Trash2, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DashboardLayout, Card } from '@/Layouts/Dashboard';
 
 const inputClass = 'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
@@ -36,6 +36,24 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
 
     const [step, setStep] = useState(1);
     const [createFiles, setCreateFiles] = useState<File[]>([]);
+    const [clientSearch, setClientSearch] = useState('');
+    const [clientOpen, setClientOpen] = useState(false);
+
+    const filteredClients = clients.filter((c) =>
+        `${c.name} ${c.company || ''} ${c.email}`.toLowerCase().includes(clientSearch.toLowerCase())
+    );
+
+    const clientRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            if (clientRef.current && !clientRef.current.contains(e.target as Node)) {
+                setClientOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClick);
+        return () => document.removeEventListener('mousedown', handleClick);
+    }, []);
 
     const form = useForm({
         user_id: '',
@@ -125,16 +143,35 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
                             <div className="mb-5 space-y-4">
                                 <div>
                                     <label className="mb-1 block text-sm font-medium text-slate-700">Client <span className="text-red-500">*</span></label>
-                                    <select
-                                        value={form.data.user_id}
-                                        onChange={(e) => form.setData('user_id', e.target.value)}
-                                        className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
-                                    >
-                                        <option value="">Select a client...</option>
-                                        {clients.map((c) => (
-                                            <option key={c.id} value={c.id}>{c.name} ({c.company || c.email})</option>
-                                        ))}
-                                    </select>
+                                    <div className="relative" ref={clientRef}>
+                                        <input
+                                            type="text"
+                                            value={clientSearch}
+                                            onChange={(e) => { setClientSearch(e.target.value); setClientOpen(true); }}
+                                            onFocus={() => setClientOpen(true)}
+                                            placeholder="Search client..."
+                                            className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
+                                        />
+                                        {clientOpen && (
+                                            <div className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-lg">
+                                                {filteredClients.length === 0 ? (
+                                                    <p className="px-4 py-3 text-sm text-slate-400">No clients found</p>
+                                                ) : (
+                                                    filteredClients.map((c) => (
+                                                        <button
+                                                            type="button"
+                                                            key={c.id}
+                                                            onClick={() => { form.setData('user_id', String(c.id)); setClientSearch(c.name + (c.company ? ` (${c.company})` : '')); setClientOpen(false); }}
+                                                            className={`w-full px-4 py-2.5 text-left text-sm transition-colors hover:bg-blue-50 ${form.data.user_id === String(c.id) ? 'bg-blue-50 text-blue-700' : 'text-slate-700'}`}
+                                                        >
+                                                            <span className="font-medium">{c.name}</span>
+                                                            <span className="ml-1 text-xs text-slate-400">{c.company || c.email}</span>
+                                                        </button>
+                                                    ))
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                     {form.errors.user_id && (
                                         <p className="mt-1 text-xs text-red-500">{form.errors.user_id}</p>
                                     )}
