@@ -119,7 +119,7 @@ class PaymentController extends Controller
 
         if ($validated['status'] === 'verified') {
             $invoice = $proof->invoice;
-            $invoice->update(['status' => 'paid']);
+            $invoice->update(['status' => 'paid', 'paid_at' => now()]);
 
             if (! $invoice->project_id) {
                 $this->autoCreateProject($invoice);

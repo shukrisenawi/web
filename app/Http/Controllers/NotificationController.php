@@ -62,6 +62,25 @@ class NotificationController extends Controller
         $items = $items->concat($invoiceNotifications);
 
         if ($user->isAdmin()) {
+            $paidInvoices = Invoice::where('status', 'paid')
+                ->whereNotNull('paid_at')
+                ->where('paid_at', '>=', now()->subDays(7))
+                ->with('user')
+                ->orderByDesc('paid_at')
+                ->get()
+                ->map(fn ($i) => [
+                    'type' => 'payment_received',
+                    'id' => $i->invoice_no,
+                    'subject' => 'Payment received: ' . $i->invoice_no,
+                    'description' => 'Amount: $' . number_format($i->amount, 2),
+                    'name' => $i->user?->company ?? $i->user?->name,
+                    'email' => $i->user?->email,
+                    'date' => $i->paid_at->format('M d, Y'),
+                    'url' => route('invoices.show', $i),
+                ]);
+
+            $items = $items->concat($paidInvoices);
+
             $pendingRequests = ProjectRequest::where('status', 'pending')
                 ->with('user')
                 ->orderByDesc('created_at')
