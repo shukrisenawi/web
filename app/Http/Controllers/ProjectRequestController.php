@@ -55,6 +55,8 @@ class ProjectRequestController extends Controller
             'password' => Hash::make($validated['password']),
             'role' => User::ROLE_CLIENT,
             'company' => $validated['company_name'],
+            'industry' => $validated['industry'] ?? null,
+            'industry_other' => $validated['industry_other'] ?? null,
             'business_address' => $validated['company_address'] ?? null,
             'whatsapp' => $validated['contact_mobile'] ?? null,
         ]);

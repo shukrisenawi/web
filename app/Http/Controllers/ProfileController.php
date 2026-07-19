@@ -18,13 +18,21 @@ class ProfileController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
+        $industry = $user->industry;
+        $industryOther = $user->industry_other;
+
+        if ($industry && str_starts_with($industry, 'Others: ')) {
+            $industryOther = substr($industry, 8);
+            $industry = 'Others';
+        }
+
         return Inertia::render('Profile', [
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
                 'company' => $user->company,
-                'industry' => $user->industry,
-                'industry_other' => $user->industry_other,
+                'industry' => $industry,
+                'industry_other' => $industryOther,
                 'business_address' => $user->business_address,
                 'business_no' => $user->business_no,
                 'whatsapp' => $user->whatsapp,
@@ -56,12 +64,7 @@ class ProfileController extends Controller
             'persons_in_charge.*.email' => ['nullable', 'email', 'max:255'],
         ]);
 
-        $industry = $validated['industry'] ?? null;
-        if ($industry === 'Others') {
-            $industry = 'Others: ' . ($validated['industry_other'] ?? '');
-        }
-
-        $user->update(array_merge($validated, ['industry' => $industry]));
+        $user->update($validated);
 
         return redirect()->route('profile')->with('success', 'Profile updated successfully.');
     }

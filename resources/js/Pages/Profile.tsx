@@ -232,7 +232,7 @@ export default function Profile({ user }: ProfileProps) {
 
                         <form onSubmit={handleProfileSubmit} className="space-y-5">
                             <div>
-                                <label htmlFor="company" className={labelClass}>Company Name</label>
+                                <label htmlFor="company" className={labelClass}>Company Name <span className="text-red-500">*</span></label>
                                 <input
                                     id="company"
                                     type="text"
@@ -292,7 +292,7 @@ export default function Profile({ user }: ProfileProps) {
                                 <p className="mb-4 text-sm font-semibold text-slate-800">Contact Person</p>
                                 <div className="space-y-5">
                                     <div>
-                                        <label htmlFor="name" className={labelClass}>Contact Name</label>
+                                        <label htmlFor="name" className={labelClass}>Contact Name <span className="text-red-500">*</span></label>
                                         <input
                                             id="name"
                                             type="text"
@@ -318,7 +318,7 @@ export default function Profile({ user }: ProfileProps) {
                                             {profileForm.errors.whatsapp && <p className="mt-1 text-xs text-red-600">{profileForm.errors.whatsapp}</p>}
                                         </div>
                                         <div>
-                                            <label htmlFor="email" className={labelClass}>Email Address</label>
+                                            <label htmlFor="email" className={labelClass}>Email Address <span className="text-red-500">*</span></label>
                                             <input
                                                 id="email"
                                                 type="email"
@@ -328,31 +328,6 @@ export default function Profile({ user }: ProfileProps) {
                                                 placeholder="you@company.com"
                                             />
                                             {profileForm.errors.email && <p className="mt-1 text-xs text-red-600">{profileForm.errors.email}</p>}
-                                        </div>
-                                    </div>
-
-                                    <div className="grid gap-5 sm:grid-cols-2">
-                                        <div>
-                                            <label htmlFor="business_no" className={labelClass}>Business No.</label>
-                                            <input
-                                                id="business_no"
-                                                type="text"
-                                                value={profileForm.data.business_no}
-                                                onChange={(e) => profileForm.setData('business_no', e.target.value)}
-                                                className={inputClass}
-                                                placeholder="012-3456789"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="business_reg_no" className={labelClass}>Business Reg No. (Optional)</label>
-                                            <input
-                                                id="business_reg_no"
-                                                type="text"
-                                                value={profileForm.data.business_reg_no}
-                                                onChange={(e) => profileForm.setData('business_reg_no', e.target.value)}
-                                                className={inputClass}
-                                                placeholder="e.g. 1234567-A"
-                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -447,7 +422,7 @@ export default function Profile({ user }: ProfileProps) {
                         <form onSubmit={handlePasswordSubmit} className="space-y-5">
                             <div>
                                 <label htmlFor="current_password" className={labelClass}>
-                                    Current Password
+                                    Current Password <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     id="current_password"
@@ -463,7 +438,7 @@ export default function Profile({ user }: ProfileProps) {
                             </div>
 
                             <div>
-                                <label htmlFor="password" className={labelClass}>New Password</label>
+                                <label htmlFor="password" className={labelClass}>New Password <span className="text-red-500">*</span></label>
                                 <input
                                     id="password"
                                     type="password"
@@ -480,7 +455,7 @@ export default function Profile({ user }: ProfileProps) {
                                     htmlFor="password_confirmation"
                                     className={labelClass}
                                 >
-                                    Confirm New Password
+                                    Confirm New Password <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     id="password_confirmation"
