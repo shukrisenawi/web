@@ -93,6 +93,7 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const [search, setSearch] = useState(filters.search ?? '');
     const [editingProgressId, setEditingProgressId] = useState<number | null>(null);
     const [progressValue, setProgressValue] = useState(0);
+    const [editingStatusId, setEditingStatusId] = useState<number | null>(null);
     const handleFilter = () => {
         router.get('/projects', { status, search }, { preserveState: true, replace: true });
     };
@@ -187,9 +188,43 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                     </div>
                                 </div>
                                 <div className="flex flex-col items-end gap-1">
-                                    <Badge color={statusBadgeColor(project.status)}>
-                                        {project.status.replace('_', ' ')}
-                                    </Badge>
+                                    {isAdmin && editingStatusId === project.id ? (
+                                        <select
+                                            value={project.status}
+                                            onChange={(e) => {
+                                                const newStatus = e.target.value;
+                                                router.put(`/projects/${project.id}`, {
+                                                    progress: project.progress,
+                                                    status: newStatus,
+                                                    payment_status: project.payment_status ?? 'unpaid',
+                                                    key_person: project.key_person ?? '',
+                                                    status_remark: project.status_remark ?? '',
+                                                }, {
+                                                    preserveState: true,
+                                                    preserveScroll: true,
+                                                    onSuccess: () => setEditingStatusId(null),
+                                                });
+                                            }}
+                                            onBlur={() => setEditingStatusId(null)}
+                                            autoFocus
+                                            className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold focus:border-blue-500 focus:outline-none"
+                                        >
+                                            <option value="in_progress">In Progress</option>
+                                            <option value="completed">Completed</option>
+                                            <option value="on_hold">On Hold</option>
+                                        </select>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={() => isAdmin ? setEditingStatusId(project.id) : undefined}
+                                            className={isAdmin ? 'cursor-pointer' : undefined}
+                                            title={isAdmin ? 'Click to change status' : undefined}
+                                        >
+                                            <Badge color={statusBadgeColor(project.status)}>
+                                                {project.status.replace('_', ' ')}
+                                            </Badge>
+                                        </button>
+                                    )}
                                     {isAdmin && (
                                         <Badge color={paymentBadgeColor(project.payment_status)}>
                                             {project.payment_status ?? 'unpaid'}
