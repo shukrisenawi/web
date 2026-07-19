@@ -19,6 +19,7 @@ interface UserProfile {
     email: string;
     company: string | null;
     industry?: string | null;
+    industry_other?: string | null;
     business_address?: string | null;
     business_no?: string | null;
     whatsapp?: string | null;
@@ -62,6 +63,7 @@ export default function Profile({ user }: ProfileProps) {
         email: user.email,
         company: user.company ?? '',
         industry: user.industry ?? '',
+        industry_other: user.industry_other ?? '',
         business_address: user.business_address ?? '',
         business_no: user.business_no ?? '',
         whatsapp: user.whatsapp ?? '',
@@ -270,6 +272,21 @@ export default function Profile({ user }: ProfileProps) {
                                 </select>
                                 {profileForm.errors.industry && <p className="mt-1 text-xs text-red-600">{profileForm.errors.industry}</p>}
                             </div>
+
+                            {profileForm.data.industry === 'Others' && (
+                                <div>
+                                    <label htmlFor="industry_other" className={labelClass}>Please specify your industry</label>
+                                    <input
+                                        id="industry_other"
+                                        type="text"
+                                        value={profileForm.data.industry_other}
+                                        onChange={(e) => profileForm.setData('industry_other', e.target.value)}
+                                        className={inputClass}
+                                        placeholder="e.g. Media, Entertainment…"
+                                    />
+                                    {profileForm.errors.industry_other && <p className="mt-1 text-xs text-red-600">{profileForm.errors.industry_other}</p>}
+                                </div>
+                            )}
 
                             <div className="border-t border-slate-100 pt-5">
                                 <p className="mb-4 text-sm font-semibold text-slate-800">Contact Person</p>

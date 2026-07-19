@@ -24,6 +24,7 @@ class ProfileController extends Controller
                 'email' => $user->email,
                 'company' => $user->company,
                 'industry' => $user->industry,
+                'industry_other' => $user->industry_other,
                 'business_address' => $user->business_address,
                 'business_no' => $user->business_no,
                 'whatsapp' => $user->whatsapp,
@@ -44,6 +45,7 @@ class ProfileController extends Controller
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'company' => ['nullable', 'string', 'max:255'],
             'industry' => ['nullable', 'string', 'max:255'],
+            'industry_other' => ['nullable', 'string', 'max:255'],
             'business_address' => ['nullable', 'string', 'max:1000'],
             'business_no' => ['nullable', 'string', 'max:255'],
             'whatsapp' => ['nullable', 'string', 'max:255'],
@@ -54,7 +56,12 @@ class ProfileController extends Controller
             'persons_in_charge.*.email' => ['nullable', 'email', 'max:255'],
         ]);
 
-        $user->update($validated);
+        $industry = $validated['industry'] ?? null;
+        if ($industry === 'Others') {
+            $industry = 'Others: ' . ($validated['industry_other'] ?? '');
+        }
+
+        $user->update(array_merge($validated, ['industry' => $industry]));
 
         return redirect()->route('profile')->with('success', 'Profile updated successfully.');
     }
