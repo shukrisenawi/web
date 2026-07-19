@@ -394,32 +394,43 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
                                         <Plus className="h-3.5 w-3.5" /> Add item
                                     </button>
                                 </div>
+                                {typeof form.errors.items === 'string' && (
+                                    <p className="mb-2 text-xs text-red-500">{form.errors.items}</p>
+                                )}
                                 <div className="space-y-2">
                                     {form.data.items.map((it, idx) => (
-                                        <div key={idx} className="flex items-center gap-2">
-                                            <input
-                                                value={it.description}
-                                                onChange={(e) => setItem(idx, 'description', e.target.value)}
-                                                placeholder="Item description"
-                                                className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                            />
-                                            <input
-                                                type="number"
-                                                step="0.01"
-                                                value={it.amount}
-                                                onChange={(e) => setItem(idx, 'amount', e.target.value)}
-                                                placeholder="0.00"
-                                                className="w-32 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeItem(idx)}
-                                                disabled={form.data.items.length === 1}
-                                                className="rounded-lg border border-slate-200 p-2 text-slate-400 hover:text-red-500 disabled:opacity-40"
-                                                title="Remove"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </button>
+                                        <div key={idx}>
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    value={it.description}
+                                                    onChange={(e) => setItem(idx, 'description', e.target.value)}
+                                                    placeholder="Item description"
+                                                    className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    value={it.amount}
+                                                    onChange={(e) => setItem(idx, 'amount', e.target.value)}
+                                                    placeholder="0.00"
+                                                    className="w-32 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeItem(idx)}
+                                                    disabled={form.data.items.length === 1}
+                                                    className="rounded-lg border border-slate-200 p-2 text-slate-400 hover:text-red-500 disabled:opacity-40"
+                                                    title="Remove"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                            {form.errors[`items.${idx}.description`] && (
+                                                <p className="mt-1 text-xs text-red-500">{form.errors[`items.${idx}.description`]}</p>
+                                            )}
+                                            {form.errors[`items.${idx}.amount`] && (
+                                                <p className="mt-1 text-xs text-red-500">{form.errors[`items.${idx}.amount`]}</p>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
