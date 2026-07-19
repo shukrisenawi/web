@@ -94,6 +94,7 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const [editingProgressId, setEditingProgressId] = useState<number | null>(null);
     const [progressValue, setProgressValue] = useState(0);
     const [editingStatusId, setEditingStatusId] = useState<number | null>(null);
+    const [editingPaymentId, setEditingPaymentId] = useState<number | null>(null);
     const handleFilter = () => {
         router.get('/projects', { status, search }, { preserveState: true, replace: true });
     };
@@ -225,11 +226,41 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                             </Badge>
                                         </button>
                                     )}
-                                    {isAdmin && (
-                                        <Badge color={paymentBadgeColor(project.payment_status)}>
-                                            {project.payment_status ?? 'unpaid'}
-                                        </Badge>
-                                    )}
+                                    {isAdmin && editingPaymentId === project.id ? (
+                                        <select
+                                            value={project.payment_status ?? 'unpaid'}
+                                            onChange={(e) => {
+                                                router.put(`/projects/${project.id}`, {
+                                                    progress: project.progress,
+                                                    status: project.status,
+                                                    payment_status: e.target.value,
+                                                    key_person: project.key_person ?? '',
+                                                    status_remark: project.status_remark ?? '',
+                                                }, {
+                                                    preserveState: true,
+                                                    preserveScroll: true,
+                                                    onSuccess: () => setEditingPaymentId(null),
+                                                });
+                                            }}
+                                            onBlur={() => setEditingPaymentId(null)}
+                                            autoFocus
+                                            className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold focus:border-blue-500 focus:outline-none"
+                                        >
+                                            <option value="unpaid">Unpaid</option>
+                                            <option value="partial">Partial</option>
+                                            <option value="paid">Paid</option>
+                                        </select>
+                                    ) : isAdmin ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => setEditingPaymentId(project.id)}
+                                            title="Click to change payment status"
+                                        >
+                                            <Badge color={paymentBadgeColor(project.payment_status)}>
+                                                {project.payment_status ?? 'unpaid'}
+                                            </Badge>
+                                        </button>
+                                    ) : null}
                                 </div>
                             </div>
 
