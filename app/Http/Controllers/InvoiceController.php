@@ -104,6 +104,13 @@ class InvoiceController extends Controller
             'items' => ['required', 'array', 'min:1'],
             'items.*.description' => ['required', 'string', 'max:255'],
             'items.*.amount' => ['required', 'numeric', 'min:0'],
+        ], [
+            'items.required' => 'At least one invoice item is required.',
+            'items.min' => 'At least one invoice item is required.',
+            'items.*.description.required' => 'Item description is required.',
+            'items.*.amount.required' => 'Item amount is required.',
+            'items.*.amount.numeric' => 'Item amount must be a number.',
+            'items.*.amount.min' => 'Item amount must be at least 0.',
         ]);
 
         $total = collect($validated['items'])->sum(fn ($i) => (float) $i['amount']);
