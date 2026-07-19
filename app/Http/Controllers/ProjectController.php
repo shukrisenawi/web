@@ -155,6 +155,20 @@ class ProjectController extends Controller
         ]);
     }
 
+    public function edit(Project $project)
+    {
+        $user = Auth::user();
+        if (!$user->isAdmin() && $project->user_id !== $user->id) {
+            abort(403);
+        }
+
+        return Inertia::render('ProjectEdit', [
+            'project' => $project->load('user:id,name,email,company_name', 'fileUploads'),
+            'services' => Project::getServices(),
+            'systemTypes' => Project::getSystemTypes(),
+        ]);
+    }
+
     public function store(Request $request)
     {
         /** @var User $user */
@@ -262,8 +276,24 @@ class ProjectController extends Controller
             }
             $validated = $request->validate([
                 'title' => ['required', 'string', 'max:255'],
+                'service_type' => ['required', Rule::in(['web_system', 'website', 'mobile_app', 'digital_marketing', 'it_solutions', 'game_development'])],
+                'system_type' => ['nullable', 'string', 'max:255'],
+                'system_type_other' => ['nullable', 'string', 'max:255'],
+                'features' => ['nullable', 'string', 'max:5000'],
+                'user_roles' => ['nullable', 'string', 'max:5000'],
+                'integrations' => ['nullable', 'string', 'max:5000'],
+                'budget' => ['nullable', 'string', 'max:255'],
+                'deadline' => ['nullable', 'date'],
+                'hosting_domain' => ['nullable', 'string', 'max:2000'],
+                'additional_notes' => ['nullable', 'string', 'max:5000'],
                 'description' => ['nullable', 'string', 'max:5000'],
+                'request_quotation' => ['boolean'],
             ]);
+
+            if (!empty($validated['system_type']) && $validated['system_type'] === 'Other' && !empty($validated['system_type_other'])) {
+                $validated['system_type'] = 'Other: ' . $validated['system_type_other'];
+            }
+            unset($validated['system_type_other']);
         }
 
         $project->update($validated);

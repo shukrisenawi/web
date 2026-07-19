@@ -80,9 +80,11 @@ Route::middleware('auth')->group(function () {
     /** Client + Admin shared: Projects */
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
 Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
 Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::post('/projects/{project}/files', [ProjectController::class, 'uploadFile'])->name('projects.files.upload');
+    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
 
     /** Client + Admin shared: Invoices */
     Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices');
@@ -95,7 +97,6 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
 
     /** Admin only */
     Route::middleware('role:admin')->group(function () {
-        Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
         Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');

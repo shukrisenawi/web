@@ -1,5 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, Building2, FolderKanban, Plus, Search, X, Save, Paperclip } from 'lucide-react';
+import { ArrowRight, Building2, FolderKanban, Plus, Search, X, Save, Paperclip, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
@@ -91,7 +91,6 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const [status, setStatus] = useState(filters.status ?? '');
     const [search, setSearch] = useState(filters.search ?? '');
     const [createOpen, setCreateOpen] = useState(false);
-    const [editId, setEditId] = useState<number | null>(null);
     const [createFiles, setCreateFiles] = useState<File[]>([]);
 
     const createForm = useForm({
@@ -111,16 +110,6 @@ export default function Projects({ projects, filters, clients = [], preselect_us
         key_person: '',
         status_remark: '',
         request_quotation: false,
-    });
-
-    const editForm = useForm({
-        title: '',
-        description: '',
-        progress: 0,
-        status: 'in_progress',
-        payment_status: 'unpaid',
-        key_person: '',
-        status_remark: '',
     });
 
     useEffect(() => {
@@ -167,26 +156,6 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                 setCreateOpen(false);
                 setCreateFiles([]);
             },
-        });
-    };
-
-    const openEdit = (p: Project) => {
-        editForm.setData({
-            title: p.title,
-            description: p.description ?? '',
-            progress: p.progress,
-            status: p.status,
-            payment_status: p.payment_status ?? 'unpaid',
-            key_person: p.key_person ?? '',
-            status_remark: p.status_remark ?? '',
-        });
-        setEditId(p.id);
-    };
-
-    const submitEdit = () => {
-        if (editId === null) return;
-        editForm.put(`/projects/${editId}`, {
-            onSuccess: () => setEditId(null),
         });
     };
 
@@ -386,12 +355,12 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                             <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
                                 <span className="text-xs text-slate-400">Started {project.created_at}</span>
                                 <div className="flex items-center gap-2">
-                                    <button
-                                        onClick={() => openEdit(project)}
+                                    <Link
+                                        href={`/projects/${project.id}/edit`}
                                         className="text-sm font-semibold text-blue-600 hover:underline"
                                     >
                                         Update
-                                    </button>
+                                    </Link>
                                     {isAdmin && (
                                         <button
                                             onClick={() => deleteProject(project.id)}
@@ -556,116 +525,6 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                 </div>
             )}
 
-            {editId !== null && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <Card className="w-full max-w-md">
-                        <div className="mb-4 flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-slate-900">{isAdmin ? 'Update Project' : 'Edit Project Request'}</h3>
-                            <button onClick={() => setEditId(null)} className="text-slate-400 hover:text-slate-700">
-                                <X className="h-5 w-5" />
-                            </button>
-                        </div>
-                        <div className="space-y-4">
-                            {!isAdmin && (
-                                <>
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">Project Title</label>
-                                        <input
-                                            value={editForm.data.title}
-                                            onChange={(e) => editForm.setData('title', e.target.value)}
-                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">Description</label>
-                                        <textarea
-                                            value={editForm.data.description}
-                                            onChange={(e) => editForm.setData('description', e.target.value)}
-                                            rows={3}
-                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                        />
-                                    </div>
-                                </>
-                            )}
-                            {isAdmin && (
-                                <>
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">
-                                            Progress: {editForm.data.progress}%
-                                        </label>
-                                        <input
-                                            type="range"
-                                            min={0}
-                                            max={100}
-                                            value={editForm.data.progress}
-                                            onChange={(e) => editForm.setData('progress', Number(e.target.value))}
-                                            className="w-full accent-blue-600"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">Status</label>
-                                        <select
-                                            value={editForm.data.status}
-                                            onChange={(e) => editForm.setData('status', e.target.value)}
-                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                        >
-                                            <option value="in_progress">In Progress</option>
-                                            <option value="completed">Completed</option>
-                                            <option value="on_hold">On Hold</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">Payment Status</label>
-                                        <select
-                                            value={editForm.data.payment_status}
-                                            onChange={(e) => editForm.setData('payment_status', e.target.value)}
-                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                        >
-                                            <option value="unpaid">Unpaid</option>
-                                            <option value="partial">Partial</option>
-                                            <option value="paid">Paid</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">Key Person (PIC)</label>
-                                        <input
-                                            value={editForm.data.key_person}
-                                            onChange={(e) => editForm.setData('key_person', e.target.value)}
-                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                            placeholder="e.g. Ahmad (Project Manager)"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">Status Remark</label>
-                                        <textarea
-                                            value={editForm.data.status_remark}
-                                            onChange={(e) => editForm.setData('status_remark', e.target.value)}
-                                            rows={2}
-                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                            placeholder="Note visible to the client about current status..."
-                                        />
-                                    </div>
-                                </>
-                            )}
-                            <div className="flex justify-end gap-2 pt-2">
-                                <button
-                                    onClick={() => setEditId(null)}
-                                    className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={submitEdit}
-                                    disabled={editForm.processing}
-                                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
-                                >
-                                    <Save className="h-4 w-4" /> Save
-                                </button>
-                            </div>
-                        </div>
-                    </Card>
-                </div>
-            )}
         </>
     );
 }
