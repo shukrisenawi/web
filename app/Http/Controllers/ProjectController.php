@@ -163,7 +163,7 @@ class ProjectController extends Controller
         }
 
         return Inertia::render('ProjectEdit', [
-            'project' => $project->load('user:id,name,email,company_name', 'fileUploads'),
+            'project' => $project->load('user:id,name,email,company', 'fileUploads'),
             'services' => Project::getServices(),
             'systemTypes' => Project::getSystemTypes(),
         ]);
