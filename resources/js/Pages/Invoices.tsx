@@ -116,13 +116,13 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
 
     return (
         <>
-            <Head title="Invoices" />
+            <Head title="Billing" />
 
-            <DashboardLayout title={isAdmin ? 'Billing' : 'Invoices'}>
+            <DashboardLayout title={isAdmin ? 'Billing' : 'Billing'}>
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900">
-                            {isAdmin ? 'Billing & Invoices' : 'Your Invoices'}
+                            {isAdmin ? 'Billing & Invoices' : 'Your Billing'}
                         </h2>
                         <p className="text-sm text-slate-500">
                             {isAdmin

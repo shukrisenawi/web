@@ -37,9 +37,9 @@ const clientSidebar: SidebarItem[] = [
 const adminSidebar: SidebarItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
-    { label: 'Clients', href: '/clients', icon: Database },
+    { label: 'Database', href: '/clients', icon: Database },
     { label: 'Payments', href: '/payments', icon: Wallet, badge: 'pendingPaymentsCount' },
-    { label: 'Billing', href: '/invoices', icon: FileText },
+    { label: 'Invoices', href: '/invoices', icon: FileText },
     { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
     { label: 'Website Content', href: '/manage-frontpage', icon: Home },
     { label: 'Blog', href: '/manage-blog', icon: FileText },
