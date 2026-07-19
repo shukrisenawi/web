@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\PaymentProof;
 use App\Models\ProjectRequest;
 use App\Models\Ticket;
@@ -38,6 +39,28 @@ class NotificationController extends Controller
 
         $items = collect($ticketNotifications);
 
+        $invoiceQuery = $user->isAdmin()
+            ? Invoice::where('status', 'pending')->with('user')
+            : $user->invoices()->where('status', 'pending');
+
+        $invoiceNotifications = $invoiceQuery
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn ($i) => [
+                'type' => 'invoice',
+                'id' => $i->invoice_no,
+                'subject' => $user->isAdmin()
+                    ? 'New invoice: ' . $i->invoice_no
+                    : 'Invoice: ' . $i->invoice_no,
+                'description' => 'Amount: $' . number_format($i->amount, 2),
+                'name' => $i->user?->company ?? $i->user?->name,
+                'email' => $i->user?->email,
+                'date' => $i->created_at->format('M d, Y'),
+                'url' => route('invoices.show', $i),
+            ]);
+
+        $items = $items->concat($invoiceNotifications);
+
         if ($user->isAdmin()) {
             $pendingRequests = ProjectRequest::where('status', 'pending')
                 ->with('user')
@@ -71,8 +94,10 @@ class NotificationController extends Controller
                     'url' => route('invoices') . '?status=pending',
                 ]);
 
-            $items = $items->concat($pendingRequests)->concat($pendingProofs)->sortByDesc('date')->values();
+            $items = $items->concat($pendingRequests)->concat($pendingProofs);
         }
+
+        $items = $items->sortByDesc('date')->values();
 
         return response()->json([
             'count' => $items->count(),
