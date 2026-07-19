@@ -2275,9 +2275,9 @@ function ITEquipmentDetail({ service }: { service: any }) {
                             </Link>
                         </div>
 
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
                             {products.map((product) => (
-                                <div key={product.name} className="flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                                <div key={product.name} className="relative flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
                                     {product.badge && (
                                         <span className={`absolute ml-4 mt-4 rounded-full px-3 py-1 text-[10px] font-bold uppercase ${product.badge === 'Best Seller' ? 'bg-blue-600 text-white' : 'bg-emerald-500 text-white'}`}>
                                             {product.badge}
