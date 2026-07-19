@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewInvoiceMail;
 use App\Models\Invoice;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -135,6 +137,12 @@ class InvoiceController extends Controller
                 'description' => $item['description'],
                 'amount' => $item['amount'],
             ]);
+        }
+
+        try {
+            Mail::to($client)->send(new NewInvoiceMail($invoice));
+        } catch (\Throwable $e) {
+            // silently fail — email is not critical
         }
 
         return redirect()->route('invoices')

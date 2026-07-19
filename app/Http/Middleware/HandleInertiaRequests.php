@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\FrontpageContent;
+use App\Models\Invoice;
 use App\Models\PaymentProof;
 use App\Models\ProjectRequest;
 use App\Models\Ticket;
@@ -71,6 +72,11 @@ class HandleInertiaRequests extends Middleware
                 : 0,
             'pendingPaymentsCount' => $request->user()?->isAdmin()
                 ? PaymentProof::where('status', 'pending')->count()
+                : 0,
+            'pendingInvoicesCount' => $request->user()
+                ? ($request->user()->isAdmin()
+                    ? Invoice::where('status', 'pending')->count()
+                    : $request->user()->invoices()->where('status', 'pending')->count())
                 : 0,
         ];
     }

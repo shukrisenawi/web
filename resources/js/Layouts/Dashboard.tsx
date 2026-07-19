@@ -29,7 +29,7 @@ interface SidebarItem {
 const clientSidebar: SidebarItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
-    { label: 'Billing', href: '/invoices', icon: FileText },
+    { label: 'Billing', href: '/invoices', icon: FileText, badge: 'pendingInvoicesCount' },
     { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
     { label: 'Profile', href: '/profile', icon: Users },
 ];
@@ -58,7 +58,7 @@ interface NotificationItem {
 }
 
 export function DashboardLayout({ children, title }: { children: React.ReactNode; title?: string }) {
-    const { auth, url, unreadMessagesCount, pendingRequestsCount, pendingPaymentsCount } = usePage().props as any;
+    const { auth, url, unreadMessagesCount, pendingRequestsCount, pendingPaymentsCount, pendingInvoicesCount } = usePage().props as any;
     const user = auth?.user ?? { name: 'John Doe', email: 'john.doe@email.com', company: 'Acme Corporation', isAdmin: false };
     const sidebar = user?.isAdmin ? adminSidebar : clientSidebar;
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -171,7 +171,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                 <nav className="mt-4 flex-1 overflow-y-auto px-4 space-y-1">
                     {sidebar.map((item) => {
                         const active = item.href !== '#' && (item.exact ? currentPath === item.href : currentPath.startsWith(item.href));
-                        const badgeCount = item.badge === 'unreadMessagesCount' ? (unreadMessagesCount ?? 0) : item.badge === 'pendingRequestsCount' ? (pendingRequestsCount ?? 0) : item.badge === 'pendingPaymentsCount' ? (pendingPaymentsCount ?? 0) : 0;
+                        const badgeCount = item.badge === 'unreadMessagesCount' ? (unreadMessagesCount ?? 0) : item.badge === 'pendingRequestsCount' ? (pendingRequestsCount ?? 0) : item.badge === 'pendingPaymentsCount' ? (pendingPaymentsCount ?? 0) : item.badge === 'pendingInvoicesCount' ? (pendingInvoicesCount ?? 0) : 0;
                         return (
                             <Link
                                 key={item.label}
