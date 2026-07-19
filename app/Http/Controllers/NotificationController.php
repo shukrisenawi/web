@@ -51,7 +51,9 @@ class NotificationController extends Controller
                     'name' => $r->contact_name,
                     'email' => $r->contact_email,
                     'date' => $r->created_at->format('M d, Y'),
-                    'url' => route('requests'),
+                    'url' => $r->user?->projects()->latest()->first()
+                        ? route('projects.show', $r->user->projects()->latest()->first())
+                        : route('requests'),
                 ]);
 
             $pendingProofs = PaymentProof::where('status', 'pending')
