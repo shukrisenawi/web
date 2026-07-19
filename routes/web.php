@@ -78,8 +78,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     /** Client + Admin shared: Projects */
-    Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
-    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
+Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::post('/projects/{project}/files', [ProjectController::class, 'uploadFile'])->name('projects.files.upload');
 

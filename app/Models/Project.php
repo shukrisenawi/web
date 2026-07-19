@@ -50,4 +50,30 @@ class Project extends Model
     {
         return $this->hasMany(ActivityLog::class);
     }
+
+    public static function getServices(): array
+    {
+        return [
+            ['value' => 'web_system', 'label' => 'Web System'],
+            ['value' => 'website', 'label' => 'Website Development'],
+            ['value' => 'mobile_app', 'label' => 'Mobile App Development'],
+            ['value' => 'digital_marketing', 'label' => 'Digital Marketing'],
+            ['value' => 'it_solutions', 'label' => 'IT Solutions'],
+            ['value' => 'game_development', 'label' => 'Game Development'],
+        ];
+    }
+
+    public static function getSystemTypes(): array
+    {
+        return [
+            ['value' => 'Web System', 'label' => 'Web System'],
+            ['value' => 'Website', 'label' => 'Website'],
+            ['value' => 'Mobile App', 'label' => 'Mobile App'],
+            ['value' => 'E-Commerce', 'label' => 'E-Commerce'],
+            ['value' => 'Digital Marketing', 'label' => 'Digital Marketing'],
+            ['value' => 'IT Solutions', 'label' => 'IT Solutions'],
+            ['value' => 'Game Development', 'label' => 'Game Development'],
+            ['value' => 'Other', 'label' => 'Other'],
+        ];
+    }
 }

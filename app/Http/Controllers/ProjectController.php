@@ -93,6 +93,20 @@ class ProjectController extends Controller
         return Inertia::render('Projects', $props);
     }
 
+    public function create()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return Inertia::render('ProjectCreate', [
+            'clients' => $user->isAdmin()
+                ? User::where('role', 'client')->select('id', 'name', 'email', 'company_name')->get()
+                : null,
+            'services' => Project::getServices(),
+            'systemTypes' => Project::getSystemTypes(),
+        ]);
+    }
+
     public function show(Project $project)
     {
         /** @var User $user */
