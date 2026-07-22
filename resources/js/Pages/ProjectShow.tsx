@@ -198,9 +198,7 @@ export default function ProjectShow({ project }: { project: Project }) {
                                         <div className="flex-1 pb-1">
                                             <div className="flex items-start justify-between gap-2">
                                                 <div>
-                                                    <p className={`text-sm font-semibold ${
-                                                        m.is_active ? 'text-slate-900' : 'text-slate-500'
-                                                    }`}>
+                                                    <p className="text-sm font-semibold text-slate-900">
                                                         {m.title}
                                                     </p>
                                                     {m.note && (
