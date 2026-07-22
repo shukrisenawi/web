@@ -14,7 +14,7 @@ const promotions = [
         desc: 'Get a professional website with modern design and fast performance.',
         features: ['Custom Design', 'Responsive Layout', 'Basic SEO'],
         image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80',
-        cta: 'Get This Deal',
+        cta: 'Request Quotation',
         variant: 'blue',
     },
     {
@@ -25,7 +25,7 @@ const promotions = [
         desc: 'Build your mobile app and reach your customers anywhere.',
         features: ['iOS & Android', 'UI/UX Design', 'App Deployment'],
         image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=400&q=80',
-        cta: 'Get This Deal',
+        cta: 'Request Quotation',
         variant: 'indigo',
     },
     {
@@ -36,7 +36,7 @@ const promotions = [
         desc: 'Kickstart your brand growth with effective digital marketing.',
         features: ['Social Media Marketing', 'Google Ads Setup', 'Monthly Reporting'],
         image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80',
-        cta: 'Get This Deal',
+        cta: 'Request Quotation',
         variant: 'emerald',
     },
     {
@@ -47,7 +47,7 @@ const promotions = [
         desc: 'Get website, system and marketing in one complete package.',
         features: ['Web Development', 'Web System', 'Digital Marketing'],
         image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=80',
-        cta: 'Get This Deal',
+        cta: 'Request Quotation',
         variant: 'blue',
     },
 ];
