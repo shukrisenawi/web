@@ -1,5 +1,6 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
+import { HeroBackground } from '@/Components/HeroBackground';
 import {
     LayoutDashboard,
     FolderKanban,
@@ -167,54 +168,57 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
 
             {/** Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-slate-950 text-white transition-transform duration-200 print:hidden lg:translate-x-0 ${
+                className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col overflow-hidden bg-[#050914] text-white transition-transform duration-200 print:hidden lg:translate-x-0 ${
                     sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}
             >
-                <div className="flex h-16 shrink-0 items-center gap-2 px-6">
-                    <Link href="/" className="flex items-center gap-2">
-                        <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
-                        <span className="font-bold">
-                            <span className="text-white">KENJU</span>
-                            <span className="ml-2 text-blue-600">TECH</span>
-                        </span>
-                    </Link>
-                    <button
-                        type="button"
-                        className="ml-auto lg:hidden"
-                        onClick={() => setSidebarOpen(false)}
-                        aria-label="Close sidebar"
-                    >
-                        <X className="h-5 w-5" />
-                    </button>
+                <HeroBackground />
+
+                <div className="relative z-10 flex flex-1 flex-col">
+                    <div className="flex h-16 shrink-0 items-center gap-2 px-6">
+                        <Link href="/" className="flex items-center gap-2">
+                            <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
+                            <span className="font-bold">
+                                <span className="text-white">KENJU</span>
+                                <span className="ml-2 text-blue-600">TECH</span>
+                            </span>
+                        </Link>
+                        <button
+                            type="button"
+                            className="ml-auto lg:hidden"
+                            onClick={() => setSidebarOpen(false)}
+                            aria-label="Close sidebar"
+                        >
+                            <X className="h-5 w-5" />
+                        </button>
+                    </div>
+
+                    <nav className="flex-1 overflow-y-auto px-4 space-y-1">
+                        {sidebar.map((item) => {
+                            const active = item.href !== '#' && (item.exact ? currentPath === item.href : currentPath.startsWith(item.href));
+                            const badgeCount = item.badge === 'unreadMessagesCount' ? (unreadMessagesCount ?? 0) : item.badge === 'pendingRequestsCount' ? (pendingRequestsCount ?? 0) : item.badge === 'pendingPaymentsCount' ? (pendingPaymentsCount ?? 0) : item.badge === 'pendingInvoicesCount' ? (pendingInvoicesCount ?? 0) : 0;
+                            return (
+                                <Link
+                                    key={item.label}
+                                    href={item.href}
+                                    className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
+                                        active
+                                            ? 'bg-blue-600 text-white'
+                                            : 'text-slate-300 hover:bg-slate-900 hover:text-white'
+                                    }`}
+                                >
+                                    <item.icon className="h-5 w-5" />
+                                    <span className="flex-1">{item.label}</span>
+                                    {badgeCount > 0 && (
+                                        <span className="flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
+                                            {badgeCount > 99 ? '99+' : badgeCount}
+                                        </span>
+                                    )}
+                                </Link>
+                            );
+                        })}
+                    </nav>
                 </div>
-
-                <nav className="mt-4 flex-1 overflow-y-auto px-4 space-y-1">
-                    {sidebar.map((item) => {
-                        const active = item.href !== '#' && (item.exact ? currentPath === item.href : currentPath.startsWith(item.href));
-                        const badgeCount = item.badge === 'unreadMessagesCount' ? (unreadMessagesCount ?? 0) : item.badge === 'pendingRequestsCount' ? (pendingRequestsCount ?? 0) : item.badge === 'pendingPaymentsCount' ? (pendingPaymentsCount ?? 0) : item.badge === 'pendingInvoicesCount' ? (pendingInvoicesCount ?? 0) : 0;
-                        return (
-                            <Link
-                                key={item.label}
-                                href={item.href}
-                                className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
-                                    active
-                                        ? 'bg-blue-600 text-white'
-                                        : 'text-slate-300 hover:bg-slate-900 hover:text-white'
-                                }`}
-                            >
-                                <item.icon className="h-5 w-5" />
-                                <span className="flex-1">{item.label}</span>
-                                {badgeCount > 0 && (
-                                    <span className="flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
-                                        {badgeCount > 99 ? '99+' : badgeCount}
-                                    </span>
-                                )}
-                            </Link>
-                        );
-                    })}
-                </nav>
-
             </aside>
 
             {/** Main */}
