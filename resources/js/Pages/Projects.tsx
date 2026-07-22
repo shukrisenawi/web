@@ -399,13 +399,15 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                             <FileText className="h-3.5 w-3.5" /> Invoice
                                         </Link>
                                     )}
-                                    <Link
-                                        href={`/projects/${project.id}/edit`}
-                                        className="text-slate-400 hover:text-blue-600"
-                                        title="Update"
-                                    >
-                                        <Pencil className="h-4 w-4" />
-                                    </Link>
+                                    {isAdmin && (
+                                        <Link
+                                            href={`/projects/${project.id}/edit`}
+                                            className="text-slate-400 hover:text-blue-600"
+                                            title="Update"
+                                        >
+                                            <Pencil className="h-4 w-4" />
+                                        </Link>
+                                    )}
                                     {isAdmin && project.has_invoice && (
                                         <Link
                                             href={`/invoices?user_id=${project.user_id}&project_id=${project.id}`}
