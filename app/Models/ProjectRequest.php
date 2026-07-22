@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'deadline',
     'hosting_domain',
     'additional_notes',
+    'rejection_reason',
     'status',
 ])]
 class ProjectRequest extends Model

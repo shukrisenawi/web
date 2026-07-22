@@ -35,6 +35,7 @@ class ProjectRequestAdminController extends Controller
                 'appointment_date' => $r->appointment_date,
                 'appointment_time' => $r->appointment_time,
                 'message' => $r->message,
+                'rejection_reason' => $r->rejection_reason,
                 'status' => $r->status,
                 'created_at' => $r->created_at->format('M d, Y'),
                 'user_id' => $r->user_id,
@@ -47,22 +48,77 @@ class ProjectRequestAdminController extends Controller
 
     public function markReviewed(ProjectRequest $request): RedirectResponse
     {
+        $this->ensureAdmin();
+
+        if ($request->status === 'pending') {
+            $request->update(['status' => 'reviewed']);
+        }
+
+        $this->markNotificationsRead($request);
+
+        return redirect()->route('requests')->with('success', 'Request marked as reviewed.');
+    }
+
+    public function approve(ProjectRequest $request): RedirectResponse
+    {
+        $this->ensureAdmin();
+
+        $request->update(['status' => 'approved', 'rejection_reason' => null]);
+
+        $this->markNotificationsRead($request);
+
+        return redirect()->route('requests')->with('success', 'Appointment approved.');
+    }
+
+    public function reject(Request $request, ProjectRequest $projectRequest): RedirectResponse
+    {
+        $this->ensureAdmin();
+
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $projectRequest->update([
+            'status' => 'rejected',
+            'rejection_reason' => $validated['reason'],
+        ]);
+
+        $this->markNotificationsRead($projectRequest);
+
+        return redirect()->route('requests')->with('success', 'Appointment rejected.');
+    }
+
+    public function update(Request $request, ProjectRequest $projectRequest): RedirectResponse
+    {
+        $this->ensureAdmin();
+
+        $validated = $request->validate([
+            'appointment_type' => ['required', 'in:Physical,Online'],
+            'appointment_date' => ['required', 'date'],
+            'appointment_time' => ['required', 'string', 'max:20'],
+            'message' => ['nullable', 'string', 'max:5000'],
+        ]);
+
+        $projectRequest->update($validated);
+
+        return redirect()->route('requests')->with('success', 'Appointment updated.');
+    }
+
+    private function ensureAdmin(): void
+    {
         /** @var User $user */
         $user = Auth::user();
 
         if (! $user->isAdmin()) {
             abort(403);
         }
+    }
 
-        if ($request->status === 'pending') {
-            $request->update(['status' => 'reviewed']);
-        }
-
+    private function markNotificationsRead(ProjectRequest $request): void
+    {
         Notification::where('notifiable_type', ProjectRequest::class)
             ->where('notifiable_id', $request->id)
             ->where('is_read', false)
             ->update(['is_read' => true, 'read_at' => now()]);
-
-        return redirect()->route('requests')->with('success', 'Request marked as reviewed.');
     }
 }
