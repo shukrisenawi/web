@@ -190,7 +190,7 @@ export default function RequestForm() {
                                         {errors.appointment_date && <p className="mt-1 text-xs text-red-600">{errors.appointment_date}</p>}
                                     </div>
                                     <div>
-                                        <label htmlFor="appointment_time" className={labelClass}>Time <span className="text-red-500">*</span> (h:iA)</label>
+                                        <label htmlFor="appointment_time" className={labelClass}>Time <span className="text-red-500">*</span></label>
                                         <input id="appointment_time" type="text" value={data.appointment_time} onChange={(e) => setData('appointment_time', e.target.value)} className={inputClass} placeholder="10:00AM" />
                                         {errors.appointment_time && <p className="mt-1 text-xs text-red-600">{errors.appointment_time}</p>}
                                     </div>
