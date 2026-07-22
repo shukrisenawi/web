@@ -73,7 +73,7 @@ class FrontpageContent extends Model
             'cta_title' => "Let's build something great together.",
             'cta_subtitle' => 'Have a project in mind? Let\'s talk about how we can help you achieve your goals.',
             'cta_button' => 'Start a New Project',
-            'cta_link' => '/contact',
+            'cta_link' => '/request',
             'footer_tagline' => 'Building digital products that move your business forward.',
             'social_links' => [
                 ['name' => 'Twitter', 'url' => 'https://twitter.com'],
