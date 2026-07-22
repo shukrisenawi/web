@@ -151,13 +151,6 @@ export default function Work() {
                                             <h3 className="font-semibold text-slate-900">{project.title}</h3>
                                             <p className="mt-1 text-sm font-medium text-blue-600">{project.category}</p>
                                             <p className="mt-1 text-sm text-slate-500 line-clamp-2">{project.description}</p>
-                                            <Link
-                                                href={`/work/${slug}`}
-                                                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
-                                            >
-                                                View Case Study
-                                                <ArrowRight className="h-4 w-4" />
-                                            </Link>
                                         </div>
                                     </div>
                                 );
