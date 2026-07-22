@@ -225,7 +225,7 @@ export default function RequestForm() {
                                                 onChange={handleDateChange}
                                                 dateFormat="dd/MM/yyyy"
                                                 placeholderText="dd/mm/yyyy"
-                                                className={inputClass}
+                                                className={`${inputClass} !pl-9`}
                                                 wrapperClassName="w-full"
                                                 showIcon
                                                 icon={
