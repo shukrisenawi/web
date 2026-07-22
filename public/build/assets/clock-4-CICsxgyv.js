@@ -1,1 +1,0 @@
-import{t as e}from"./createLucideIcon-C4UOAnPf.js";var t=e(`clock-4`,[[`circle`,{cx:`12`,cy:`12`,r:`10`,key:`1mglay`}],[`path`,{d:`M12 6v6l4 2`,key:`mmk7yg`}]]);export{t};

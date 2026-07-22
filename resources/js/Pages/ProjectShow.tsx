@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, FolderKanban, ListChecks, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, FolderKanban, ListChecks, CheckCircle2, Circle, Clock } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
@@ -174,7 +174,7 @@ export default function ProjectShow({ project }: { project: Project }) {
                 </Card>
 
                 <Card>
-                    <div className="mb-4 flex items-center gap-2">
+                    <div className="mb-6 flex items-center gap-2">
                         <ListChecks className="h-5 w-5 text-blue-600" />
                         <h3 className="font-semibold text-slate-900">Milestones & Updates</h3>
                     </div>
@@ -184,25 +184,49 @@ export default function ProjectShow({ project }: { project: Project }) {
                             No milestones yet. Our team will add progress updates here.
                         </p>
                     ) : (
-                        <div className="space-y-3">
-                            {project.milestones.map((m) => (
-                                <div key={m.id} className="flex items-start gap-3 rounded-xl border border-slate-100 p-3">
-                                    <div
-                                        className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
-                                            m.is_active ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'
-                                        }`}
-                                    >
-                                        <CheckCircle2 className="h-4 w-4" />
+                        <div className="relative">
+                            <div className="absolute left-[11px] top-2 h-[calc(100%-16px)] w-0.5 bg-slate-200" />
+                            <div className="space-y-6">
+                                {project.milestones.map((m, i) => (
+                                    <div key={m.id} className="relative flex items-start gap-4">
+                                        <div className="relative z-10 flex shrink-0">
+                                            <div
+                                                className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
+                                                    m.is_active
+                                                        ? 'border-blue-600 bg-blue-600 text-white'
+                                                        : 'border-slate-300 bg-white text-slate-400'
+                                                }`}
+                                            >
+                                                {m.is_active ? (
+                                                    <CheckCircle2 className="h-3.5 w-3.5" />
+                                                ) : (
+                                                    <Circle className="h-3.5 w-3.5" />
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 pb-1">
+                                            <div className="flex items-start justify-between gap-2">
+                                                <div>
+                                                    <p className={`text-sm font-semibold ${
+                                                        m.is_active ? 'text-slate-900' : 'text-slate-500'
+                                                    }`}>
+                                                        {m.title}
+                                                    </p>
+                                                    {m.note && (
+                                                        <p className="mt-0.5 text-xs text-slate-500">{m.note}</p>
+                                                    )}
+                                                </div>
+                                                {m.due_date && (
+                                                    <span className="flex shrink-0 items-center gap-1 text-xs text-slate-400">
+                                                        <Clock className="h-3 w-3" />
+                                                        {m.due_date}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex-1">
-                                        <p className="text-sm font-semibold text-slate-900">{m.title}</p>
-                                        {m.note && <p className="text-xs text-slate-500">{m.note}</p>}
-                                    </div>
-                                    {m.due_date && (
-                                        <span className="text-xs text-slate-400">{m.due_date}</span>
-                                    )}
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     )}
                 </Card>
