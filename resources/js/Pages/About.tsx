@@ -208,13 +208,6 @@ export default function About({
                             <p className="max-w-md text-sm text-slate-600">
                                 A passionate team of designers, developers, and strategists working together to bring ideas to life.
                             </p>
-                            <Link
-                                href="/about"
-                                className="text-sm font-semibold text-blue-600 inline-flex items-center gap-1 hover:underline"
-                            >
-                                View All Team
-                                <ArrowRight className="h-4 w-4" />
-                            </Link>
                         </div>
 
                         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
