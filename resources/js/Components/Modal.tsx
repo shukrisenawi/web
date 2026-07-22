@@ -26,6 +26,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
             <div
                 className="w-full max-w-md rounded-2xl bg-white shadow-xl"
                 onClick={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
             >
                 {title && (
                     <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
