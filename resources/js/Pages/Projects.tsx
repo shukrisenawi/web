@@ -1,7 +1,8 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, Building2, FolderKanban, Plus, Search, Paperclip, Trash2, FileText, Pencil, Eye } from 'lucide-react';
+import { ArrowRight, Building2, CheckCircle2, FolderKanban, ListChecks, Plus, Search, Paperclip, Trash2, FileText, Pencil, Eye } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
+import Modal from '@/Components/Modal';
 
 const inputClass = 'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
@@ -95,6 +96,23 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const [progressValue, setProgressValue] = useState(0);
     const [editingStatusId, setEditingStatusId] = useState<number | null>(null);
     const [editingPaymentId, setEditingPaymentId] = useState<number | null>(null);
+    const [milestoneProject, setMilestoneProject] = useState<number | null>(null);
+    const [milestoneForm, setMilestoneForm] = useState({ title: '', note: '' });
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    const submitMilestone = () => {
+        if (!milestoneProject || !milestoneForm.title.trim()) return;
+        router.post(`/projects/${milestoneProject}/milestones`, milestoneForm, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                setMilestoneProject(null);
+                setMilestoneForm({ title: '', note: '' });
+                setShowSuccess(true);
+            },
+        });
+    };
+
     const handleFilter = () => {
         router.get('/projects', { status, search }, { preserveState: true, replace: true });
     };
@@ -397,6 +415,14 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                             <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
                                 <span className="text-xs text-slate-400">Started {project.created_at}</span>
                                 <div className="flex items-center gap-2">
+                                    {isAdmin && (
+                                        <button
+                                            onClick={() => { setMilestoneProject(project.id); setMilestoneForm({ title: '', note: '' }); }}
+                                            className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
+                                        >
+                                            <ListChecks className="h-3.5 w-3.5" /> Update
+                                        </button>
+                                    )}
                                     {isAdmin && !project.has_invoice && (
                                         <Link
                                             href={`/invoices?user_id=${project.user_id}&project_id=${project.id}&new=1`}
@@ -409,7 +435,7 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                         <Link
                                             href={`/projects/${project.id}/edit`}
                                             className="text-slate-400 hover:text-blue-600"
-                                            title="Update"
+                                            title="Edit"
                                         >
                                             <Pencil className="h-4 w-4" />
                                         </Link>
@@ -417,7 +443,7 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                     {isAdmin && project.has_invoice && (
                                         <Link
                                             href={`/invoices?user_id=${project.user_id}&project_id=${project.id}`}
-                                            className="text-xs text-slate-400 hover:text-blue-600"
+                                            className="text-slate-400 hover:text-blue-600"
                                             title="View invoices"
                                         >
                                             <FileText className="h-4 w-4" />
@@ -457,6 +483,67 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                 )}
             </DashboardLayout>
 
+            <Modal open={milestoneProject !== null} onClose={() => setMilestoneProject(null)}>
+                <div className="px-6 py-5">
+                    <h2 className="mb-4 text-lg font-bold text-slate-900">Add Update</h2>
+                    <div className="space-y-4">
+                        <div>
+                            <label className={labelClass}>Title</label>
+                            <input
+                                type="text"
+                                value={milestoneForm.title}
+                                onChange={(e) => setMilestoneForm({ ...milestoneForm, title: e.target.value })}
+                                className={inputClass}
+                                placeholder="What's new?"
+                            />
+                        </div>
+                        <div>
+                            <label className={labelClass}>Details</label>
+                            <textarea
+                                value={milestoneForm.note}
+                                onChange={(e) => setMilestoneForm({ ...milestoneForm, note: e.target.value })}
+                                rows={4}
+                                className={inputClass}
+                                placeholder="Describe the update..."
+                            />
+                        </div>
+                    </div>
+                    <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+                        <button
+                            type="button"
+                            onClick={() => setMilestoneProject(null)}
+                            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={submitMilestone}
+                            disabled={!milestoneForm.title.trim()}
+                            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                        >
+                            Add Update
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal open={showSuccess} onClose={() => setShowSuccess(false)}>
+                <div className="flex flex-col items-center gap-4 px-10 py-8">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                        <CheckCircle2 className="h-10 w-10 text-green-600" />
+                    </div>
+                    <p className="text-lg font-bold text-slate-900">Success!</p>
+                    <p className="text-center text-sm text-slate-600">Update added successfully.</p>
+                    <button
+                        type="button"
+                        onClick={() => setShowSuccess(false)}
+                        className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                    >
+                        OK
+                    </button>
+                </div>
+            </Modal>
         </>
     );
 }

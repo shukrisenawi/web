@@ -119,6 +119,7 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
     /** Admin only */
     Route::middleware('role:admin')->group(function () {
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+        Route::post('/projects/{project}/milestones', [ProjectController::class, 'storeMilestone'])->name('projects.milestones.store');
 
         Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
         Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update');

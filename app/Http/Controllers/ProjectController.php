@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FileUpload;
+use App\Models\Milestone;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -367,5 +368,31 @@ class ProjectController extends Controller
         $file->delete();
 
         return redirect()->back()->with('success', 'File deleted successfully.');
+    }
+
+    public function storeMilestone(Request $request, Project $project)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'note' => ['nullable', 'string', 'max:5000'],
+            'due_date' => ['nullable', 'date'],
+        ]);
+
+        Milestone::create([
+            'project_id' => $project->id,
+            'title' => $validated['title'],
+            'note' => $validated['note'] ?? null,
+            'due_date' => !empty($validated['due_date']) ? $validated['due_date'] : null,
+            'is_active' => false,
+        ]);
+
+        return redirect()->back()->with('success', 'Update added successfully.');
     }
 }
