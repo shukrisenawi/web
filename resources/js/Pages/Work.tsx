@@ -1,5 +1,5 @@
-import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { useState, useMemo } from 'react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { ArrowRight, Play, Search, ClipboardList, Code2, FlaskConical, Rocket, ShieldCheck, Users, Rocket as RocketIcon, Globe } from 'lucide-react';
@@ -12,64 +12,13 @@ const stats = [
     { icon: Globe, value: '10+', label: 'Industries\nServed' },
 ];
 
-const categories = [
+const defaultCategories = [
     'All Projects',
     'Web Development',
     'Mobile App',
     'Web System',
     'Game Development',
     'Digital Marketing',
-];
-
-const projects = [
-    {
-        title: 'Food Delivery Website',
-        category: 'Web Development',
-        image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
-        slug: 'food-delivery-website',
-    },
-    {
-        title: 'Fintech Mobile App',
-        category: 'Mobile App',
-        image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80',
-        slug: 'fintech-mobile-app',
-    },
-    {
-        title: 'School Management System',
-        category: 'Web System',
-        image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80',
-        slug: 'school-management-system',
-    },
-    {
-        title: 'RPG Mobile Game',
-        category: 'Game Development',
-        image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
-        slug: 'rpg-mobile-game',
-    },
-    {
-        title: 'Digital Marketing Campaign',
-        category: 'Digital Marketing',
-        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
-        slug: 'digital-marketing-campaign',
-    },
-    {
-        title: 'E-Commerce Website',
-        category: 'Web Development',
-        image: 'https://images.unsplash.com/photo-1472851294608-4155227b322c?auto=format&fit=crop&w=800&q=80',
-        slug: 'e-commerce-website',
-    },
-    {
-        title: 'Logistics Management System',
-        category: 'Web System',
-        image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80',
-        slug: 'logistics-management-system',
-    },
-    {
-        title: 'Corporate Website',
-        category: 'Web Development',
-        image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
-        slug: 'corporate-website',
-    },
 ];
 
 const processSteps = [
@@ -80,12 +29,36 @@ const processSteps = [
     { icon: Rocket, number: '5.', title: 'Launch', desc: 'We deploy and support you to grow even further.' },
 ];
 
+function slugify(title: string): string {
+    return title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+interface Project {
+    title: string;
+    category: string;
+    image: string;
+    slug?: string;
+    link?: string;
+}
+
 export default function Work() {
+    const { frontpage } = usePage().props as any;
+    const c = frontpage ?? {};
+    const projects: Project[] = (c.projects || []);
+
+    const categories = useMemo(() => {
+        const set = new Set(projects.map((p: Project) => p.category).filter(Boolean));
+        return ['All Projects', ...Array.from(set)];
+    }, [projects]);
+
     const [activeCategory, setActiveCategory] = useState('All Projects');
 
     const filteredProjects = activeCategory === 'All Projects'
         ? projects
-        : projects.filter((p) => p.category === activeCategory);
+        : projects.filter((p: Project) => p.category === activeCategory);
 
     return (
         <>
@@ -154,7 +127,7 @@ export default function Work() {
                 <section className="py-20">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-wrap items-center justify-center gap-3">
-                            {categories.map((category) => (
+                            {categories.map((category: string) => (
                                 <button
                                     type="button"
                                     key={category}
@@ -171,40 +144,43 @@ export default function Work() {
                         </div>
 
                         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {filteredProjects.map((project) => (
-                                <div
-                                    key={project.slug}
-                                    className="group overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-shadow hover:shadow-lg"
-                                >
-                                    <Link href={`/work/${project.slug}`} className="block">
-                                        <div className="relative aspect-[4/3] overflow-hidden">
-                                            <img
-                                                src={project.image}
-                                                alt={project.title}
-                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                            />
-                                            {project.category === 'Game Development' && (
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="rounded-full bg-white/90 p-3 shadow-lg">
-                                                        <Play className="h-6 w-6 fill-blue-600 text-blue-600" />
+                            {filteredProjects.map((project: Project) => {
+                                const slug = project.slug || slugify(project.title);
+                                return (
+                                    <div
+                                        key={slug}
+                                        className="group overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-shadow hover:shadow-lg"
+                                    >
+                                        <Link href={`/work/${slug}`} className="block">
+                                            <div className="relative aspect-[4/3] overflow-hidden">
+                                                <img
+                                                    src={project.image}
+                                                    alt={project.title}
+                                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                />
+                                                {project.category === 'Game Development' && (
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <div className="rounded-full bg-white/90 p-3 shadow-lg">
+                                                            <Play className="h-6 w-6 fill-blue-600 text-blue-600" />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </Link>
-                                    <div className="p-5">
-                                        <h3 className="font-semibold text-slate-900">{project.title}</h3>
-                                        <p className="mt-1 text-sm text-slate-500">{project.category}</p>
-                                        <Link
-                                            href={`/work/${project.slug}`}
-                                            className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
-                                        >
-                                            View Case Study
-                                            <ArrowRight className="h-4 w-4" />
+                                                )}
+                                            </div>
                                         </Link>
+                                        <div className="p-5">
+                                            <h3 className="font-semibold text-slate-900">{project.title}</h3>
+                                            <p className="mt-1 text-sm text-slate-500">{project.category}</p>
+                                            <Link
+                                                href={`/work/${slug}`}
+                                                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
+                                            >
+                                                View Case Study
+                                                <ArrowRight className="h-4 w-4" />
+                                            </Link>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                     </div>

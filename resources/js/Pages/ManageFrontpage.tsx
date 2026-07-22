@@ -543,7 +543,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                                             <Field label="Title">
                                                 <input
                                                     type="text"
@@ -557,6 +557,15 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                                     type="text"
                                                     value={project.category || ''}
                                                     onChange={(e) => updateArray('projects', idx, 'category', e.target.value)}
+                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                            </Field>
+                                            <Field label="Slug">
+                                                <input
+                                                    type="text"
+                                                    value={project.slug || ''}
+                                                    placeholder="auto-dari-title"
+                                                    onChange={(e) => updateArray('projects', idx, 'slug', e.target.value)}
                                                     className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                                                 />
                                             </Field>

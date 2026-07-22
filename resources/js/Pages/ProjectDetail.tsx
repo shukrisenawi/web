@@ -15,7 +15,7 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
     const { frontpage } = usePage().props as any;
     const c = frontpage ?? {};
     const projects = (c.projects || []);
-    const project = projects.find((p: any) => slugify(p.title) === slug);
+    const project = projects.find((p: any) => p.slug === slug || slugify(p.title) === slug);
     const extra = projectsData[slug];
 
     if (!project || !extra) {
