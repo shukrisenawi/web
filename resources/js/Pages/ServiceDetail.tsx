@@ -340,7 +340,7 @@ function DigitalMarketingDetail({ service }: { service: any }) {
                                 </p>
                                 <div className="mt-8 flex flex-wrap items-center gap-4">
                                     <Link
-                                        href="/contact"
+                                        href="/request"
                                         className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                                     >
                                         Request Quotation
@@ -583,7 +583,7 @@ function MarketingCta() {
                             </p>
                         </div>
                         <Link
-                            href="/contact"
+                            href="/request"
                             className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
                         >
                             Request Quotation
@@ -1179,10 +1179,10 @@ function WebSystemDetail({ service }: { service: any }) {
                                         best solution.
                                     </p>
                                     <Link
-                                        href="/contact"
-                                        className="mt-5 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
-                                    >
-                                        Request Quotation
+                                    href="/request"
+                                    className="mt-5 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+                                >
+                                    Request Quotation
                                         <ArrowRight className="h-4 w-4" />
                                     </Link>
                                 </div>
@@ -1270,7 +1270,7 @@ function WebSystemCta() {
                             </p>
                         </div>
                         <Link
-                            href="/contact"
+                            href="/request"
                             className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
                         >
                             Request Quotation
@@ -1593,7 +1593,7 @@ function MobileAppsDetail({ service }: { service: any }) {
                                 </p>
                                 <div className="mt-8 flex flex-wrap items-center gap-4">
                                     <Link
-                                        href="/contact"
+                                        href="/request"
                                         className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                                     >
                                         Request Quotation
@@ -1782,7 +1782,7 @@ function MobileAppsDetail({ service }: { service: any }) {
                                     and complexity.
                                 </p>
                                 <Link
-                                    href="/contact"
+                                    href="/request"
                                     className="mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
                                 >
                                     Request Quotation
@@ -2834,7 +2834,7 @@ function GameDevelopmentDetail({ service }: { service: any }) {
 
                                 <div className="mt-8 flex flex-wrap items-center gap-4">
                                     <Link
-                                        href="/contact"
+                                        href="/request"
                                         className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                                     >
                                         Request Quotation
@@ -3049,7 +3049,7 @@ function GameDevelopmentDetail({ service }: { service: any }) {
                                     and complexity.
                                 </p>
                                 <Link
-                                    href="/contact"
+                                    href="/request"
                                     className="mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
                                 >
                                     Request Quotation
