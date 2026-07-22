@@ -159,7 +159,7 @@ export default function Dashboard({
                         const config = statConfig[stat.label];
                         if (!config) return null;
                         const Icon = config.icon;
-                        const href = stat.label === 'Total Clients' ? '/clients' : '/projects';
+                        const href = stat.label === 'Total Clients' ? '/clients' : stat.label === 'Open Tickets' ? '/support' : '/projects';
                         return (
                             <Card key={stat.label} className="flex flex-col">
                                 <div className="flex items-start justify-between">
