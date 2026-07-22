@@ -204,7 +204,13 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
             <LandingFooter />
 
             {lightboxImage && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+                <div
+                    role="button"
+                    tabIndex={0}
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+                    onClick={(e) => { if (e.target === e.currentTarget) closeLightbox(); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') closeLightbox(); }}
+                >
                     <button
                         type="button"
                         onClick={closeLightbox}
