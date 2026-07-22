@@ -3595,7 +3595,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
                                 </div>
                                 <Link
                                     href="/request"
-                                    className="inline-flex h-11 w-fit items-center gap-2 self-start rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700 lg:ml-auto"
+                                    className="inline-flex h-11 w-fit items-center gap-2 self-center rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700"
                                 >
                                     Request Quotation
                                     <ArrowRight className="h-4 w-4" />
@@ -3841,7 +3841,7 @@ function ITEquipmentCta() {
                     </div>
                     <Link
                         href="/request"
-                        className="inline-flex h-11 w-fit items-center gap-2 self-center rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700 lg:ml-auto"
+                        className="inline-flex h-11 w-fit items-center gap-2 self-center rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700"
                     >
                         Request Quotation
                         <ArrowRight className="h-4 w-4" />
