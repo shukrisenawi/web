@@ -77,7 +77,7 @@ class NotificationController extends Controller
                 'name' => '',
                 'email' => '',
                 'date' => $n->created_at->format('M d, Y'),
-                'url' => route('dashboard'),
+                'url' => route('appointments'),
             ]);
 
         $items = $items->concat($clientNotificationItems);
