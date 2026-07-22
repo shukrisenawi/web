@@ -124,6 +124,25 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                     </div>
                 </section>
 
+                {/* Success state - on top so visible immediately */}
+                {submitted && (
+                    <section className="mx-auto max-w-2xl px-4 pb-10 sm:px-6">
+                        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center">
+                            <CheckCircle className="mx-auto h-12 w-12 text-emerald-600" />
+                            <h3 className="mt-4 text-lg font-bold text-slate-900">Proof Submitted Successfully!</h3>
+                            <p className="mt-2 text-sm text-slate-600">
+                                Our team will verify your payment and send you a confirmation email shortly.
+                            </p>
+                            <a
+                                href="/dashboard"
+                                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
+                            >
+                                Back to Dashboard <ArrowRight className="h-4 w-4" />
+                            </a>
+                        </div>
+                    </section>
+                )}
+
                 {/* Payment Methods */}
                 {!isPaid && (
                     <section className="mx-auto max-w-4xl px-4 pb-10 sm:px-6">
@@ -347,25 +366,6 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                     Submit Payment Proof <ArrowRight className="h-4 w-4" />
                                 </button>
                             </div>
-                        </div>
-                    </section>
-                )}
-
-                {/* Success state */}
-                {submitted && (
-                    <section className="mx-auto max-w-2xl px-4 pb-16 sm:px-6">
-                        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center">
-                            <CheckCircle className="mx-auto h-12 w-12 text-emerald-600" />
-                            <h3 className="mt-4 text-lg font-bold text-slate-900">Proof Submitted Successfully!</h3>
-                            <p className="mt-2 text-sm text-slate-600">
-                                Our team will verify your payment and send you a confirmation email shortly.
-                            </p>
-                            <a
-                                href="/dashboard"
-                                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
-                            >
-                                Back to Dashboard <ArrowRight className="h-4 w-4" />
-                            </a>
                         </div>
                     </section>
                 )}
