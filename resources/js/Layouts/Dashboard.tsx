@@ -27,6 +27,13 @@ interface SidebarItem {
     exact?: boolean;
 }
 
+const appointmentStatusLabel: Record<string, string> = {
+    pending: 'Appoint pending review',
+    reviewed: 'Appoint reviewed',
+    approved: 'Appoint approved',
+    rejected: 'Appoint rejected',
+};
+
 const clientSidebar: SidebarItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
@@ -238,7 +245,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                         {appointmentStatus && !user.isAdmin && (
                             <div className="flex items-center gap-1.5 rounded-full border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600">
                                 <span className={`h-2 w-2 rounded-full ${appointmentStatus === 'pending' ? 'bg-amber-400' : appointmentStatus === 'reviewed' ? 'bg-blue-500' : 'bg-green-500'}`} />
-                                {appointmentStatus}
+                                {appointmentStatusLabel[appointmentStatus] || appointmentStatus}
                             </div>
                         )}
                         <div className="relative" ref={notifRef}>
