@@ -16,6 +16,7 @@ import {
     MoreVertical,
     Database,
     Wallet,
+    Inbox,
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -36,7 +37,8 @@ const clientSidebar: SidebarItem[] = [
 
 const adminSidebar: SidebarItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { label: 'Projects', href: '/projects', icon: FolderKanban, badge: 'pendingRequestsCount' },
+    { label: 'Project Requests', href: '/requests', icon: Inbox, badge: 'pendingRequestsCount' },
+    { label: 'Projects', href: '/projects', icon: FolderKanban },
     { label: 'Database', href: '/clients', icon: Database },
     { label: 'Payments', href: '/payments', icon: Wallet, badge: 'pendingPaymentsCount' },
     { label: 'Invoices', href: '/invoices', icon: FileText },

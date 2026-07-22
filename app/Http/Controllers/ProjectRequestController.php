@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification as AdminNotification;
 use App\Models\ProjectRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -40,7 +41,7 @@ class ProjectRequestController extends Controller
             'whatsapp' => $validated['contact_mobile'] ?? null,
         ]);
 
-        ProjectRequest::create([
+        $projectRequest = ProjectRequest::create([
             'user_id' => $user->id,
             'company_name' => $validated['company_name'],
             'contact_name' => $validated['contact_name'],
@@ -52,6 +53,20 @@ class ProjectRequestController extends Controller
             'message' => $validated['message'] ?? null,
             'status' => 'pending',
         ]);
+
+        // Notify all admins
+        $adminUsers = User::where('role', User::ROLE_ADMIN)->get();
+        foreach ($adminUsers as $admin) {
+            AdminNotification::create([
+                'user_id' => $admin->id,
+                'type' => 'project_request',
+                'notifiable_type' => ProjectRequest::class,
+                'notifiable_id' => $projectRequest->id,
+                'title' => 'New project request: ' . $validated['company_name'],
+                'message' => $validated['contact_name'] . ' (' . $validated['contact_email'] . ') submitted a project request.',
+                'is_read' => false,
+            ]);
+        }
 
         Auth::login($user);
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Notification;
 use App\Models\PaymentProof;
 use App\Models\ProjectRequest;
 use App\Models\Ticket;
@@ -113,7 +114,24 @@ class NotificationController extends Controller
                     'url' => route('invoices') . '?status=pending',
                 ]);
 
-            $items = $items->concat($pendingRequests)->concat($pendingProofs);
+            $notificationItems = Notification::where('user_id', $user->id)
+                ->where('is_read', false)
+                ->where('type', 'project_request')
+                ->with('notifiable')
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(fn ($n) => [
+                    'type' => $n->type,
+                    'id' => (string) $n->id,
+                    'subject' => $n->title,
+                    'description' => $n->message,
+                    'name' => $n->notifiable?->contact_name,
+                    'email' => $n->notifiable?->contact_email,
+                    'date' => $n->created_at->format('M d, Y'),
+                    'url' => route('requests'),
+                ]);
+
+            $items = $items->concat($pendingRequests)->concat($pendingProofs)->concat($notificationItems);
         }
 
         $items = $items->sortByDesc('date')->values();

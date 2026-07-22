@@ -8,6 +8,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectRequestAdminController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProjectRequestController;
 use App\Http\Controllers\TicketController;
@@ -111,7 +112,8 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
         Route::delete('/support/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
 
         Route::get('/clients', [\App\Http\Controllers\ClientDatabaseController::class, 'index'])->name('clients');
-        Route::get('/requests', [\App\Http\Controllers\ClientDatabaseController::class, 'pending'])->name('requests');
+        Route::get('/requests', [ProjectRequestAdminController::class, 'index'])->name('requests');
+        Route::post('/requests/{request}/review', [ProjectRequestAdminController::class, 'markReviewed'])->name('requests.review');
 
         Route::get('/manage-frontpage', [FrontpageController::class, 'index'])->name('frontpage.manage');
         Route::post('/manage-frontpage', [FrontpageController::class, 'update'])->name('frontpage.update');
