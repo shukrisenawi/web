@@ -3595,7 +3595,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
                                 </div>
                                 <Link
                                     href="/request"
-                                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+                                    className="inline-flex h-11 items-center gap-2 self-start rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700"
                                 >
                                     Request Quotation
                                     <ArrowRight className="h-4 w-4" />
@@ -3839,13 +3839,13 @@ function ITEquipmentCta() {
                             power your business forward.
                         </p>
                     </div>
-                        <Link
-                            href="/request"
-                            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
-                        >
-                            Request Quotation
-                            <ArrowRight className="h-4 w-4" />
-                        </Link>
+                    <Link
+                        href="/request"
+                        className="inline-flex h-11 items-center gap-2 self-center rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700"
+                    >
+                        Request Quotation
+                        <ArrowRight className="h-4 w-4" />
+                    </Link>
                 </div>
             </div>
         </section>
