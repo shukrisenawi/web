@@ -149,6 +149,9 @@ class NotificationController extends Controller
 
         if ($user->isAdmin()) {
             Ticket::whereNull('admin_viewed_at')->update(['admin_viewed_at' => now()]);
+            Notification::where('user_id', $user->id)
+                ->where('is_read', false)
+                ->update(['is_read' => true, 'read_at' => now()]);
         } else {
             $user->tickets()->whereNull('viewed_at')->update(['viewed_at' => now()]);
         }

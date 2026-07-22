@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\FrontpageContent;
 use App\Models\Invoice;
+use App\Models\Notification;
 use App\Models\PaymentProof;
 use App\Models\ProjectRequest;
 use App\Models\Ticket;
@@ -66,6 +67,9 @@ class HandleInertiaRequests extends Middleware
             'unreadMessagesCount' => $request->user()
                 ? ($request->user()->isAdmin()
                     ? Ticket::whereNull('admin_viewed_at')->count()
+                        + Notification::where('user_id', $request->user()->id)
+                            ->where('is_read', false)
+                            ->count()
                     : $request->user()->tickets()->whereNull('viewed_at')->count())
                 : 0,
             'pendingRequestsCount' => $request->user()?->isAdmin()
