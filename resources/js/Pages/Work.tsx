@@ -207,15 +207,6 @@ export default function Work() {
                             ))}
                         </div>
 
-                        <div className="mt-12 flex justify-center">
-                            <Link
-                                href="/work"
-                                className="inline-flex items-center gap-2 rounded-lg border border-blue-600 px-6 py-3 text-sm font-semibold text-blue-600 transition-colors hover:bg-blue-600 hover:text-white"
-                            >
-                                View All Projects
-                                <ArrowRight className="h-4 w-4" />
-                            </Link>
-                        </div>
                     </div>
                 </section>
 
