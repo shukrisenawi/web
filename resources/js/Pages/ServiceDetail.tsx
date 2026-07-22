@@ -1685,22 +1685,12 @@ function MobileAppsDetail({ service }: { service: any }) {
                                         />
                                     </div>
                                     <div className="p-5">
-                                        <span className="text-xs font-semibold text-blue-600">
-                                            {project.category}
-                                        </span>
-                                        <h3 className="mt-1 text-base font-semibold text-slate-900">
+                                        <h3 className="text-base font-semibold text-slate-900">
                                             {project.title}
                                         </h3>
-                                        <p className="mt-3 text-xs leading-relaxed text-slate-600">
+                                        <p className="mt-2 text-xs leading-relaxed text-slate-600">
                                             {project.desc}
                                         </p>
-                                        <Link
-                                            href="/work"
-                                            className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-600"
-                                        >
-                                            View Case Study
-                                            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-                                        </Link>
                                     </div>
                                 </div>
                             ))}
