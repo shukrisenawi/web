@@ -2,6 +2,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { ArrowRight, Building2, Search, ChevronDown, ChevronUp, CheckCircle2, XCircle, Mail, Phone, Calendar, Clock, MessageSquare, ThumbsUp, ThumbsDown, Pencil, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
+import ConfirmModal from '@/Components/ConfirmModal';
 
 interface ProjectRequestItem {
     id: number;
@@ -43,6 +44,7 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
     const [editForm, setEditForm] = useState({ appointment_type: 'Online', appointment_date: '', appointment_time: '', message: '' });
 
     const [deleteModal, setDeleteModal] = useState<number | null>(null);
+    const [approveId, setApproveId] = useState<number | null>(null);
 
     const counts = tabCounts(requests);
 
@@ -60,8 +62,12 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
     });
 
     const confirmApprove = (id: number) => {
-        if (!confirm('Approve this appointment?')) return;
-        router.post(`/requests/${id}/approve`, {}, { preserveScroll: true });
+        setApproveId(id);
+    };
+    const submitApprove = () => {
+        if (approveId === null) return;
+        router.post(`/requests/${approveId}/approve`, {}, { preserveScroll: true });
+        setApproveId(null);
     };
 
     const openReject = (r: ProjectRequestItem) => {
@@ -449,6 +455,16 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
                     </div>
                 </div>
             )}
+
+            <ConfirmModal
+                open={approveId !== null}
+                onClose={() => setApproveId(null)}
+                onConfirm={submitApprove}
+                title="Approve Appointment"
+                message="Are you sure you want to approve this appointment?"
+                confirmText="Approve"
+                confirmColor="blue"
+            />
         </>
     );
 }

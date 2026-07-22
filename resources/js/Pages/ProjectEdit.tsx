@@ -2,6 +2,7 @@ import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, Check, CheckCircle2, Clock4, FileText, Layers, Paperclip, Save, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card } from '@/Layouts/Dashboard';
+import ConfirmModal from '@/Components/ConfirmModal';
 
 const inputClass = 'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
@@ -72,6 +73,7 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
     const parsed = parseSystemType(project.system_type);
 
     const [step, setStep] = useState(1);
+    const [deleteFile, setDeleteFile] = useState<{ fileId: number; filename: string } | null>(null);
 
     const baseData: any = {
         title: project.title,
@@ -356,14 +358,7 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
                                                     </a>
                                                     <button
                                                         type="button"
-                                                        onClick={() => {
-                                                            if (confirm('Delete this file?')) {
-                                                                router.delete(`/projects/${project.id}/files/${f.id}`, {
-                                                                    preserveState: true,
-                                                                    preserveScroll: true,
-                                                                });
-                                                            }
-                                                        }}
+                                                        onClick={() => setDeleteFile({ fileId: f.id, filename: f.filename })}
                                                         className="ml-2 shrink-0 text-slate-400 hover:text-red-600"
                                                     >
                                                         <Trash2 className="h-4 w-4" />
@@ -507,6 +502,29 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
                     </Card>
                 </div>
             </DashboardLayout>
+
+            <ConfirmModal
+                open={deleteFile !== null}
+                onClose={() => setDeleteFile(null)}
+                onConfirm={() => {
+                    if (!deleteFile) return;
+                    router.delete(`/projects/${project.id}/files/${deleteFile.fileId}`, {
+                        preserveState: true,
+                        preserveScroll: true,
+                    });
+                    setDeleteFile(null);
+                }}
+                title="Delete File"
+                message={
+                    deleteFile ? (
+                        <>
+                            Are you sure you want to delete <strong className="text-slate-900">{deleteFile.filename}</strong>?
+                        </>
+                    ) : null
+                }
+                confirmText="Delete"
+                confirmColor="red"
+            />
         </>
     );
 }

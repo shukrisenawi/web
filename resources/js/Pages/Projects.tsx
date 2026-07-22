@@ -3,6 +3,7 @@ import { ArrowRight, Building2, CheckCircle2, FolderKanban, ListChecks, Plus, Se
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 import Modal from '@/Components/Modal';
+import ConfirmModal from '@/Components/ConfirmModal';
 
 const inputClass = 'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
@@ -97,6 +98,7 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const [milestoneProject, setMilestoneProject] = useState<number | null>(null);
     const [milestoneForm, setMilestoneForm] = useState({ title: '', note: '', progress: 0 });
     const [showSuccess, setShowSuccess] = useState(false);
+    const [deleteId, setDeleteId] = useState<number | null>(null);
 
     const submitMilestone = () => {
         if (!milestoneProject || !milestoneForm.title.trim() || !milestoneForm.note.trim()) return;
@@ -116,8 +118,12 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     };
 
     const deleteProject = (id: number) => {
-        if (!confirm('Delete this project?')) return;
-        router.delete(`/projects/${id}`);
+        setDeleteId(id);
+    };
+    const confirmDeleteProject = () => {
+        if (deleteId === null) return;
+        router.delete(`/projects/${deleteId}`);
+        setDeleteId(null);
     };
 
     return (
@@ -509,6 +515,16 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                     </button>
                 </div>
             </Modal>
+
+            <ConfirmModal
+                open={deleteId !== null}
+                onClose={() => setDeleteId(null)}
+                onConfirm={confirmDeleteProject}
+                title="Delete Project"
+                message="Are you sure you want to delete this project? This action cannot be undone."
+                confirmText="Delete"
+                confirmColor="red"
+            />
         </>
     );
 }

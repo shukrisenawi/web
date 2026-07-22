@@ -2,6 +2,7 @@ import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, Headphones, Plus, X, Save, Trash2, AlertCircle, MessageSquare, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
+import ConfirmModal from '@/Components/ConfirmModal';
 
 interface Reply {
     id: number;
@@ -62,6 +63,7 @@ export default function Support({ tickets }: SupportProps) {
     const [createOpen, setCreateOpen] = useState(false);
     const [viewId, setViewId] = useState<number | null>(null);
     const [activeTab, setActiveTab] = useState<Tab>('all');
+    const [deleteId, setDeleteId] = useState<number | null>(null);
 
     const filteredTickets = activeTab === 'all' ? tickets : tickets.filter((t) => t.status === activeTab);
 
@@ -118,8 +120,12 @@ export default function Support({ tickets }: SupportProps) {
 
     const deleteTicket = (id?: number) => {
         if (id === undefined) return;
-        if (!confirm('Delete this ticket?')) return;
-        router.delete(`/support/${id}`);
+        setDeleteId(id);
+    };
+    const confirmDeleteTicket = () => {
+        if (deleteId === null) return;
+        router.delete(`/support/${deleteId}`);
+        setDeleteId(null);
     };
 
     return (
@@ -446,6 +452,16 @@ export default function Support({ tickets }: SupportProps) {
                     </Card>
                 </div>
             )}
+
+            <ConfirmModal
+                open={deleteId !== null}
+                onClose={() => setDeleteId(null)}
+                onConfirm={confirmDeleteTicket}
+                title="Delete Ticket"
+                message="Are you sure you want to delete this ticket?"
+                confirmText="Delete"
+                confirmColor="red"
+            />
         </>
     );
 }

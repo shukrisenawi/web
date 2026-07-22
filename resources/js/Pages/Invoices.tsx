@@ -2,6 +2,7 @@ import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, FileText, Plus, Printer, CreditCard, X, Trash2, Save, CheckCircle2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
+import ConfirmModal from '@/Components/ConfirmModal';
 
 interface Invoice {
     id: string;
@@ -58,6 +59,7 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
     const currentStatus = filters.status ?? '';
     const [createOpen, setCreateOpen] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
     const preselected = !!preselect_user_id;
     const preselectedProject = !!preselect_project_id;
 
@@ -112,8 +114,12 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
     };
 
     const deleteInvoice = (id: string) => {
-        if (!confirm('Delete this invoice?')) return;
-        router.delete(`/invoices/${id}`);
+        setDeleteId(id);
+    };
+    const confirmDeleteInvoice = () => {
+        if (!deleteId) return;
+        router.delete(`/invoices/${deleteId}`);
+        setDeleteId(null);
     };
 
     const makePayment = (inv: Invoice) => {
@@ -494,6 +500,16 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
                     </Card>
                 </div>
             )}
+
+            <ConfirmModal
+                open={deleteId !== null}
+                onClose={() => setDeleteId(null)}
+                onConfirm={confirmDeleteInvoice}
+                title="Delete Invoice"
+                message="Are you sure you want to delete this invoice? This action cannot be undone."
+                confirmText="Delete"
+                confirmColor="red"
+            />
         </>
     );
 }

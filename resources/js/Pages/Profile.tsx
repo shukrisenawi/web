@@ -2,6 +2,7 @@ import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, Bell, User, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
+import ConfirmModal from '@/Components/ConfirmModal';
 
 const inputClass =
     'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
@@ -93,6 +94,7 @@ export default function Profile({ user }: ProfileProps) {
     };
 
     const [avatarPreview, setAvatarPreview] = useState(user.avatar);
+    const [removeAvatarOpen, setRemoveAvatarOpen] = useState(false);
 
     const passwordForm = useForm({
         current_password: '',
@@ -147,10 +149,13 @@ export default function Profile({ user }: ProfileProps) {
 
     const handleRemoveAvatar = (e: React.FormEvent) => {
         e.preventDefault();
-        if (confirm('Are you sure you want to remove your avatar?')) {
-            removeAvatarForm.post('/profile/avatar/remove');
-            setAvatarPreview(null);
-        }
+        setRemoveAvatarOpen(true);
+    };
+
+    const confirmRemoveAvatar = () => {
+        removeAvatarForm.post('/profile/avatar/remove');
+        setAvatarPreview(null);
+        setRemoveAvatarOpen(false);
     };
 
     return (
@@ -482,6 +487,16 @@ export default function Profile({ user }: ProfileProps) {
                     </Card>
                 </div>
             </DashboardLayout>
+
+            <ConfirmModal
+                open={removeAvatarOpen}
+                onClose={() => setRemoveAvatarOpen(false)}
+                onConfirm={confirmRemoveAvatar}
+                title="Remove Avatar"
+                message="Are you sure you want to remove your avatar?"
+                confirmText="Remove"
+                confirmColor="red"
+            />
         </>
     );
 }
