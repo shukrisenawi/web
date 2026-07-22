@@ -70,11 +70,7 @@ class HandleInertiaRequests extends Middleware
                         + Notification::where('user_id', $request->user()->id)
                             ->where('is_read', false)
                             ->count()
-                    : $request->user()->tickets()->whereNull('viewed_at')->count()
-                        + Notification::where('user_id', $request->user()->id)
-                            ->where('is_read', false)
-                            ->whereIn('type', ['appointment_reviewed', 'appointment_approved', 'appointment_rejected'])
-                            ->count())
+                    : $request->user()->tickets()->whereNull('viewed_at')->count())
                 : 0,
             'pendingRequestsCount' => $request->user()?->isAdmin()
                 ? ProjectRequest::where('status', 'pending')->count()
