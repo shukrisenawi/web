@@ -3619,13 +3619,15 @@ function ITEquipmentDetail({ service }: { service: any }) {
                                     brands.
                                 </h2>
                             </div>
-                            <Link
+                            <a
                                 href="/products"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="text-sm font-semibold text-blue-600 inline-flex items-center gap-1 hover:underline"
                             >
                                 View All Products
                                 <ArrowRight className="h-4 w-4" />
-                            </Link>
+                            </a>
                         </div>
 
                         <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
