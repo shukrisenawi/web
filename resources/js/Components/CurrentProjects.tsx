@@ -7,7 +7,6 @@ interface CurrentProject {
     category: string;
     badge: string;
     badgeColor: string;
-    progress: number;
     image: string;
 }
 
@@ -56,19 +55,6 @@ export function CurrentProjects() {
                             </div>
                             <div className="p-5">
                                 <h3 className="font-semibold text-slate-900">{project.title}</h3>
-                                <p className="mt-1 text-sm text-slate-500">{project.description}</p>
-                                <div className="mt-4">
-                                    <div className="flex items-center justify-between text-sm">
-                                        <span className="text-slate-600">Progress</span>
-                                        <span className="font-semibold text-blue-600">{project.progress}%</span>
-                                    </div>
-                                    <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                                        <div
-                                            className="h-full rounded-full bg-blue-600 transition-all duration-500"
-                                            style={{ width: `${project.progress}%` }}
-                                        />
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     ))}

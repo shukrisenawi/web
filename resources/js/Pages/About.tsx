@@ -299,19 +299,6 @@ export default function About({
                                     </div>
                                     <div className="p-5">
                                         <h3 className="font-semibold text-slate-900">{project.title}</h3>
-                                        <p className="mt-2 text-sm text-slate-600">{project.description}</p>
-                                        <div className="mt-4">
-                                            <div className="flex items-center justify-between text-xs">
-                                                <span className="font-medium text-slate-700">Progress</span>
-                                                <span className="font-semibold text-blue-600">{project.progress}%</span>
-                                            </div>
-                                            <div className="mt-2 h-2 w-full rounded-full bg-slate-100">
-                                                <div
-                                                    className="h-2 rounded-full bg-blue-600"
-                                                    style={{ width: `${project.progress}%` }}
-                                                ></div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             ))}
