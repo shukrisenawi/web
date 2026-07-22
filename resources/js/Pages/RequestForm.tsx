@@ -1,9 +1,28 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { CheckCircle2 } from 'lucide-react';
+import { useState } from 'react';
 
 const inputClass =
     'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
+
+function parseDdMmYyyy(value: string): string | null {
+    const match = value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!match) return null;
+    const [, day, month, year] = match;
+    const d = parseInt(day, 10);
+    const m = parseInt(month, 10);
+    const y = parseInt(year, 10);
+    if (m < 1 || m > 12 || d < 1 || d > 31 || y < 1900) return null;
+    return `${year}-${month}-${day}`;
+}
+
+function formatYyyyMmDdToDdMmYyyy(value: string): string {
+    if (!value) return '';
+    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return '';
+    return `${match[3]}/${match[2]}/${match[1]}`;
+}
 
 export default function RequestForm() {
     const { data, setData, post, processing, errors, setError, clearErrors } = useForm<{
@@ -29,6 +48,8 @@ export default function RequestForm() {
         appointment_time: '',
         message: '',
     });
+
+    const [appointmentDateDisplay, setAppointmentDateDisplay] = useState('');
 
     const validate = (): boolean => {
         clearErrors();
@@ -65,8 +86,9 @@ export default function RequestForm() {
             setError('appointment_type', 'Please select an appointment type');
             valid = false;
         }
-        if (!data.appointment_date) {
-            setError('appointment_date', 'Please select a date');
+        const parsedDate = parseDdMmYyyy(appointmentDateDisplay);
+        if (!parsedDate) {
+            setError('appointment_date', 'Please enter date as dd/mm/yyyy');
             valid = false;
         }
         if (!data.appointment_time.trim()) {
@@ -83,7 +105,11 @@ export default function RequestForm() {
 
     const handleSubmit = () => {
         if (validate()) {
-            post('/request', { forceFormData: true });
+            const parsedDate = parseDdMmYyyy(appointmentDateDisplay);
+            if (parsedDate) {
+                setData('appointment_date', parsedDate);
+                post('/request', { forceFormData: true });
+            }
         }
     };
 
@@ -172,7 +198,20 @@ export default function RequestForm() {
                                     </div>
                                     <div>
                                         <label htmlFor="appointment_date" className={labelClass}>Date <span className="text-red-500">*</span></label>
-                                        <input id="appointment_date" type="date" value={data.appointment_date} onChange={(e) => setData('appointment_date', e.target.value)} className={inputClass} />
+                                        <input
+                                            id="appointment_date"
+                                            type="text"
+                                            value={appointmentDateDisplay}
+                                            onChange={(e) => {
+                                                const display = e.target.value;
+                                                setAppointmentDateDisplay(display);
+                                                const parsed = parseDdMmYyyy(display);
+                                                setData('appointment_date', parsed || '');
+                                            }}
+                                            className={inputClass}
+                                            placeholder="dd/mm/yyyy"
+                                            maxLength={10}
+                                        />
                                         {errors.appointment_date && <p className="mt-1 text-xs text-red-600">{errors.appointment_date}</p>}
                                     </div>
                                     <div>
