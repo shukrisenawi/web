@@ -60,7 +60,7 @@ interface NotificationItem {
 }
 
 export function DashboardLayout({ children, title }: { children: React.ReactNode; title?: string }) {
-    const { auth, url, unreadMessagesCount, pendingRequestsCount, pendingPaymentsCount, pendingInvoicesCount } = usePage().props as any;
+    const { auth, url, unreadMessagesCount, pendingRequestsCount, pendingPaymentsCount, pendingInvoicesCount, appointmentStatus } = usePage().props as any;
     const user = auth?.user ?? { name: 'John Doe', email: 'john.doe@email.com', company: 'Acme Corporation', isAdmin: false };
     const sidebar = user?.isAdmin ? adminSidebar : clientSidebar;
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -235,6 +235,12 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                     </div>
 
                     <div className="flex items-center gap-3">
+                        {appointmentStatus && !user.isAdmin && (
+                            <div className="flex items-center gap-1.5 rounded-full border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600">
+                                <span className={`h-2 w-2 rounded-full ${appointmentStatus === 'pending' ? 'bg-amber-400' : appointmentStatus === 'reviewed' ? 'bg-blue-500' : 'bg-green-500'}`} />
+                                {appointmentStatus}
+                            </div>
+                        )}
                         <div className="relative" ref={notifRef}>
                             <button
                                 type="button"

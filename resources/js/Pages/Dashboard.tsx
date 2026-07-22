@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     Bell,
     FolderKanban,
@@ -13,7 +13,10 @@ import {
     CheckCircle2,
     Upload,
     Users,
+    X,
+    CalendarCheck,
 } from 'lucide-react';
+import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress, ActionMenu } from '@/Layouts/Dashboard';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -86,11 +89,63 @@ export default function Dashboard({
     tickets,
     activity,
 }: DashboardProps) {
-    const { auth } = usePage().props as any;
+    const { auth, flash } = usePage().props as any;
     const userName = auth?.user?.name ?? 'John';
+    const [showAppointmentModal, setShowAppointmentModal] = useState(!!flash?.appointment);
+
+    const dismissAppointmentModal = () => {
+        setShowAppointmentModal(false);
+    };
+
     return (
         <>
             <Head title="Dashboard" />
+
+            {showAppointmentModal && flash?.appointment && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+                        <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="rounded-full bg-green-100 p-3">
+                                    <CalendarCheck className="h-6 w-6 text-green-600" />
+                                </div>
+                                <h3 className="text-lg font-bold text-slate-900">Appointment Submitted!</h3>
+                            </div>
+                            <button type="button" onClick={dismissAppointmentModal} className="rounded-lg p-1 text-slate-400 hover:bg-slate-100">
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+                        <p className="mt-4 text-sm text-slate-600">
+                            Your appointment has been submitted successfully. Our admin will contact you shortly to confirm the schedule.
+                        </p>
+                        <div className="mt-4 space-y-2 rounded-xl bg-slate-50 p-4">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-slate-500">Type</span>
+                                <span className="font-medium text-slate-900">{flash.appointment.type}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-slate-500">Date</span>
+                                <span className="font-medium text-slate-900">{flash.appointment.date}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-slate-500">Time</span>
+                                <span className="font-medium text-slate-900">{flash.appointment.time}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-slate-500">Status</span>
+                                <Badge color="amber">{flash.appointment.status}</Badge>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={dismissAppointmentModal}
+                            className="mt-5 w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
+                        >
+                            Got it
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <DashboardLayout title="Dashboard">
                 <div className="mb-8">

@@ -60,6 +60,7 @@ class HandleInertiaRequests extends Middleware
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),
                 'invoice_no' => $request->session()->get('invoice_no'),
+                'appointment' => $request->session()->get('appointment'),
             ],
             'frontpage' => FrontpageContent::getCurrent()->toArray(),
             'unreadMessagesCount' => $request->user()
@@ -78,6 +79,11 @@ class HandleInertiaRequests extends Middleware
                     ? Invoice::where('status', 'pending')->count()
                     : $request->user()->invoices()->where('status', 'pending')->count())
                 : 0,
+            'appointmentStatus' => $request->user() && !$request->user()->isAdmin()
+                ? ProjectRequest::where('user_id', $request->user()->id)
+                    ->latest()
+                    ->value('status')
+                : null,
         ];
     }
 }

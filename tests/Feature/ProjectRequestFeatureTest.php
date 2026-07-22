@@ -24,7 +24,7 @@ class ProjectRequestFeatureTest extends TestCase
             'message' => 'We need a web system.',
         ]);
 
-        $response->assertRedirect('/projects');
+        $response->assertRedirect('/dashboard');
         $this->assertDatabaseHas('users', [
             'email' => 'test_feature_20260722@example.com',
             'name' => 'John Doe',
