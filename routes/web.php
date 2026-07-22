@@ -69,10 +69,7 @@ Route::middleware('guest')->group(function () {
 
 });
 
-Route::get('/products', function () {
-    $products = \App\Models\Product::where('is_active', true)->orderBy('sort_order')->paginate(12);
-    return inertia('ProductsPage', ['products' => $products]);
-})->name('products.public');
+Route::get('/products', [ProductController::class, 'publicIndex'])->name('products.public');
 
 Route::get('/payment/{invoiceNo}', [PaymentController::class, 'show'])->name('payment.show');
 Route::post('/payment/proof', [PaymentController::class, 'storeProof'])->name('payment.proof.store');
@@ -139,9 +136,9 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
         Route::put('/manage-blog/{post}', [BlogPostController::class, 'update'])->name('manage-blog.update');
         Route::delete('/manage-blog/{post}', [BlogPostController::class, 'destroy'])->name('manage-blog.destroy');
 
-        Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-        Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-        Route::post('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-        Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+        Route::get('/manage-products', [ProductController::class, 'index'])->name('products.index');
+        Route::post('/manage-products', [ProductController::class, 'store'])->name('products.store');
+        Route::post('/manage-products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('/manage-products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     });
 });

@@ -29,6 +29,15 @@ class ProductController extends Controller
         ]);
     }
 
+    public function publicIndex(): Response
+    {
+        $products = Product::where('is_active', true)->orderBy('sort_order')->paginate(12);
+
+        return Inertia::render('ProductsPage', [
+            'products' => $products,
+        ]);
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $this->ensureAdmin();

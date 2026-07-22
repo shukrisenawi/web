@@ -46,12 +46,12 @@ export default function ManageProducts({ products }: { products: Product[] }) {
 
         if (modal.edit) {
             data.append('_method', 'PUT');
-            router.post(`/products/${modal.edit.id}`, data, {
+            router.post(`/manage-products/${modal.edit.id}`, data, {
                 preserveScroll: true,
                 onSuccess: () => { setModal({ open: false, edit: null }); setImagePreview(null); },
             });
         } else {
-            router.post('/products', data, {
+            router.post('/manage-products', data, {
                 preserveScroll: true,
                 onSuccess: () => { setModal({ open: false, edit: null }); setImagePreview(null); },
             });
@@ -60,7 +60,7 @@ export default function ManageProducts({ products }: { products: Product[] }) {
 
     const confirmDelete = (p: Product) => {
         if (!confirm(`Delete "${p.name}"?`)) return;
-        router.delete(`/products/${p.id}`, { preserveScroll: true });
+        router.delete(`/manage-products/${p.id}`, { preserveScroll: true });
     };
 
     return (
