@@ -1,5 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Building2, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 const inputClass =
     'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
@@ -113,21 +113,7 @@ export default function RequestForm() {
                         </p>
                     </div>
 
-                    <div className="mb-6 flex items-center justify-center gap-3">
-                        <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-blue-600 bg-white text-blue-600">
-                            <Building2 className="h-5 w-5" />
-                        </span>
-                        <div className="text-left">
-                            <p className="text-sm font-semibold text-slate-900">Business Information</p>
-                            <p className="text-xs text-slate-500">Company & contact details</p>
-                        </div>
-                    </div>
-
                     <form onKeyDown={handleKeyDown} className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:p-8">
-                        <div className="mb-6">
-                            <h2 className="text-lg font-semibold text-slate-900">Business Information</h2>
-                            <p className="text-sm text-slate-500">Company & contact details</p>
-                        </div>
 
                         <div className="space-y-5">
                             <div>
