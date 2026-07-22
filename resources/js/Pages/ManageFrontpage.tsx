@@ -553,12 +553,18 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                                 />
                                             </Field>
                                             <Field label="Category">
-                                                <input
-                                                    type="text"
+                                                <select
                                                     value={project.category || ''}
                                                     onChange={(e) => updateArray('projects', idx, 'category', e.target.value)}
-                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                                />
+                                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                >
+                                                    <option value="">Select category</option>
+                                                    <option value="Web Development">Web Development</option>
+                                                    <option value="Mobile App">Mobile App</option>
+                                                    <option value="Web System">Web System</option>
+                                                    <option value="Game Development">Game Development</option>
+                                                    <option value="Digital Marketing">Digital Marketing</option>
+                                                </select>
                                             </Field>
                                             <Field label="Description">
                                                 <textarea
