@@ -28,7 +28,7 @@ class ProjectRequestController extends Controller
             'appointment_type' => ['required', 'in:Physical,Online'],
             'appointment_date' => ['required', 'date'],
             'appointment_time' => ['required', 'string', 'max:20'],
-            'message' => ['nullable', 'string', 'max:5000'],
+            'message' => ['required', 'string', 'max:5000'],
         ]);
 
         $user = User::create([

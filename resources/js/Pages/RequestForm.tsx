@@ -73,6 +73,10 @@ export default function RequestForm() {
             setError('appointment_time', 'Please enter a time');
             valid = false;
         }
+        if (!data.message.trim()) {
+            setError('message', 'Please enter a message');
+            valid = false;
+        }
 
         return valid;
     };
@@ -191,7 +195,7 @@ export default function RequestForm() {
                                         {errors.appointment_time && <p className="mt-1 text-xs text-red-600">{errors.appointment_time}</p>}
                                     </div>
                                     <div className="sm:col-span-2">
-                                        <label htmlFor="message" className={labelClass}>Message</label>
+                                        <label htmlFor="message" className={labelClass}>Message <span className="text-red-500">*</span></label>
                                         <textarea id="message" rows={4} value={data.message} onChange={(e) => setData('message', e.target.value)} className={inputClass} placeholder="Tell us more about your project or any special requirements..." />
                                         {errors.message && <p className="mt-1 text-xs text-red-600">{errors.message}</p>}
                                     </div>
