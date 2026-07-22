@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+
+            $user = Auth::user();
+            ActivityLog::create([
+                'user_id' => $user->id,
+                'type' => 'auth',
+                'description' => "{$user->name} signed in at " . now()->format('g:i A'),
+            ]);
 
             return redirect()->intended(route('dashboard'));
         }
@@ -58,14 +66,33 @@ class AuthController extends Controller
         $user = User::create($validated);
         Auth::login($user);
 
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'type' => 'auth',
+            'description' => "{$user->name} registered a new account",
+        ]);
+
         return redirect()->route('dashboard');
     }
 
     public function logout(Request $request)
     {
+        /** @var User|null $user */
+        $user = Auth::user();
+        $userId = $user?->id;
+        $userName = $user?->name;
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        if ($userId) {
+            ActivityLog::create([
+                'user_id' => $userId,
+                'type' => 'auth',
+                'description' => "{$userName} signed out",
+            ]);
+        }
 
         return redirect()->route('home');
     }

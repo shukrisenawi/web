@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Notification;
 use App\Models\ProjectRequest;
 use App\Models\User;
@@ -65,6 +66,14 @@ class ProjectRequestAdminController extends Controller
             'is_read' => false,
         ]);
 
+        ActivityLog::create([
+            'user_id' => $request->user_id,
+            'related_type' => ProjectRequest::class,
+            'related_id' => $request->id,
+            'type' => 'appointment',
+            'description' => "Appointment from {$request->company_name} on {$request->appointment_date} was approved",
+        ]);
+
         return redirect()->route('requests')->with('success', 'Appointment approved.');
     }
 
@@ -91,6 +100,14 @@ class ProjectRequestAdminController extends Controller
             'title' => 'Appointment Rejected',
             'message' => 'Reason: ' . $validated['reason'],
             'is_read' => false,
+        ]);
+
+        ActivityLog::create([
+            'user_id' => $projectRequest->user_id,
+            'related_type' => ProjectRequest::class,
+            'related_id' => $projectRequest->id,
+            'type' => 'appointment',
+            'description' => "Appointment from {$projectRequest->company_name} on {$projectRequest->appointment_date} was rejected: {$validated['reason']}",
         ]);
 
         return redirect()->route('requests')->with('success', 'Appointment rejected.');
@@ -121,6 +138,14 @@ class ProjectRequestAdminController extends Controller
         ]);
 
         $projectRequest->update($validated);
+
+        ActivityLog::create([
+            'user_id' => $projectRequest->user_id,
+            'related_type' => ProjectRequest::class,
+            'related_id' => $projectRequest->id,
+            'type' => 'appointment',
+            'description' => "Appointment from {$projectRequest->company_name} updated to {$validated['appointment_date']} at {$validated['appointment_time']}",
+        ]);
 
         return redirect()->route('requests')->with('success', 'Appointment updated.');
     }

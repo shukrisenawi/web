@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Notification as AdminNotification;
 use App\Models\ProjectRequest;
 use App\Models\User;
@@ -69,6 +70,14 @@ class ProjectRequestController extends Controller
 
         Auth::login($user);
 
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'related_type' => ProjectRequest::class,
+            'related_id' => $projectRequest->id,
+            'type' => 'appointment',
+            'description' => "Appointment requested by {$user->name} on {$projectRequest->appointment_date} at {$projectRequest->appointment_time}",
+        ]);
+
         return redirect()->route('appointments')->with('success', 'Your appointment has been submitted successfully. Our team will review it shortly.');
     }
 
@@ -134,6 +143,14 @@ class ProjectRequestController extends Controller
                 'is_read' => false,
             ]);
         }
+
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'related_type' => ProjectRequest::class,
+            'related_id' => $projectRequest->id,
+            'type' => 'appointment',
+            'description' => "New appointment booked by {$user->name} on {$projectRequest->appointment_date} at {$projectRequest->appointment_time}",
+        ]);
 
         return redirect()->route('appointments')->with('success', 'Appointment booked successfully.');
     }

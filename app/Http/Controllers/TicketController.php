@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Ticket;
+use App\Models\TicketReply;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,6 +79,15 @@ class TicketController extends Controller
 
         $ticket = $this->createTicket($validated, $user->id);
 
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'project_id' => $ticket->project_id,
+            'related_type' => Ticket::class,
+            'related_id' => $ticket->id,
+            'type' => 'ticket',
+            'description' => "Opened ticket {$ticket->ticket_no}: {$ticket->subject}",
+        ]);
+
         return redirect()->route('support')->with('success', 'Ticket created successfully. Our team will respond soon.');
     }
 
@@ -94,7 +105,20 @@ class TicketController extends Controller
             'priority' => ['required', Rule::in(['low', 'medium', 'high'])],
         ]);
 
+        $originalStatus = $ticket->status;
         $ticket->update($validated);
+
+        $userName = $user->isAdmin() ? 'Admin' : $user->name;
+        if ($validated['status'] !== $originalStatus) {
+            ActivityLog::create([
+                'user_id' => $ticket->user_id,
+                'project_id' => $ticket->project_id,
+                'related_type' => Ticket::class,
+                'related_id' => $ticket->id,
+                'type' => 'ticket',
+                'description' => "Ticket {$ticket->ticket_no} status changed from {$originalStatus} to {$validated['status']} by {$userName}",
+            ]);
+        }
 
         return redirect()->route('support')->with('success', 'Ticket updated successfully.');
     }
@@ -125,16 +149,27 @@ class TicketController extends Controller
             'message' => ['required', 'string', 'max:5000'],
         ]);
 
-        $ticket->replies()->create([
+        $reply = $ticket->replies()->create([
             'user_id' => $user->id,
             'message' => $validated['message'],
         ]);
 
+        $originalStatus = $ticket->status;
         $ticket->update([
             'last_reply_by' => $isAdmin ? 'admin' : 'client',
             'status' => $ticket->status === 'open' ? 'in_progress' : $ticket->status,
             'viewed_at' => $isAdmin ? null : $ticket->viewed_at,
             'admin_viewed_at' => $isAdmin ? $ticket->admin_viewed_at : null,
+        ]);
+
+        $sender = $isAdmin ? 'Admin' : $user->name;
+        ActivityLog::create([
+            'user_id' => $ticket->user_id,
+            'project_id' => $ticket->project_id,
+            'related_type' => TicketReply::class,
+            'related_id' => $reply->id,
+            'type' => 'ticket',
+            'description' => "{$sender} replied to ticket {$ticket->ticket_no}" . ($originalStatus === 'open' ? ' (status moved to In Progress)' : ''),
         ]);
 
         return redirect()->route('support')->with('success', 'Reply sent successfully.');
@@ -150,6 +185,13 @@ class TicketController extends Controller
         }
 
         $ticket->delete();
+
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'project_id' => $ticket->project_id,
+            'type' => 'ticket',
+            'description' => "Ticket {$ticket->ticket_no} was deleted by admin",
+        ]);
 
         return redirect()->route('support')->with('success', 'Ticket deleted successfully.');
     }

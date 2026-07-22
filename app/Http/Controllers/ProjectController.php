@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\FileUpload;
 use App\Models\Milestone;
 use App\Models\Project;
@@ -266,6 +267,15 @@ class ProjectController extends Controller
             }
         }
 
+        ActivityLog::create([
+            'user_id' => $project->user_id,
+            'project_id' => $project->id,
+            'related_type' => Project::class,
+            'related_id' => $project->id,
+            'type' => 'project',
+            'description' => "Project \"{$project->title}\" was created by " . ($user->isAdmin() ? 'Admin' : $user->name),
+        ]);
+
         return redirect()->route('projects')->with('success', 'Project created successfully.');
     }
 
@@ -308,7 +318,19 @@ class ProjectController extends Controller
             unset($validated['system_type_other']);
         }
 
+        $originalStatus = $project->status;
         $project->update($validated);
+
+        ActivityLog::create([
+            'user_id' => $project->user_id,
+            'project_id' => $project->id,
+            'related_type' => Project::class,
+            'related_id' => $project->id,
+            'type' => 'project',
+            'description' => $originalStatus !== $validated['status']
+                ? "Project \"{$project->title}\" status changed from {$originalStatus} to {$validated['status']}"
+                : "Project \"{$project->title}\" was updated",
+        ]);
 
         return redirect()->back()->with('success', 'Project updated successfully.');
     }
@@ -323,6 +345,13 @@ class ProjectController extends Controller
         }
 
         $project->delete();
+
+        ActivityLog::create([
+            'user_id' => $project->user_id,
+            'project_id' => $project->id,
+            'type' => 'project',
+            'description' => "Project \"{$project->title}\" was deleted by admin",
+        ]);
 
         return redirect()->back()->with('success', 'Project deleted successfully.');
     }
@@ -342,13 +371,22 @@ class ProjectController extends Controller
         $file = $request->file('file');
         $path = $file->store('project-files/'.$project->id, 'public');
 
-        FileUpload::create([
+        $upload = FileUpload::create([
             'project_id' => $project->id,
             'uploaded_by' => $user->id,
             'filename' => $file->getClientOriginalName(),
             'path' => $path,
             'size' => $file->getSize(),
             'mime_type' => $file->getMimeType(),
+        ]);
+
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'project_id' => $project->id,
+            'related_type' => FileUpload::class,
+            'related_id' => $upload->id,
+            'type' => 'file',
+            'description' => "File \"{$upload->filename}\" uploaded to project \"{$project->title}\" by " . ($user->isAdmin() ? 'Admin' : $user->name),
         ]);
 
         return redirect()->back()->with('success', 'File uploaded successfully.');
@@ -367,6 +405,13 @@ class ProjectController extends Controller
 
         Storage::disk('public')->delete($file->path);
         $file->delete();
+
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'project_id' => $project->id,
+            'type' => 'file',
+            'description' => "File \"{$file->filename}\" was deleted from project \"{$project->title}\"",
+        ]);
 
         return redirect()->back()->with('success', 'File deleted successfully.');
     }
@@ -387,7 +432,7 @@ class ProjectController extends Controller
             'due_date' => ['nullable', 'date'],
         ]);
 
-        Milestone::create([
+        $milestone = Milestone::create([
             'project_id' => $project->id,
             'title' => $validated['title'],
             'note' => $validated['note'] ?? null,
@@ -396,6 +441,15 @@ class ProjectController extends Controller
         ]);
 
         $project->update(['progress' => $validated['progress']]);
+
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'project_id' => $project->id,
+            'related_type' => Milestone::class,
+            'related_id' => $milestone->id,
+            'type' => 'milestone',
+            'description' => "Milestone \"{$milestone->title}\" added to project \"{$project->title}\"; progress updated to {$validated['progress']}%",
+        ]);
 
         return redirect()->back()->with('success', 'Update added successfully.');
     }
@@ -418,6 +472,15 @@ class ProjectController extends Controller
         $milestone->update($validated);
         $project->update(['progress' => $validated['progress']]);
 
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'project_id' => $project->id,
+            'related_type' => Milestone::class,
+            'related_id' => $milestone->id,
+            'type' => 'milestone',
+            'description' => "Milestone \"{$milestone->title}\" updated in project \"{$project->title}\"; progress set to {$validated['progress']}%",
+        ]);
+
         return redirect()->back()->with('success', 'Update edited successfully.');
     }
 
@@ -431,6 +494,13 @@ class ProjectController extends Controller
         }
 
         $milestone->delete();
+
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'project_id' => $project->id,
+            'type' => 'milestone',
+            'description' => "Milestone \"{$milestone->title}\" was deleted from project \"{$project->title}\"",
+        ]);
 
         return redirect()->back()->with('success', 'Update deleted successfully.');
     }

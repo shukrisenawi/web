@@ -15,6 +15,10 @@ import {
     Users,
     X,
     CalendarCheck,
+    LogIn,
+    CreditCard,
+    UserPlus,
+    MapPin,
 } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress, ActionMenu } from '@/Layouts/Dashboard';
@@ -25,6 +29,10 @@ const iconMap: Record<string, React.ElementType> = {
     file: Upload,
     ticket: Bell,
     project: CheckSquare,
+    auth: LogIn,
+    payment: CreditCard,
+    appointment: MapPin,
+    register: UserPlus,
     default: MessageSquare,
 };
 
@@ -337,16 +345,12 @@ export default function Dashboard({
                 <Card className="mt-6">
                     <div className="mb-4 flex items-center justify-between">
                         <h3 className="font-semibold text-slate-900">Recent Activity</h3>
-                        <Link href="/projects" className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline">
-                            View All Activity
-                            <ArrowRight className="h-4 w-4" />
-                        </Link>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
                         {activity.map((item) => {
                             const Icon = iconMap[item.type] ?? iconMap.default;
                             return (
-                                <div key={item.text} className="flex items-start gap-3">
+                                <div key={item.text + item.time} className="flex items-start gap-3">
                                     <div className="rounded-full bg-slate-100 p-2">
                                         <Icon className="h-4 w-4 text-slate-600" />
                                     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,17 +93,17 @@ class DashboardController extends Controller
                 'date' => $t->created_at->format('M d, Y'),
             ]);
 
-        $activityQuery = $isAdmin
-            ? \App\Models\ActivityLog::query()
-            : $user->activityLogs();
-
-        $activity = $activityQuery
+        $activity = ActivityLog::query()
+            ->when(! $isAdmin, fn ($q) => $q->where('user_id', $user->id))
+            ->with('user')
             ->orderByDesc('created_at')
             ->limit(6)
             ->get()
             ->map(fn ($a) => [
                 'type' => $a->type,
-                'text' => $a->description,
+                'text' => $isAdmin
+                    ? ($a->user?->company ?? $a->user?->name ?? 'System') . ': ' . $a->description
+                    : $a->description,
                 'time' => $a->created_at->diffForHumans(),
             ]);
 

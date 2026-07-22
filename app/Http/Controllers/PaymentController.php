@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Invoice;
 use App\Models\PaymentProof;
 use App\Models\User;
@@ -88,13 +89,22 @@ class PaymentController extends Controller
 
         $path = $request->file('proof')->store('payment-proofs', 'public');
 
-        PaymentProof::create([
+        $proof = PaymentProof::create([
             'invoice_id' => $invoice->id,
             'payment_method' => $validated['payment_method'],
             'name' => $validated['name'],
             'email' => $validated['email'],
             'proof_path' => $path,
             'status' => 'pending',
+        ]);
+
+        ActivityLog::create([
+            'user_id' => $invoice->user_id,
+            'project_id' => $invoice->project_id,
+            'related_type' => PaymentProof::class,
+            'related_id' => $proof->id,
+            'type' => 'payment',
+            'description' => "Payment proof submitted for invoice {$invoice->invoice_no} via {$validated['payment_method']}",
         ]);
 
         return back()->with('success', 'Proof of payment submitted successfully. We will verify it shortly.');
@@ -121,9 +131,27 @@ class PaymentController extends Controller
             $invoice = $proof->invoice;
             $invoice->update(['status' => 'paid', 'paid_at' => now()]);
 
+            ActivityLog::create([
+                'user_id' => $invoice->user_id,
+                'project_id' => $invoice->project_id,
+                'related_type' => PaymentProof::class,
+                'related_id' => $proof->id,
+                'type' => 'payment',
+                'description' => "Payment for invoice {$invoice->invoice_no} verified and marked as paid",
+            ]);
+
             if (! $invoice->project_id) {
                 $this->autoCreateProject($invoice);
             }
+        } else {
+            ActivityLog::create([
+                'user_id' => $invoice->user_id,
+                'project_id' => $invoice->project_id,
+                'related_type' => PaymentProof::class,
+                'related_id' => $proof->id,
+                'type' => 'payment',
+                'description' => "Payment proof for invoice {$invoice->invoice_no} was rejected" . (!empty($validated['notes']) ? ': ' . $validated['notes'] : ''),
+            ]);
         }
 
         return back()->with('success', 'Payment proof ' . $validated['status'] . ' successfully.');
@@ -171,5 +199,14 @@ class PaymentController extends Controller
         ]);
 
         $invoice->update(['project_id' => $project->id]);
+
+        ActivityLog::create([
+            'user_id' => $invoice->user_id,
+            'project_id' => $project->id,
+            'related_type' => \App\Models\Project::class,
+            'related_id' => $project->id,
+            'type' => 'project',
+            'description' => "Auto-created project \"{$project->title}\" from paid invoice {$invoice->invoice_no}",
+        ]);
     }
 }

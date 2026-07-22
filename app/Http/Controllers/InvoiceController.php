@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\NewInvoiceMail;
+use App\Models\ActivityLog;
 use App\Models\Invoice;
 use App\Models\Project;
 use App\Models\User;
@@ -139,6 +140,15 @@ class InvoiceController extends Controller
             ]);
         }
 
+        ActivityLog::create([
+            'user_id' => $invoice->user_id,
+            'project_id' => $invoice->project_id,
+            'related_type' => Invoice::class,
+            'related_id' => $invoice->id,
+            'type' => 'invoice',
+            'description' => "Invoice {$invoice->invoice_no} generated for $" . number_format($invoice->amount, 2) . " ({$invoice->status})",
+        ]);
+
         try {
             Mail::to($client)->send(new NewInvoiceMail($invoice));
         } catch (\Throwable $e) {
@@ -176,7 +186,19 @@ class InvoiceController extends Controller
             'amount' => ['nullable', 'numeric', 'min:0'],
         ]);
 
+        $originalStatus = $invoice->status;
         $invoice->update($validated);
+
+        ActivityLog::create([
+            'user_id' => $invoice->user_id,
+            'project_id' => $invoice->project_id,
+            'related_type' => Invoice::class,
+            'related_id' => $invoice->id,
+            'type' => 'invoice',
+            'description' => $originalStatus !== $validated['status']
+                ? "Invoice {$invoice->invoice_no} status changed from {$originalStatus} to {$validated['status']}"
+                : "Invoice {$invoice->invoice_no} updated",
+        ]);
 
         return redirect()->route('invoices')->with('success', 'Invoice updated successfully.');
     }
@@ -191,6 +213,13 @@ class InvoiceController extends Controller
         }
 
         $invoice->delete();
+
+        ActivityLog::create([
+            'user_id' => $invoice->user_id,
+            'project_id' => $invoice->project_id,
+            'type' => 'invoice',
+            'description' => "Invoice {$invoice->invoice_no} was deleted by admin",
+        ]);
 
         return redirect()->route('invoices')->with('success', 'Invoice deleted successfully.');
     }
