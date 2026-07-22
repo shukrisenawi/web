@@ -25,6 +25,9 @@ class ProjectRequestController extends Controller
             'contact_mobile' => ['nullable', 'string', 'max:50'],
             'contact_email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(6)],
+            'appointment_type' => ['required', 'in:Physical,Online'],
+            'appointment_date' => ['required', 'date'],
+            'appointment_time' => ['required', 'string', 'max:20'],
         ]);
 
         $user = User::create([
@@ -42,6 +45,9 @@ class ProjectRequestController extends Controller
             'contact_name' => $validated['contact_name'],
             'contact_mobile' => $validated['contact_mobile'] ?? null,
             'contact_email' => $validated['contact_email'],
+            'appointment_type' => $validated['appointment_type'],
+            'appointment_date' => $validated['appointment_date'],
+            'appointment_time' => $validated['appointment_time'],
             'status' => 'pending',
         ]);
 

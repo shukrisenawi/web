@@ -13,6 +13,9 @@ export default function RequestForm() {
         contact_email: string;
         password: string;
         password_confirmation: string;
+        appointment_type: string;
+        appointment_date: string;
+        appointment_time: string;
     }>({
         company_name: '',
         contact_name: '',
@@ -20,6 +23,9 @@ export default function RequestForm() {
         contact_email: '',
         password: '',
         password_confirmation: '',
+        appointment_type: '',
+        appointment_date: '',
+        appointment_time: '',
     });
 
     const validate = (): boolean => {
@@ -51,6 +57,18 @@ export default function RequestForm() {
         }
         if (data.password && data.password_confirmation && data.password !== data.password_confirmation) {
             setError('password_confirmation', 'Passwords do not match');
+            valid = false;
+        }
+        if (!data.appointment_type) {
+            setError('appointment_type', 'Please select an appointment type');
+            valid = false;
+        }
+        if (!data.appointment_date) {
+            setError('appointment_date', 'Please select a date');
+            valid = false;
+        }
+        if (!data.appointment_time.trim()) {
+            setError('appointment_time', 'Please enter a time');
             valid = false;
         }
 
@@ -139,6 +157,36 @@ export default function RequestForm() {
                                         <label htmlFor="password_confirmation" className={labelClass}>Confirm Password <span className="text-red-500">*</span></label>
                                         <input id="password_confirmation" type="password" autoComplete="new-password" value={data.password_confirmation} onChange={(e) => setData('password_confirmation', e.target.value)} className={inputClass} placeholder="••••••••" />
                                         {errors.password_confirmation && <p className="mt-1 text-xs text-red-600">{errors.password_confirmation}</p>}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="border-t border-slate-100 pt-5">
+                                <p className="mb-4 text-sm font-semibold text-slate-800">Make an Appointment</p>
+                                <div className="grid gap-5 sm:grid-cols-2">
+                                    <div className="sm:col-span-2">
+                                        <label htmlFor="appointment_type" className={labelClass}>Appointment Type <span className="text-red-500">*</span></label>
+                                        <select
+                                            id="appointment_type"
+                                            value={data.appointment_type}
+                                            onChange={(e) => setData('appointment_type', e.target.value)}
+                                            className={inputClass}
+                                        >
+                                            <option value="">Select appointment type…</option>
+                                            <option value="Physical">Physical</option>
+                                            <option value="Online">Online</option>
+                                        </select>
+                                        {errors.appointment_type && <p className="mt-1 text-xs text-red-600">{errors.appointment_type}</p>}
+                                    </div>
+                                    <div>
+                                        <label htmlFor="appointment_date" className={labelClass}>Date <span className="text-red-500">*</span></label>
+                                        <input id="appointment_date" type="date" value={data.appointment_date} onChange={(e) => setData('appointment_date', e.target.value)} className={inputClass} />
+                                        {errors.appointment_date && <p className="mt-1 text-xs text-red-600">{errors.appointment_date}</p>}
+                                    </div>
+                                    <div>
+                                        <label htmlFor="appointment_time" className={labelClass}>Time <span className="text-red-500">*</span> (h:iA)</label>
+                                        <input id="appointment_time" type="text" value={data.appointment_time} onChange={(e) => setData('appointment_time', e.target.value)} className={inputClass} placeholder="10:00AM" />
+                                        {errors.appointment_time && <p className="mt-1 text-xs text-red-600">{errors.appointment_time}</p>}
                                     </div>
                                 </div>
                             </div>
