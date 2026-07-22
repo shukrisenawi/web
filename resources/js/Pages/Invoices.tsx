@@ -13,6 +13,7 @@ interface Invoice {
     amount_raw?: number;
     status: string;
     payment_url?: string | null;
+    has_pending_proof?: boolean;
 }
 
 interface InvoicesProps {
@@ -236,7 +237,7 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
                                                 >
                                                     <Printer className="h-4 w-4" />
                                                 </Link>
-                                                {!isAdmin && inv.status !== 'paid' && (
+                                                {!isAdmin && inv.status !== 'paid' && !inv.has_pending_proof && (
                                                     <button
                                                         onClick={() => makePayment(inv)}
                                                         className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"

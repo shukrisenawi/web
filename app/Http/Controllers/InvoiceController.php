@@ -22,8 +22,8 @@ class InvoiceController extends Controller
         $status = $request->query('status');
 
         $query = $user->isAdmin()
-            ? Invoice::query()->with('project', 'user')
-            : $user->invoices()->with('project');
+            ? Invoice::query()->with('project', 'user', 'paymentProofs')
+            : $user->invoices()->with('project', 'paymentProofs');
 
         $invoices = $query
             ->when($status, fn ($q) => $q->where('status', $status))
@@ -210,6 +210,7 @@ class InvoiceController extends Controller
             'amount_raw' => (float) $i->amount,
             'status' => $i->status,
             'payment_url' => $i->payment_url,
+            'has_pending_proof' => $i->paymentProofs->contains(fn ($p) => $p->status === 'pending'),
         ];
 
         if ($full) {
