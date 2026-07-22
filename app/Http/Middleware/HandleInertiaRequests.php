@@ -67,6 +67,7 @@ class HandleInertiaRequests extends Middleware
             'frontpage' => FrontpageContent::getCurrent()->toArray(),
             'currentProjects' => Project::where('status', 'in_progress')
                 ->select(['title', 'description', 'category', 'progress', 'status', 'icon_color'])
+                ->limit(4)
                 ->get()
                 ->map(function ($project) {
                     $category = $project->category ?: 'Web System';
