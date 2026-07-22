@@ -9,21 +9,14 @@ const inputClass =
 const labelClass = 'block text-sm font-medium text-slate-700';
 
 const timeOptions: string[] = [];
-for (let h = 8; h <= 20; h++) {
+for (let h = 0; h < 24; h++) {
     const hour = String(h).padStart(2, '0');
     timeOptions.push(`${hour}:00`);
     timeOptions.push(`${hour}:30`);
 }
 
-function formatTimeToAmPm(value: string): string {
-    const match = value.match(/^(\d{2}):(\d{2})$/);
-    if (!match) return value;
-    let hour = parseInt(match[1], 10);
-    const minute = match[2];
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    hour = hour % 12;
-    if (hour === 0) hour = 12;
-    return `${hour}:${minute}${ampm}`;
+function formatTime24Hour(value: string): string {
+    return value;
 }
 
 function formatDateToDdMmYyyy(date: Date | null): string {
@@ -266,8 +259,8 @@ export default function RequestForm() {
                                             >
                                                 <option value="">Select time…</option>
                                                 {timeOptions.map((time) => (
-                                                    <option key={time} value={formatTimeToAmPm(time)}>
-                                                        {formatTimeToAmPm(time)}
+                                                    <option key={time} value={formatTime24Hour(time)}>
+                                                        {formatTime24Hour(time)}
                                                     </option>
                                                 ))}
                                             </select>
