@@ -29,6 +29,7 @@ class ClientDatabaseController extends Controller
                     'name' => $c->name,
                     'email' => $c->email,
                     'company' => $c->company,
+                    'avatar_url' => $c->avatar ? asset('storage/' . $c->avatar) : null,
                     'business_address' => $c->business_address,
                     'whatsapp' => $c->whatsapp,
                     'projects_count' => $c->projects_count,

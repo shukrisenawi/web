@@ -29,6 +29,7 @@ interface Client {
     name: string;
     email: string;
     company: string | null;
+    avatar_url: string | null;
     business_address: string | null;
     whatsapp: string | null;
     projects_count: number;
@@ -230,9 +231,13 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                         <Card key={c.id} className="flex flex-col">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                 <div className="flex items-start gap-3">
-                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
-                                        <Building2 className="h-6 w-6" />
-                                    </div>
+                                    {c.avatar_url ? (
+                                        <img src={c.avatar_url} alt={c.name} className="h-12 w-12 shrink-0 rounded-xl object-cover" />
+                                    ) : (
+                                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
+                                            <Building2 className="h-6 w-6" />
+                                        </div>
+                                    )}
                                     <div>
                                         <h3 className="font-semibold text-slate-900">{c.company ?? c.name}</h3>
                                         <p className="text-sm text-slate-500">{c.name} · {c.email}</p>
@@ -498,9 +503,13 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                             </div>
                             <div className="space-y-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-blue-600 text-white">
-                                        <Building2 className="h-8 w-8" />
-                                    </div>
+                                    {viewClient.avatar_url ? (
+                                        <img src={viewClient.avatar_url} alt={viewClient.name} className="h-16 w-16 rounded-xl object-cover" />
+                                    ) : (
+                                        <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-blue-600 text-white">
+                                            <Building2 className="h-8 w-8" />
+                                        </div>
+                                    )}
                                     <div>
                                         <h4 className="text-xl font-bold text-slate-900">{viewClient.company ?? viewClient.name}</h4>
                                         <p className="text-sm text-slate-500">{viewClient.name} · {viewClient.email}</p>
