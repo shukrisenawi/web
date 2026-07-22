@@ -27,9 +27,10 @@ interface Props {
     clients?: { id: number; name: string; email: string; company: string | null }[];
     services?: { value: string; label: string }[];
     systemTypes?: { value: string; label: string }[];
+    preselect_user_id?: string | null;
 }
 
-export default function ProjectCreate({ clients = [], services = [], systemTypes = [] }: Props) {
+export default function ProjectCreate({ clients = [], services = [], systemTypes = [], preselect_user_id }: Props) {
     const { auth } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
     const sysTypes = systemTypes.length > 0 ? systemTypes : SYSTEM_TYPES;
@@ -73,6 +74,16 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
         status_remark: '',
         request_quotation: false,
     });
+
+    useEffect(() => {
+        if (preselect_user_id) {
+            const client = clients.find((c) => String(c.id) === preselect_user_id);
+            if (client) {
+                form.setData('user_id', preselect_user_id);
+                setClientSearch(client.name + (client.company ? ` (${client.company})` : ''));
+            }
+        }
+    }, []);
 
     const validateStep = (s: number) => {
         form.clearErrors();

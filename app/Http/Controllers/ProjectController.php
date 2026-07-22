@@ -94,7 +94,7 @@ class ProjectController extends Controller
         return Inertia::render('Projects', $props);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         /** @var User $user */
         $user = Auth::user();
@@ -105,6 +105,7 @@ class ProjectController extends Controller
                 : null,
             'services' => Project::getServices(),
             'systemTypes' => Project::getSystemTypes(),
+            'preselect_user_id' => $request->query('user_id'),
         ]);
     }
 
