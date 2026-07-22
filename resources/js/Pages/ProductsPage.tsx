@@ -79,6 +79,11 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
 
                 <div className="relative mx-auto max-w-7xl px-4">
                     <div className="mx-auto max-w-2xl text-center">
+                        <div className="mb-6 flex items-center justify-center gap-2 text-sm text-slate-400">
+                            <Link href="/" className="hover:text-white">Home</Link>
+                            <span>/</span>
+                            <span className="text-white">Products</span>
+                        </div>
                         <span className="text-sm font-semibold uppercase tracking-wider text-blue-500">Our Products</span>
                         <h1 className="mt-4 text-4xl font-bold leading-[1.05] text-white sm:text-5xl">IT Equipment &amp; Supplies</h1>
                         <p className="mt-4 text-lg text-slate-300">
