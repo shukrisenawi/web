@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, FolderKanban, ListChecks, CheckCircle2, Circle, Clock } from 'lucide-react';
+import { ArrowRight, FolderKanban, ListChecks, CheckCircle2, Clock } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 
@@ -190,19 +190,9 @@ export default function ProjectShow({ project }: { project: Project }) {
                                 {project.milestones.map((m, i) => (
                                     <div key={m.id} className="relative flex items-start gap-4">
                                         <div className="relative z-10 flex shrink-0">
-                                            <div
-                                                className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
-                                                    m.is_active
-                                                        ? 'border-blue-600 bg-blue-600 text-white'
-                                                        : 'border-slate-300 bg-white text-slate-400'
-                                                }`}
-                                            >
-                                                {m.is_active ? (
-                                                    <CheckCircle2 className="h-3.5 w-3.5" />
-                                                ) : (
-                                                    <Circle className="h-3.5 w-3.5" />
-                                                )}
-                                            </div>
+                                        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
+                                            <CheckCircle2 className="h-3.5 w-3.5" />
+                                        </div>
                                         </div>
                                         <div className="flex-1 pb-1">
                                             <div className="flex items-start justify-between gap-2">
@@ -216,12 +206,10 @@ export default function ProjectShow({ project }: { project: Project }) {
                                                         <p className="mt-0.5 text-xs text-slate-500">{m.note}</p>
                                                     )}
                                                 </div>
-                                                {m.due_date && (
-                                                    <span className="flex shrink-0 items-center gap-1 text-xs text-slate-400">
-                                                        <Clock className="h-3 w-3" />
-                                                        {m.due_date}
-                                                    </span>
-                                                )}
+                                                <span className="flex shrink-0 items-center gap-1 text-xs text-slate-400">
+                                                    <Clock className="h-3 w-3" />
+                                                    {m.due_date ?? 'TBD'}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
