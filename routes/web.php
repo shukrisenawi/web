@@ -138,7 +138,7 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
 
         Route::get('/manage-products', [ProductController::class, 'index'])->name('products.index');
         Route::post('/manage-products', [ProductController::class, 'store'])->name('products.store');
-        Route::post('/manage-products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::put('/manage-products/{product}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/manage-products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     });
 });
