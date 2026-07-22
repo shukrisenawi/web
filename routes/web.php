@@ -137,6 +137,7 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
         Route::put('/requests/{request}', [ProjectRequestAdminController::class, 'update'])->name('requests.update');
         Route::post('/requests/{request}/approve', [ProjectRequestAdminController::class, 'approve'])->name('requests.approve');
         Route::post('/requests/{request}/reject', [ProjectRequestAdminController::class, 'reject'])->name('requests.reject');
+        Route::delete('/requests/{request}', [ProjectRequestAdminController::class, 'destroy'])->name('requests.destroy');
 
         Route::get('/manage-frontpage', [FrontpageController::class, 'index'])->name('frontpage.manage');
         Route::post('/manage-frontpage', [FrontpageController::class, 'update'])->name('frontpage.update');

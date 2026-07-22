@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, Building2, Search, ChevronDown, ChevronUp, CheckCircle2, XCircle, Mail, Phone, Calendar, Clock, MessageSquare, ThumbsUp, ThumbsDown, Pencil, X } from 'lucide-react';
+import { ArrowRight, Building2, Search, ChevronDown, ChevronUp, CheckCircle2, XCircle, Mail, Phone, Calendar, Clock, MessageSquare, ThumbsUp, ThumbsDown, Pencil, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
 
@@ -41,6 +41,8 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
 
     const [editModal, setEditModal] = useState<ProjectRequestItem | null>(null);
     const [editForm, setEditForm] = useState({ appointment_type: 'Online', appointment_date: '', appointment_time: '', message: '' });
+
+    const [deleteModal, setDeleteModal] = useState<number | null>(null);
 
     const counts = tabCounts(requests);
 
@@ -90,6 +92,14 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
         router.put(`/requests/${editModal.id}`, editForm, {
             preserveScroll: true,
             onSuccess: () => setEditModal(null),
+        });
+    };
+
+    const confirmDelete = () => {
+        if (deleteModal === null) return;
+        router.delete(`/requests/${deleteModal}`, {
+            preserveScroll: true,
+            onSuccess: () => setDeleteModal(null),
         });
     };
 
@@ -209,6 +219,13 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
                                         className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50"
                                     >
                                         <Pencil className="h-3.5 w-3.5" /> Edit
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setDeleteModal(r.id)}
+                                        className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50"
+                                    >
+                                        <Trash2 className="h-3.5 w-3.5" /> Delete
                                     </button>
                                     <button
                                         type="button"
@@ -395,6 +412,38 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
                                 className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
                             >
                                 Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {deleteModal !== null && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+                        <div className="flex items-start justify-between">
+                            <h3 className="text-lg font-bold text-slate-900">Delete Appointment</h3>
+                            <button type="button" onClick={() => setDeleteModal(null)} className="rounded-lg p-1 text-slate-400 hover:bg-slate-100">
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+                        <p className="mt-2 text-sm text-slate-600">
+                            Are you sure you want to delete this appointment? This action cannot be undone.
+                        </p>
+                        <div className="mt-6 flex justify-end gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setDeleteModal(null)}
+                                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={confirmDelete}
+                                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+                            >
+                                Delete
                             </button>
                         </div>
                     </div>

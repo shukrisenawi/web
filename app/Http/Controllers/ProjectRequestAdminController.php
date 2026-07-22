@@ -96,6 +96,19 @@ class ProjectRequestAdminController extends Controller
         return redirect()->route('requests')->with('success', 'Appointment rejected.');
     }
 
+    public function destroy(ProjectRequest $request): RedirectResponse
+    {
+        $this->ensureAdmin();
+
+        $request->files()->delete();
+        Notification::where('notifiable_type', ProjectRequest::class)
+            ->where('notifiable_id', $request->id)
+            ->delete();
+        $request->delete();
+
+        return redirect()->route('requests')->with('success', 'Appointment deleted.');
+    }
+
     public function update(Request $request, ProjectRequest $projectRequest): RedirectResponse
     {
         $this->ensureAdmin();
