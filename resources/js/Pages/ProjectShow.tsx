@@ -64,9 +64,7 @@ const paymentBadgeColor = (status: string) => {
 export default function ProjectShow({ project }: { project: Project }) {
     const { auth } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
-    const [editing, setEditing] = useState(false);
-    const [progressValue, setProgressValue] = useState(project.progress);
-    const [milestoneForm, setMilestoneForm] = useState({ title: '', note: '' });
+    const [milestoneForm, setMilestoneForm] = useState({ title: '', note: '', progress: project.progress });
     const [showForm, setShowForm] = useState(false);
 
     const submitMilestone = () => {
@@ -76,7 +74,7 @@ export default function ProjectShow({ project }: { project: Project }) {
             preserveState: true,
             onSuccess: () => {
                 setShowForm(false);
-                setMilestoneForm({ title: '', note: '' });
+                setMilestoneForm({ title: '', note: '', progress: 0 });
             },
         });
     };
@@ -136,56 +134,9 @@ export default function ProjectShow({ project }: { project: Project }) {
                     <div className="mt-6">
                         <div className="mb-2 flex items-center justify-between text-sm">
                             <span className="text-slate-500">Progress</span>
-                            {editing ? (
-                                <span className="font-semibold text-blue-600">{progressValue}%</span>
-                            ) : (
-                                <span className="font-semibold text-slate-700">{project.progress}%</span>
-                            )}
+                            <span className="font-semibold text-slate-700">{project.progress}%</span>
                         </div>
-                        {isAdmin && editing ? (
-                            <div className="flex items-center gap-3">
-                                <input
-                                    type="range"
-                                    min={0}
-                                    max={100}
-                                    value={progressValue}
-                                    onChange={(e) => setProgressValue(Number(e.target.value))}
-                                    onMouseUp={() => {
-                                        router.put(`/projects/${project.id}`, {
-                                            progress: progressValue,
-                                            status: project.status,
-                                            payment_status: project.payment_status,
-                                            key_person: project.key_person ?? '',
-                                            status_remark: project.status_remark ?? '',
-                                        }, {
-                                            preserveState: true,
-                                            preserveScroll: true,
-                                            onSuccess: () => setEditing(false),
-                                        });
-                                    }}
-                                    className="w-full accent-blue-600"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => { setEditing(false); setProgressValue(project.progress); }}
-                                    className="text-xs text-slate-400 hover:text-slate-600"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="relative">
-                                <Progress value={project.progress} />
-                                {isAdmin && (
-                                    <button
-                                        type="button"
-                                        onClick={() => { setEditing(true); setProgressValue(project.progress); }}
-                                        className="absolute inset-0 cursor-pointer"
-                                        title="Click to update progress"
-                                    />
-                                )}
-                            </div>
-                        )}
+                        <Progress value={project.progress} />
                     </div>
                 </Card>
 
@@ -198,7 +149,7 @@ export default function ProjectShow({ project }: { project: Project }) {
                         {isAdmin && (
                             <button
                                 type="button"
-                                onClick={() => setShowForm(true)}
+                                onClick={() => { setMilestoneForm({ title: '', note: '', progress: project.progress }); setShowForm(true); }}
                                 className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
                             >
                                 <Plus className="h-3.5 w-3.5" /> Update
@@ -244,7 +195,7 @@ export default function ProjectShow({ project }: { project: Project }) {
                     )}
                 </Card>
 
-            <Modal open={showForm} onClose={() => { setShowForm(false); setMilestoneForm({ title: '', note: '' }); }}>
+            <Modal open={showForm} onClose={() => { setShowForm(false); setMilestoneForm({ title: '', note: '', progress: project.progress }); }}>
                 <div className="px-6 py-5">
                     <h2 className="mb-4 text-lg font-bold text-slate-900">Add Update</h2>
                     <div className="space-y-4">
@@ -268,11 +219,25 @@ export default function ProjectShow({ project }: { project: Project }) {
                                 placeholder="Describe the update..."
                             />
                         </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Progress (%)</label>
+                            <div className="mt-1 flex items-center gap-3">
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={100}
+                                    value={milestoneForm.progress}
+                                    onChange={(e) => setMilestoneForm({ ...milestoneForm, progress: Number(e.target.value) })}
+                                    className="w-full accent-blue-600"
+                                />
+                                <span className="w-10 text-right text-sm font-semibold text-blue-600">{milestoneForm.progress}%</span>
+                            </div>
+                        </div>
                     </div>
                     <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
                         <button
                             type="button"
-                            onClick={() => { setShowForm(false); setMilestoneForm({ title: '', note: '' }); }}
+                            onClick={() => { setShowForm(false); setMilestoneForm({ title: '', note: '', progress: project.progress }); }}
                             className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
                         >
                             Cancel

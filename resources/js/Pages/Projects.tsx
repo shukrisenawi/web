@@ -92,12 +92,10 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const isAdmin = auth?.user?.isAdmin;
     const [status, setStatus] = useState(filters.status ?? '');
     const [search, setSearch] = useState(filters.search ?? '');
-    const [editingProgressId, setEditingProgressId] = useState<number | null>(null);
-    const [progressValue, setProgressValue] = useState(0);
     const [editingStatusId, setEditingStatusId] = useState<number | null>(null);
     const [editingPaymentId, setEditingPaymentId] = useState<number | null>(null);
     const [milestoneProject, setMilestoneProject] = useState<number | null>(null);
-    const [milestoneForm, setMilestoneForm] = useState({ title: '', note: '' });
+    const [milestoneForm, setMilestoneForm] = useState({ title: '', note: '', progress: 0 });
     const [showSuccess, setShowSuccess] = useState(false);
 
     const submitMilestone = () => {
@@ -107,7 +105,7 @@ export default function Projects({ projects, filters, clients = [], preselect_us
             preserveState: true,
             onSuccess: () => {
                 setMilestoneProject(null);
-                setMilestoneForm({ title: '', note: '' });
+                setMilestoneForm({ title: '', note: '', progress: 0 });
                 setShowSuccess(true);
             },
         });
@@ -360,56 +358,9 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                             <div className="mt-6">
                                 <div className="mb-2 flex items-center justify-between text-sm">
                                     <span className="text-slate-500">Progress</span>
-                                    {isAdmin && editingProgressId === project.id ? (
-                                        <span className="font-semibold text-blue-600">{progressValue}%</span>
-                                    ) : (
-                                        <span className="font-semibold text-slate-700">{project.progress}%</span>
-                                    )}
+                                    <span className="font-semibold text-slate-700">{project.progress}%</span>
                                 </div>
-                                {isAdmin && editingProgressId === project.id ? (
-                                    <div className="flex items-center gap-3">
-                                        <input
-                                            type="range"
-                                            min={0}
-                                            max={100}
-                                            value={progressValue}
-                                            onChange={(e) => setProgressValue(Number(e.target.value))}
-                                            onMouseUp={() => {
-                                                router.put(`/projects/${project.id}`, {
-                                                    progress: progressValue,
-                                                    status: project.status,
-                                                    payment_status: project.payment_status ?? 'unpaid',
-                                                    key_person: project.key_person ?? '',
-                                                    status_remark: project.status_remark ?? '',
-                                                }, {
-                                                    preserveState: true,
-                                                    preserveScroll: true,
-                                                    onSuccess: () => setEditingProgressId(null),
-                                                });
-                                            }}
-                                            className="w-full accent-blue-600"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setEditingProgressId(null)}
-                                            className="text-xs text-slate-400 hover:text-slate-600"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="relative">
-                                        <Progress value={project.progress} />
-                                        {isAdmin && (
-                                            <button
-                                                type="button"
-                                                onClick={() => { setEditingProgressId(project.id); setProgressValue(project.progress); }}
-                                                className="absolute inset-0 cursor-pointer"
-                                                title="Click to update progress"
-                                            />
-                                        )}
-                                    </div>
-                                )}
+                                <Progress value={project.progress} />
                             </div>
 
                             <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
@@ -417,7 +368,7 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                 <div className="flex items-center gap-2">
                                     {isAdmin && (
                                         <button
-                                            onClick={() => { setMilestoneProject(project.id); setMilestoneForm({ title: '', note: '' }); }}
+                                            onClick={() => { setMilestoneProject(project.id); setMilestoneForm({ title: '', note: '', progress: project.progress }); }}
                                             className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
                                         >
                                             <ListChecks className="h-3.5 w-3.5" /> Update
@@ -506,6 +457,20 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                 className={inputClass}
                                 placeholder="Describe the update..."
                             />
+                        </div>
+                        <div>
+                            <label className={labelClass}>Progress (%)</label>
+                            <div className="mt-1 flex items-center gap-3">
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={100}
+                                    value={milestoneForm.progress}
+                                    onChange={(e) => setMilestoneForm({ ...milestoneForm, progress: Number(e.target.value) })}
+                                    className="w-full accent-blue-600"
+                                />
+                                <span className="w-10 text-right text-sm font-semibold text-blue-600">{milestoneForm.progress}%</span>
+                            </div>
                         </div>
                     </div>
                     <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">

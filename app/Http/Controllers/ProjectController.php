@@ -383,16 +383,19 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'note' => ['required', 'string', 'max:5000'],
+            'progress' => ['required', 'integer', 'min:0', 'max:100'],
             'due_date' => ['nullable', 'date'],
         ]);
 
         Milestone::create([
             'project_id' => $project->id,
             'title' => $validated['title'],
-            'note' => $validated['note'],
+            'note' => $validated['note'] ?? null,
             'due_date' => !empty($validated['due_date']) ? $validated['due_date'] : null,
             'is_active' => false,
         ]);
+
+        $project->update(['progress' => $validated['progress']]);
 
         return redirect()->back()->with('success', 'Update added successfully.');
     }
