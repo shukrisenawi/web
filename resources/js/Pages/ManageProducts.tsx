@@ -2,6 +2,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { CheckCircle2, Package, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { DashboardLayout, Card } from '@/Layouts/Dashboard';
+import Modal from '@/Components/Modal';
 
 const inputClass = 'w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
@@ -23,6 +24,7 @@ export default function ManageProducts({ products }: { products: Product[] }) {
     const [form, setForm] = useState({ name: '', spec: '', price: '', badge: '', image_file: null as File | null, sort_order: 0 });
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [lightbox, setLightbox] = useState<string | null>(null);
+    const [confirmDelete, setConfirmDelete] = useState<Product | null>(null);
 
     const openCreate = () => {
         setForm({ name: '', spec: '', price: '', badge: '', image_file: null, sort_order: 0 });
@@ -66,9 +68,9 @@ export default function ManageProducts({ products }: { products: Product[] }) {
         return () => window.removeEventListener('keydown', handler);
     }, [lightbox]);
 
-    const confirmDelete = (p: Product) => {
-        if (!confirm(`Delete "${p.name}"?`)) return;
-        router.delete(`/manage-products/${p.id}`, { preserveScroll: true });
+    const handleDelete = () => {
+        if (!confirmDelete) return;
+        router.delete(`/manage-products/${confirmDelete.id}`, { preserveScroll: true, onSuccess: () => setConfirmDelete(null) });
     };
 
     return (
@@ -144,7 +146,7 @@ export default function ManageProducts({ products }: { products: Product[] }) {
                                             <button type="button" onClick={() => openEdit(p)} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100">
                                                 <Pencil className="h-4 w-4" />
                                             </button>
-                                            <button type="button" onClick={() => confirmDelete(p)} className="rounded-lg p-1.5 text-red-500 hover:bg-red-50">
+                                            <button type="button" onClick={() => setConfirmDelete(p)} className="rounded-lg p-1.5 text-red-500 hover:bg-red-50">
                                                 <Trash2 className="h-4 w-4" />
                                             </button>
                                         </div>
@@ -228,6 +230,34 @@ export default function ManageProducts({ products }: { products: Product[] }) {
                     />
                 </div>
             )}
+
+            <Modal open={confirmDelete !== null} onClose={() => setConfirmDelete(null)}>
+                <div className="flex flex-col items-center gap-4 px-10 py-8">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                        <Trash2 className="h-10 w-10 text-red-600" />
+                    </div>
+                    <p className="text-lg font-bold text-slate-900">Delete Product</p>
+                    <p className="text-center text-sm text-slate-600">
+                        Are you sure you want to delete <span className="font-semibold text-slate-800">&quot;{confirmDelete?.name}&quot;</span>?
+                    </p>
+                    <div className="flex gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setConfirmDelete(null)}
+                            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleDelete}
+                            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </DashboardLayout>
     );
 }

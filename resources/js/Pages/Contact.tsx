@@ -1,8 +1,10 @@
 import { Head, useForm } from '@inertiajs/react';
-import { Mail, MapPin, Phone, Send } from 'lucide-react';
+import { CheckCircle2, Mail, MapPin, Phone, Send } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { HeroBackground } from '@/Components/HeroBackground';
+import Modal from '@/Components/Modal';
+import { useState } from 'react';
 
 export default function Contact() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -11,13 +13,14 @@ export default function Contact() {
         subject: '',
         message: '',
     });
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post('/contact', {
             preserveScroll: true,
             onSuccess: () => {
-                alert('Thank you for your message. We will get back to you soon.');
+                setShowSuccess(true);
                 reset();
             },
         });
@@ -157,6 +160,23 @@ export default function Contact() {
 
                 <LandingFooter mode="dark" />
             </div>
+
+            <Modal open={showSuccess} onClose={() => setShowSuccess(false)}>
+                <div className="flex flex-col items-center gap-4 px-10 py-8">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                        <CheckCircle2 className="h-10 w-10 text-green-600" />
+                    </div>
+                    <p className="text-lg font-bold text-slate-900">Thank you for your message!</p>
+                    <p className="text-center text-sm text-slate-600">We will get back to you soon.</p>
+                    <button
+                        type="button"
+                        onClick={() => setShowSuccess(false)}
+                        className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                    >
+                        OK
+                    </button>
+                </div>
+            </Modal>
         </>
     );
 }
