@@ -54,9 +54,19 @@ class ProjectRequestAdminController extends Controller
             $request->update(['status' => 'reviewed']);
         }
 
+        Notification::create([
+            'user_id' => $request->user_id,
+            'type' => 'appointment_reviewed',
+            'notifiable_type' => ProjectRequest::class,
+            'notifiable_id' => $request->id,
+            'title' => 'Appointment Reviewed',
+            'message' => 'Your appointment has been reviewed by our team.',
+            'is_read' => false,
+        ]);
+
         $this->markNotificationsRead($request);
 
-        return redirect()->route('requests')->with('success', 'Request marked as reviewed.');
+        return redirect()->route('requests')->with('success', 'Appointment marked as reviewed.');
     }
 
     public function approve(ProjectRequest $request): RedirectResponse
@@ -64,6 +74,16 @@ class ProjectRequestAdminController extends Controller
         $this->ensureAdmin();
 
         $request->update(['status' => 'approved', 'rejection_reason' => null]);
+
+        Notification::create([
+            'user_id' => $request->user_id,
+            'type' => 'appointment_approved',
+            'notifiable_type' => ProjectRequest::class,
+            'notifiable_id' => $request->id,
+            'title' => 'Appointment Approved',
+            'message' => 'Your appointment has been approved successfully.',
+            'is_read' => false,
+        ]);
 
         $this->markNotificationsRead($request);
 
@@ -81,6 +101,16 @@ class ProjectRequestAdminController extends Controller
         $projectRequest->update([
             'status' => 'rejected',
             'rejection_reason' => $validated['reason'],
+        ]);
+
+        Notification::create([
+            'user_id' => $projectRequest->user_id,
+            'type' => 'appointment_rejected',
+            'notifiable_type' => ProjectRequest::class,
+            'notifiable_id' => $projectRequest->id,
+            'title' => 'Appointment Rejected',
+            'message' => 'Reason: ' . $validated['reason'],
+            'is_read' => false,
         ]);
 
         $this->markNotificationsRead($projectRequest);

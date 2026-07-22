@@ -62,6 +62,26 @@ class NotificationController extends Controller
 
         $items = $items->concat($invoiceNotifications);
 
+        // Client Notification model records (appointment status updates)
+        $clientNotificationItems = Notification::where('user_id', $user->id)
+            ->where('is_read', false)
+            ->whereIn('type', ['appointment_reviewed', 'appointment_approved', 'appointment_rejected'])
+            ->with('notifiable')
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn ($n) => [
+                'type' => $n->type,
+                'id' => (string) $n->id,
+                'subject' => $n->title,
+                'description' => $n->message,
+                'name' => '',
+                'email' => '',
+                'date' => $n->created_at->format('M d, Y'),
+                'url' => route('dashboard'),
+            ]);
+
+        $items = $items->concat($clientNotificationItems);
+
         if ($user->isAdmin()) {
             $paidInvoices = Invoice::where('status', 'paid')
                 ->whereNotNull('paid_at')
@@ -154,6 +174,9 @@ class NotificationController extends Controller
                 ->update(['is_read' => true, 'read_at' => now()]);
         } else {
             $user->tickets()->whereNull('viewed_at')->update(['viewed_at' => now()]);
+            Notification::where('user_id', $user->id)
+                ->where('is_read', false)
+                ->update(['is_read' => true, 'read_at' => now()]);
         }
 
         return response()->json(['success' => true]);
