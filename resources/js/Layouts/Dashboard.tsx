@@ -293,7 +293,10 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                                                     onClick={() => setNotifOpen(false)}
                                                     className="block border-b border-slate-100 px-4 py-3 transition-colors hover:bg-slate-50"
                                                 >
-                                                    <p className="text-sm font-semibold text-slate-900">{n.type === 'project_request' ? 'New request' : n.type === 'payment_proof' ? 'Payment proof' : n.type === 'payment_received' ? 'Payment received' : n.type === 'invoice' ? 'Invoice' : 'New message'}: {n.subject}</p>
+                                                    <p className="text-sm font-semibold text-slate-900">{n.type === 'project_request' ? 'Ada pendaftaran baru' : n.type === 'payment_proof' ? 'Payment proof' : n.type === 'payment_received' ? 'Payment received' : n.type === 'invoice' ? 'Invoice' : 'New message'}</p>
+                                                    {n.type === 'project_request' && (
+                                                        <p className="text-sm font-medium text-slate-800">{n.subject}</p>
+                                                    )}
                                                     <p className="text-xs text-slate-500">{n.name} · {n.email}</p>
                                                     {n.description && (
                                                         <p className="mt-1 line-clamp-2 text-xs text-slate-600">{n.description}</p>

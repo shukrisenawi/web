@@ -89,14 +89,12 @@ class NotificationController extends Controller
                 ->map(fn ($r) => [
                     'type' => 'project_request',
                     'id' => (string) $r->id,
-                    'subject' => 'New project request: ' . $r->company_name,
-                    'description' => $r->features ? substr($r->features, 0, 200) : null,
+                    'subject' => $r->company_name,
+                    'description' => 'Appointment: ' . $r->appointment_date . ' at ' . $r->appointment_time . ' (' . $r->appointment_type . ')',
                     'name' => $r->contact_name,
                     'email' => $r->contact_email,
                     'date' => $r->created_at->format('M d, Y'),
-                    'url' => $r->user?->projects()->latest()->first()
-                        ? route('projects.show', $r->user->projects()->latest()->first())
-                        : route('requests'),
+                    'url' => route('requests'),
                 ]);
 
             $pendingProofs = PaymentProof::where('status', 'pending')
@@ -123,8 +121,10 @@ class NotificationController extends Controller
                 ->map(fn ($n) => [
                     'type' => $n->type,
                     'id' => (string) $n->id,
-                    'subject' => $n->title,
-                    'description' => $n->message,
+                    'subject' => $n->notifiable?->company_name ?? $n->title,
+                    'description' => $n->notifiable
+                        ? 'Appointment: ' . $n->notifiable->appointment_date . ' at ' . $n->notifiable->appointment_time . ' (' . $n->notifiable->appointment_type . ')'
+                        : $n->message,
                     'name' => $n->notifiable?->contact_name,
                     'email' => $n->notifiable?->contact_email,
                     'date' => $n->created_at->format('M d, Y'),
