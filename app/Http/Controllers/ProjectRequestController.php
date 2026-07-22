@@ -54,7 +54,6 @@ class ProjectRequestController extends Controller
             'status' => 'pending',
         ]);
 
-        // Notify all admins
         $adminUsers = User::where('role', User::ROLE_ADMIN)->get();
         foreach ($adminUsers as $admin) {
             AdminNotification::create([
@@ -79,5 +78,71 @@ class ProjectRequestController extends Controller
                 'status' => 'pending',
             ],
         ]);
+    }
+
+    public function index()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $appointments = ProjectRequest::where('user_id', $user->id)
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn ($r) => [
+                'id' => $r->id,
+                'company_name' => $r->company_name,
+                'appointment_type' => $r->appointment_type,
+                'appointment_date' => $r->appointment_date,
+                'appointment_time' => $r->appointment_time,
+                'message' => $r->message,
+                'rejection_reason' => $r->rejection_reason,
+                'status' => $r->status,
+                'created_at' => $r->created_at->format('M d, Y'),
+            ]);
+
+        return Inertia::render('ClientAppointments', [
+            'appointments' => $appointments,
+        ]);
+    }
+
+    public function storeClient(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'appointment_type' => ['required', 'in:Physical,Online'],
+            'appointment_date' => ['required', 'date'],
+            'appointment_time' => ['required', 'string', 'max:20'],
+            'message' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $projectRequest = ProjectRequest::create([
+            'user_id' => $user->id,
+            'company_name' => $user->company ?? $user->name,
+            'contact_name' => $user->name,
+            'contact_mobile' => $user->whatsapp ?? null,
+            'contact_email' => $user->email,
+            'appointment_type' => $validated['appointment_type'],
+            'appointment_date' => $validated['appointment_date'],
+            'appointment_time' => $validated['appointment_time'],
+            'message' => $validated['message'],
+            'status' => 'pending',
+        ]);
+
+        $adminUsers = User::where('role', User::ROLE_ADMIN)->get();
+        foreach ($adminUsers as $admin) {
+            AdminNotification::create([
+                'user_id' => $admin->id,
+                'type' => 'project_request',
+                'notifiable_type' => ProjectRequest::class,
+                'notifiable_id' => $projectRequest->id,
+                'title' => 'New appointment: ' . ($user->company ?? $user->name),
+                'message' => $user->name . ' (' . $user->email . ') booked a new appointment.',
+                'is_read' => false,
+            ]);
+        }
+
+        return redirect()->route('appointments')->with('success', 'Appointment booked successfully.');
     }
 }

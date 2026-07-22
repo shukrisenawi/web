@@ -97,6 +97,10 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
     Route::post('/support', [TicketController::class, 'store'])->name('tickets.store');
     Route::post('/support/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
 
+    /** Client: Appointments */
+    Route::get('/appointments', [ProjectRequestController::class, 'index'])->name('appointments');
+    Route::post('/appointments', [ProjectRequestController::class, 'storeClient'])->name('appointments.store');
+
     /** Admin only */
     Route::middleware('role:admin')->group(function () {
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');

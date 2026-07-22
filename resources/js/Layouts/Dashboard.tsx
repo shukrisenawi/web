@@ -36,6 +36,7 @@ const appointmentStatusLabel: Record<string, string> = {
 
 const clientSidebar: SidebarItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { label: 'Appointment', href: '/appointments', icon: CalendarClock },
     { label: 'Projects', href: '/projects', icon: FolderKanban },
     { label: 'Billing', href: '/invoices', icon: FileText, badge: 'pendingInvoicesCount' },
     { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
