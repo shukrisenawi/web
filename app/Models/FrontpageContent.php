@@ -22,6 +22,8 @@ class FrontpageContent extends Model
             'stats' => 'array',
             'clients' => 'array',
             'social_links' => 'array',
+            'about_team' => 'array',
+            'about_events' => 'array',
         ];
     }
 
@@ -80,6 +82,23 @@ class FrontpageContent extends Model
                 ['name' => 'LinkedIn', 'url' => 'https://linkedin.com'],
                 ['name' => 'GitHub', 'url' => 'https://github.com'],
                 ['name' => 'Instagram', 'url' => 'https://instagram.com'],
+            ],
+            'about_team_title' => 'Our Team',
+            'about_team_subtitle' => 'Meet The People Behind Kenju Tech',
+            'about_team' => [
+                ['name' => 'Kenji Tan', 'role' => 'Founder & CEO', 'image' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80'],
+                ['name' => 'Alicia Chong', 'role' => 'UI/UX Designer', 'image' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80'],
+                ['name' => 'Marcus Lim', 'role' => 'Lead Developer', 'image' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80'],
+                ['name' => 'Nurul Afiqah', 'role' => 'Project Manager', 'image' => 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80'],
+                ['name' => 'Daniel Ariff', 'role' => 'Backend Developer', 'image' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80'],
+            ],
+            'about_events_title' => 'Events',
+            'about_events_subtitle' => 'Where We Connect and Grow',
+            'about_events' => [
+                ['day' => '15', 'month' => 'MAY', 'title' => 'Tech in Motion Summit 2025', 'description' => 'We shared insights on building scalable web applications.', 'location' => 'Kuala Lumpur, Malaysia', 'image' => 'https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&w=600&q=80'],
+                ['day' => '24', 'month' => 'APR', 'title' => 'UI/UX Design Workshop', 'description' => 'A hands-on workshop on user-centered design principles.', 'location' => 'Petaling Jaya, Malaysia', 'image' => 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80'],
+                ['day' => '10', 'month' => 'MAR', 'title' => 'Startup Meetup KL', 'description' => 'Connecting with founders and sharing our startup journey.', 'location' => 'Kuala Lumpur, Malaysia', 'image' => 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&q=80'],
+                ['day' => '20', 'month' => 'FEB', 'title' => 'Digital Growth Conference', 'description' => 'Exploring digital strategies for business growth in 2025 and beyond.', 'location' => 'Kuala Lumpur, Malaysia', 'image' => 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80'],
             ],
         ];
     }

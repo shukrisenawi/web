@@ -166,9 +166,11 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
         service_image_files: {} as Record<number, File | null>,
         project_image_files: {} as Record<number, File | null>,
         client_logo_files: {} as Record<number, File | null>,
-    });
+        about_team_image_files: {} as Record<number, File | null>,
+        about_event_image_files: {} as Record<number, File | null>,
+    } as any);
 
-    const [activeTab, setActiveTab] = useState<'hero' | 'services' | 'projects' | 'clients' | 'stats' | 'cta' | 'footer'>('hero');
+    const [activeTab, setActiveTab] = useState<'hero' | 'services' | 'projects' | 'clients' | 'stats' | 'cta' | 'footer' | 'about'>('hero');
 
     const updateArray = (key: string, index: number, field: string, value: any) => {
         const list = [...(data[key] || [])];
@@ -201,6 +203,16 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
             delete files[index];
             setData('client_logo_files', files);
         }
+        if (key === 'about_team') {
+            const files = { ...data.about_team_image_files };
+            delete files[index];
+            setData('about_team_image_files', files);
+        }
+        if (key === 'about_events') {
+            const files = { ...data.about_event_image_files };
+            delete files[index];
+            setData('about_event_image_files', files);
+        }
     };
 
     const setClientLogo = (idx: number, file: File | null) => {
@@ -217,13 +229,15 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('frontpage.update'), {
+        post('/manage-frontpage', {
             preserveScroll: true,
             onSuccess: () => {
                 reset('hero_image_file');
                 setData('service_image_files', {});
                 setData('project_image_files', {});
                 setData('client_logo_files', {});
+                setData('about_team_image_files', {});
+                setData('about_event_image_files', {});
             },
         });
     };
@@ -236,6 +250,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
         { key: 'stats', label: 'Stats' },
         { key: 'cta', label: 'CTA' },
         { key: 'footer', label: 'Footer' },
+        { key: 'about', label: 'About Us' },
     ] as const;
 
     const setServiceImage = (idx: number, file: File | null) => {
@@ -244,6 +259,14 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
 
     const setProjectImage = (idx: number, file: File | null) => {
         setData('project_image_files', { ...data.project_image_files, [idx]: file });
+    };
+
+    const setAboutTeamImage = (idx: number, file: File | null) => {
+        setData('about_team_image_files', { ...data.about_team_image_files, [idx]: file });
+    };
+
+    const setAboutEventImage = (idx: number, file: File | null) => {
+        setData('about_event_image_files', { ...data.about_event_image_files, [idx]: file });
     };
 
     return (
@@ -745,6 +768,180 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                             >
                                 <Plus className="h-4 w-4" />
                                 Add Social Link
+                            </button>
+                        </Section>
+                    )}
+
+                    {activeTab === 'about' && (
+                        <Section title="About Us">
+                            <div className="mb-4 grid gap-5 sm:grid-cols-2">
+                                <Field label="Team Section Title">
+                                    <input
+                                        type="text"
+                                        value={data.about_team_title || ''}
+                                        onChange={(e) => setData('about_team_title', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                                <Field label="Team Section Subtitle">
+                                    <input
+                                        type="text"
+                                        value={data.about_team_subtitle || ''}
+                                        onChange={(e) => setData('about_team_subtitle', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                            </div>
+
+                            <h4 className="mb-2 text-sm font-semibold text-slate-800">Team Members</h4>
+                            <div className="space-y-4">
+                                {(data.about_team || []).map((member: any, idx: number) => (
+                                    <div key={idx} className="rounded-lg border border-slate-200 p-4">
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <span className="text-sm font-semibold text-slate-700">Team Member #{idx + 1}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeItem('about_team', idx)}
+                                                className="rounded p-1 text-red-500 hover:bg-red-50"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                            <Field label="Name">
+                                                <input
+                                                    type="text"
+                                                    value={member.name || ''}
+                                                    onChange={(e) => updateArray('about_team', idx, 'name', e.target.value)}
+                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                            </Field>
+                                            <Field label="Role">
+                                                <input
+                                                    type="text"
+                                                    value={member.role || ''}
+                                                    onChange={(e) => updateArray('about_team', idx, 'role', e.target.value)}
+                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                            </Field>
+                                            <div className="sm:col-span-2">
+                                                <ImageUpload
+                                                    label="Photo"
+                                                    preview={data.about_team_image_files[idx] ? URL.createObjectURL(data.about_team_image_files[idx]!) : member.image}
+                                                    onChange={(file) => setAboutTeamImage(idx, file)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => addItem('about_team', { name: '', role: '', image: '' })}
+                                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                            >
+                                <Plus className="h-4 w-4" />
+                                Add Team Member
+                            </button>
+
+                            <div className="my-6 border-t border-slate-100" />
+
+                            <div className="mb-4 grid gap-5 sm:grid-cols-2">
+                                <Field label="Events Section Title">
+                                    <input
+                                        type="text"
+                                        value={data.about_events_title || ''}
+                                        onChange={(e) => setData('about_events_title', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                                <Field label="Events Section Subtitle">
+                                    <input
+                                        type="text"
+                                        value={data.about_events_subtitle || ''}
+                                        onChange={(e) => setData('about_events_subtitle', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                            </div>
+
+                            <h4 className="mb-2 text-sm font-semibold text-slate-800">Events</h4>
+                            <div className="space-y-4">
+                                {(data.about_events || []).map((event: any, idx: number) => (
+                                    <div key={idx} className="rounded-lg border border-slate-200 p-4">
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <span className="text-sm font-semibold text-slate-700">Event #{idx + 1}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeItem('about_events', idx)}
+                                                className="rounded p-1 text-red-500 hover:bg-red-50"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                            <Field label="Title">
+                                                <input
+                                                    type="text"
+                                                    value={event.title || ''}
+                                                    onChange={(e) => updateArray('about_events', idx, 'title', e.target.value)}
+                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                            </Field>
+                                            <Field label="Description">
+                                                <input
+                                                    type="text"
+                                                    value={event.description || ''}
+                                                    onChange={(e) => updateArray('about_events', idx, 'description', e.target.value)}
+                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                            </Field>
+                                            <Field label="Location">
+                                                <input
+                                                    type="text"
+                                                    value={event.location || ''}
+                                                    onChange={(e) => updateArray('about_events', idx, 'location', e.target.value)}
+                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                            </Field>
+                                            <ImageUpload
+                                                label="Image"
+                                                preview={data.about_event_image_files[idx] ? URL.createObjectURL(data.about_event_image_files[idx]!) : event.image}
+                                                onChange={(file) => setAboutEventImage(idx, file)}
+                                            />
+                                        </div>
+                                        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                                            <Field label="Day">
+                                                <input
+                                                    type="text"
+                                                    value={event.day || ''}
+                                                    onChange={(e) => updateArray('about_events', idx, 'day', e.target.value)}
+                                                    placeholder="15"
+                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                            </Field>
+                                            <Field label="Month">
+                                                <input
+                                                    type="text"
+                                                    value={event.month || ''}
+                                                    onChange={(e) => updateArray('about_events', idx, 'month', e.target.value)}
+                                                    placeholder="MAY"
+                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                            </Field>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => addItem('about_events', { day: '', month: '', title: '', description: '', location: '', image: '' })}
+                                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                            >
+                                <Plus className="h-4 w-4" />
+                                Add Event
                             </button>
                         </Section>
                     )}

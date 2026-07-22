@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import {
     ArrowRight,
     Code2,
@@ -15,74 +15,35 @@ import { LandingFooter } from '@/Layouts/LandingFooter';
 import { Cta } from '@/Components/Cta';
 import { HeroBackground } from '@/Components/HeroBackground';
 
+interface TeamMember {
+    name: string;
+    role: string;
+    image: string;
+}
+
+interface EventItem {
+    day: string;
+    month: string;
+    title: string;
+    description: string;
+    location: string;
+    image: string;
+}
+
+interface AboutProps {
+    about_team?: TeamMember[];
+    about_events?: EventItem[];
+    about_team_title?: string | null;
+    about_team_subtitle?: string | null;
+    about_events_title?: string | null;
+    about_events_subtitle?: string | null;
+}
+
 const stats = [
     { icon: ShieldCheck, value: '100+', label: 'Projects Completed' },
     { icon: Users, value: '50+', label: 'Happy Clients' },
     { icon: Rocket, value: '5+', label: 'Years Experience' },
     { icon: Headphones, value: '24/7', label: 'Support' },
-];
-
-const team = [
-    {
-        name: 'Kenji Tan',
-        role: 'Founder & CEO',
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-    },
-    {
-        name: 'Alicia Chong',
-        role: 'UI/UX Designer',
-        image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
-    },
-    {
-        name: 'Marcus Lim',
-        role: 'Lead Developer',
-        image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-    },
-    {
-        name: 'Nurul Afiqah',
-        role: 'Project Manager',
-        image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80',
-    },
-    {
-        name: 'Daniel Ariff',
-        role: 'Backend Developer',
-        image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
-    },
-];
-
-const events = [
-    {
-        day: '15',
-        month: 'MAY',
-        title: 'Tech in Motion Summit 2025',
-        description: 'We shared insights on building scalable web applications.',
-        location: 'Kuala Lumpur, Malaysia',
-        image: 'https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&w=600&q=80',
-    },
-    {
-        day: '24',
-        month: 'APR',
-        title: 'UI/UX Design Workshop',
-        description: 'A hands-on workshop on user-centered design principles.',
-        location: 'Petaling Jaya, Malaysia',
-        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80',
-    },
-    {
-        day: '10',
-        month: 'MAR',
-        title: 'Startup Meetup KL',
-        description: 'Connecting with founders and sharing our startup journey.',
-        location: 'Kuala Lumpur, Malaysia',
-        image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&q=80',
-    },
-    {
-        day: '20',
-        month: 'FEB',
-        title: 'Digital Growth Conference',
-        description: 'Exploring digital strategies for business growth in 2025 and beyond.',
-        location: 'Kuala Lumpur, Malaysia',
-        image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80',
-    },
 ];
 
 const currentProjects = [
@@ -129,7 +90,35 @@ const visionMission = [
     },
 ];
 
-export default function About() {
+const defaultTeam: TeamMember[] = [
+    { name: 'Kenji Tan', role: 'Founder & CEO', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80' },
+    { name: 'Alicia Chong', role: 'UI/UX Designer', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80' },
+    { name: 'Marcus Lim', role: 'Lead Developer', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80' },
+    { name: 'Nurul Afiqah', role: 'Project Manager', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80' },
+    { name: 'Daniel Ariff', role: 'Backend Developer', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80' },
+];
+
+const defaultEvents: EventItem[] = [
+    { day: '15', month: 'MAY', title: 'Tech in Motion Summit 2025', description: 'We shared insights on building scalable web applications.', location: 'Kuala Lumpur, Malaysia', image: 'https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&w=600&q=80' },
+    { day: '24', month: 'APR', title: 'UI/UX Design Workshop', description: 'A hands-on workshop on user-centered design principles.', location: 'Petaling Jaya, Malaysia', image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80' },
+    { day: '10', month: 'MAR', title: 'Startup Meetup KL', description: 'Connecting with founders and sharing our startup journey.', location: 'Kuala Lumpur, Malaysia', image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&q=80' },
+    { day: '20', month: 'FEB', title: 'Digital Growth Conference', description: 'Exploring digital strategies for business growth in 2025 and beyond.', location: 'Kuala Lumpur, Malaysia', image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80' },
+];
+
+export default function About({
+    about_team = [],
+    about_events = [],
+    about_team_title,
+    about_team_subtitle,
+    about_events_title,
+    about_events_subtitle,
+}: AboutProps) {
+    const { props } = usePage();
+    void props;
+
+    const team = about_team.length > 0 ? about_team : defaultTeam;
+    const events = about_events.length > 0 ? about_events : defaultEvents;
+
     return (
         <>
             <Head title="About Us" />
@@ -211,9 +200,9 @@ export default function About() {
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                             <div>
-                                <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">Our Team</p>
+                                <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">{about_team_title || 'Our Team'}</p>
                                 <h2 className="mt-2 max-w-md text-3xl font-bold text-slate-900 sm:text-4xl">
-                                    Meet The People Behind Kenju Tech
+                                    {about_team_subtitle || 'Meet The People Behind Kenju Tech'}
                                 </h2>
                             </div>
                             <p className="max-w-md text-sm text-slate-600">
@@ -268,9 +257,9 @@ export default function About() {
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                             <div>
-                                <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">Events</p>
+                                <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">{about_events_title || 'Events'}</p>
                                 <h2 className="mt-2 max-w-sm text-3xl font-bold text-slate-900 sm:text-4xl">
-                                    Where We Connect and Grow
+                                    {about_events_subtitle || 'Where We Connect and Grow'}
                                 </h2>
                             </div>
                             <p className="max-w-md text-sm text-slate-600">

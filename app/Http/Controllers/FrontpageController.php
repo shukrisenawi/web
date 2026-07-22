@@ -50,6 +50,12 @@ class FrontpageController extends Controller
             'cta_link' => 'nullable|string|max:255',
             'footer_tagline' => 'nullable|string',
             'social_links' => 'nullable|array',
+            'about_team_title' => 'nullable|string|max:255',
+            'about_team_subtitle' => 'nullable|string',
+            'about_team' => 'nullable|array',
+            'about_events_title' => 'nullable|string|max:255',
+            'about_events_subtitle' => 'nullable|string',
+            'about_events' => 'nullable|array',
         ]);
 
         // Handle hero image upload
@@ -60,42 +66,58 @@ class FrontpageController extends Controller
 
         // Handle service image uploads
         $services = $request->input('services', []);
-        if ($request->has('service_image_files')) {
-            foreach ($request->input('service_image_files') as $idx => $val) {
-                $fileKey = "service_image_files.{$idx}";
-                if ($request->hasFile($fileKey)) {
-                    $path = $request->file($fileKey)->store('frontpage/services', 'public');
-                    $services[$idx]['image'] = Storage::disk('public')->url($path);
-                }
+        $serviceImageFiles = $request->file('service_image_files') ?? [];
+        foreach ($serviceImageFiles as $idx => $file) {
+            if ($file) {
+                $path = $file->store('frontpage/services', 'public');
+                $services[$idx]['image'] = Storage::disk('public')->url($path);
             }
         }
         $validated['services'] = $services;
 
         // Handle project image uploads
         $projects = $request->input('projects', []);
-        if ($request->has('project_image_files')) {
-            foreach ($request->input('project_image_files') as $idx => $val) {
-                $fileKey = "project_image_files.{$idx}";
-                if ($request->hasFile($fileKey)) {
-                    $path = $request->file($fileKey)->store('frontpage/projects', 'public');
-                    $projects[$idx]['image'] = Storage::disk('public')->url($path);
-                }
+        $projectImageFiles = $request->file('project_image_files') ?? [];
+        foreach ($projectImageFiles as $idx => $file) {
+            if ($file) {
+                $path = $file->store('frontpage/projects', 'public');
+                $projects[$idx]['image'] = Storage::disk('public')->url($path);
             }
         }
         $validated['projects'] = $projects;
 
         // Handle client logo uploads
         $clients = $request->input('clients', []);
-        if ($request->has('client_logo_files')) {
-            foreach ($request->input('client_logo_files') as $idx => $val) {
-                $fileKey = "client_logo_files.{$idx}";
-                if ($request->hasFile($fileKey)) {
-                    $path = $request->file($fileKey)->store('frontpage/clients', 'public');
-                    $clients[$idx]['logo'] = Storage::disk('public')->url($path);
-                }
+        $clientLogoFiles = $request->file('client_logo_files') ?? [];
+        foreach ($clientLogoFiles as $idx => $file) {
+            if ($file) {
+                $path = $file->store('frontpage/clients', 'public');
+                $clients[$idx]['logo'] = Storage::disk('public')->url($path);
             }
         }
         $validated['clients'] = $clients;
+
+        // Handle about team image uploads
+        $aboutTeam = $request->input('about_team', []);
+        $aboutTeamImageFiles = $request->file('about_team_image_files') ?? [];
+        foreach ($aboutTeamImageFiles as $idx => $file) {
+            if ($file) {
+                $path = $file->store('frontpage/about/team', 'public');
+                $aboutTeam[$idx]['image'] = Storage::disk('public')->url($path);
+            }
+        }
+        $validated['about_team'] = $aboutTeam;
+
+        // Handle about event image uploads
+        $aboutEvents = $request->input('about_events', []);
+        $aboutEventImageFiles = $request->file('about_event_image_files') ?? [];
+        foreach ($aboutEventImageFiles as $idx => $file) {
+            if ($file) {
+                $path = $file->store('frontpage/about/events', 'public');
+                $aboutEvents[$idx]['image'] = Storage::disk('public')->url($path);
+            }
+        }
+        $validated['about_events'] = $aboutEvents;
 
         $content->update($validated);
 

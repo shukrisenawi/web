@@ -39,7 +39,16 @@ Route::get('/work/{slug}', function (string $slug) {
 })->name('work.show');
 
 Route::get('/about', function () {
-    return inertia('About');
+    $content = \App\Models\FrontpageContent::getCurrent();
+
+    return inertia('About', [
+        'about_team' => $content->about_team ?? [],
+        'about_events' => $content->about_events ?? [],
+        'about_team_title' => $content->about_team_title,
+        'about_team_subtitle' => $content->about_team_subtitle,
+        'about_events_title' => $content->about_events_title,
+        'about_events_subtitle' => $content->about_events_subtitle,
+    ]);
 })->name('about');
 
 Route::get('/blog', [\App\Http\Controllers\BlogPostController::class, 'publicIndex'])->name('blog');
