@@ -39,6 +39,7 @@ class ProjectRequestAdminController extends Controller
                 'status' => $r->status,
                 'created_at' => $r->created_at->format('M d, Y'),
                 'user_id' => $r->user_id,
+                'avatar_url' => $r->user?->avatar ? asset('storage/' . $r->user->avatar) : null,
             ]);
 
         return Inertia::render('ProjectRequests', [

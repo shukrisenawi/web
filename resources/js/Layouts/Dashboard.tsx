@@ -300,7 +300,7 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                             <button
                                 type="button"
                                 onClick={() => setProfileOpen(!profileOpen)}
-                                className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white hover:opacity-90"
+                                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white hover:opacity-90"
                             >
                                 {renderAvatar('h-full w-full', 'text-sm')}
                             </button>

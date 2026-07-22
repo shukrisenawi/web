@@ -17,6 +17,7 @@ interface ProjectRequestItem {
     status: 'pending' | 'reviewed' | 'approved' | 'rejected';
     created_at: string;
     user_id: number;
+    avatar_url: string | null;
 }
 
 const TABS = ['pending', 'approved', 'rejected'] as const;
@@ -164,9 +165,13 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
                         <Card key={r.id} className="flex flex-col">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                 <div className="flex items-start gap-3">
-                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
-                                        <Building2 className="h-6 w-6" />
-                                    </div>
+                                    {r.avatar_url ? (
+                                        <img src={r.avatar_url} alt={r.company_name} className="h-12 w-12 shrink-0 rounded-xl object-cover" />
+                                    ) : (
+                                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
+                                            <Building2 className="h-6 w-6" />
+                                        </div>
+                                    )}
                                     <div>
                                         <h3 className="font-semibold text-slate-900">{r.company_name}</h3>
                                         <p className="text-sm text-slate-500">{r.contact_name} · {r.contact_email}</p>
