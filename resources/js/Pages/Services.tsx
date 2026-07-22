@@ -207,10 +207,10 @@ export default function Services() {
                                     </p>
                                 </div>
                                 <Link
-                                    href="/contact"
+                                    href="/request"
                                     className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
                                 >
-                                    Let's Talk
+                                    Request Quotation
                                     <ArrowRight className="h-4 w-4" />
                                 </Link>
                             </div>
