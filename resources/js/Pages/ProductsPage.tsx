@@ -3,6 +3,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Package, Search, X, ZoomIn } fro
 import { useCallback, useEffect, useState } from 'react';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { LandingHeader } from '@/Layouts/LandingHeader';
+import { HeroBackground } from '@/Components/HeroBackground';
 
 interface Product {
     id: number;
@@ -71,11 +72,7 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
             <Head title="Products" />
 
             <section className="relative overflow-hidden bg-[#050914] py-20 text-white">
-                <div className="pointer-events-none absolute inset-0">
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:60px_60px]" />
-                    <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-                    <div className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
-                </div>
+                <HeroBackground />
 
                 <div className="relative mx-auto max-w-7xl px-4">
                     <div className="mx-auto max-w-2xl text-center">

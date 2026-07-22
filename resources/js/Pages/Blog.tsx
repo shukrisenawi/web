@@ -2,6 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
+import { HeroBackground } from '@/Components/HeroBackground';
 import { Cta } from '@/Components/Cta';
 
 interface Post {
@@ -35,8 +36,9 @@ export default function Blog() {
             <div className="min-h-screen bg-white">
                 <LandingHeader />
 
-                <div className="bg-slate-950 py-16 text-white sm:py-20">
-                    <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+                <div className="relative overflow-hidden bg-[#050914] py-16 text-white sm:py-20">
+                    <HeroBackground />
+                    <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
                         <p className="text-sm font-semibold uppercase tracking-wider text-blue-500">Insights</p>
                         <h1 className="mt-4 text-4xl font-bold sm:text-5xl">Our Blog</h1>
                         <p className="mx-auto mt-4 max-w-2xl text-slate-300">

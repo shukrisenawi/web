@@ -3,6 +3,7 @@ import { ArrowLeft, Calendar, CheckCircle2, User } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { Cta } from '@/Components/Cta';
+import { HeroBackground } from '@/Components/HeroBackground';
 import { projectsData, slugify } from '@/Components/ProjectsGrid';
 import { usePage } from '@inertiajs/react';
 
@@ -51,8 +52,9 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
             <div className="min-h-screen bg-white">
                 <LandingHeader />
 
-                <div className="bg-slate-950 py-16 text-white sm:py-20">
-                    <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <div className="relative overflow-hidden bg-[#050914] py-16 text-white sm:py-20">
+                    <HeroBackground />
+                    <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
                         <Link href="/work" className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white">
                             <ArrowLeft className="h-4 w-4" />
                             Back to Work

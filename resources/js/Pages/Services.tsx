@@ -4,6 +4,7 @@ import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { Clients } from '@/Components/Clients';
 import { ServicesGrid } from '@/Components/ServicesGrid';
+import { HeroBackground } from '@/Components/HeroBackground';
 
 const promotions = [
     {
@@ -62,11 +63,7 @@ export default function Services() {
 
                 {/* Hero */}
                 <section className="relative overflow-hidden bg-[#050914] text-white">
-                    <div className="pointer-events-none absolute inset-0">
-                        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:60px_60px]" />
-                        <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-                        <div className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
-                    </div>
+                    <HeroBackground />
 
                     <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
                         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">

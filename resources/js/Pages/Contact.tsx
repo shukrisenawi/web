@@ -2,6 +2,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { Mail, MapPin, Phone, Send } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
+import { HeroBackground } from '@/Components/HeroBackground';
 
 export default function Contact() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -29,8 +30,9 @@ export default function Contact() {
             <div className="min-h-screen bg-white">
                 <LandingHeader />
 
-                <div className="bg-slate-950 py-16 text-white sm:py-20">
-                    <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+                <div className="relative overflow-hidden bg-[#050914] py-16 text-white sm:py-20">
+                    <HeroBackground />
+                    <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
                         <p className="text-sm font-semibold uppercase tracking-wider text-blue-500">Get In Touch</p>
                         <h1 className="mt-4 text-4xl font-bold sm:text-5xl">Contact Us</h1>
                         <p className="mx-auto mt-4 max-w-2xl text-slate-300">

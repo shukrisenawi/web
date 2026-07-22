@@ -13,6 +13,7 @@ import {
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { Cta } from '@/Components/Cta';
+import { HeroBackground } from '@/Components/HeroBackground';
 
 const stats = [
     { icon: ShieldCheck, value: '100+', label: 'Projects Completed' },
@@ -137,11 +138,8 @@ export default function About() {
                 <LandingHeader />
 
                 {/* Hero */}
-                <section className="relative overflow-hidden bg-slate-950 pt-16 pb-20 text-white sm:pt-20 sm:pb-24">
-                    <div className="absolute inset-0 opacity-20">
-                        <div className="absolute -right-20 top-10 h-96 w-96 rounded-full bg-blue-600/30 blur-3xl"></div>
-                        <div className="absolute -left-20 bottom-0 h-80 w-80 rounded-full bg-indigo-600/20 blur-3xl"></div>
-                    </div>
+                <section className="relative overflow-hidden bg-[#050914] pt-16 pb-20 text-white sm:pt-20 sm:pb-24">
+                    <HeroBackground />
                     <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
                             <div>

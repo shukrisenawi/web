@@ -41,6 +41,7 @@ import { LandingHeader } from "@/Layouts/LandingHeader";
 import { LandingFooter } from "@/Layouts/LandingFooter";
 import { servicesData, slugify } from "@/Components/ServicesGrid";
 import { usePage } from "@inertiajs/react";
+import { HeroBackground } from "@/Components/HeroBackground";
 
 interface ServiceDetailProps {
     slug: string;
@@ -128,8 +129,9 @@ export default function ServiceDetail({ slug }: ServiceDetailProps) {
             <div className="min-h-screen bg-white">
                 <LandingHeader />
 
-                <div className="bg-slate-950 py-16 text-white sm:py-20">
-                    <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <div className="relative overflow-hidden bg-[#050914] py-16 text-white sm:py-20">
+                    <HeroBackground />
+                    <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
                         <Link
                             href="/services"
                             className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white"
@@ -317,11 +319,7 @@ function DigitalMarketingDetail({ service }: { service: any }) {
 
                 {/* Hero */}
                 <section className="relative overflow-hidden bg-[#050914] text-white">
-                    <div className="pointer-events-none absolute inset-0">
-                        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:60px_60px]" />
-                        <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-                        <div className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
-                    </div>
+                    <HeroBackground />
 
                     <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
                         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">
@@ -924,11 +922,7 @@ function WebSystemDetail({ service }: { service: any }) {
 
                 {/* Hero */}
                 <section className="relative overflow-hidden bg-[#050914] text-white">
-                    <div className="pointer-events-none absolute inset-0">
-                        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:60px_60px]" />
-                        <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-                        <div className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
-                    </div>
+                    <HeroBackground />
 
                     <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
                         <div className="mb-6 flex items-center gap-2 text-sm text-slate-400">
@@ -1572,11 +1566,7 @@ function MobileAppsDetail({ service }: { service: any }) {
 
                 {/* Hero */}
                 <section className="relative overflow-hidden bg-[#050914] text-white">
-                    <div className="pointer-events-none absolute inset-0">
-                        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:60px_60px]" />
-                        <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-                        <div className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
-                    </div>
+                    <HeroBackground />
 
                     <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
                         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">
@@ -2149,11 +2139,7 @@ function WebDevelopmentDetail({ service }: { service: any }) {
 
                 {/* Hero */}
                 <section className="relative overflow-hidden bg-[#050914] text-white">
-                    <div className="pointer-events-none absolute inset-0">
-                        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:60px_60px]" />
-                        <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-                        <div className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
-                    </div>
+                    <HeroBackground />
 
                     <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
                         <div className="mb-6 flex items-center gap-2 text-sm text-slate-400">
@@ -3501,11 +3487,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
 
                 {/* Hero */}
                 <section className="relative overflow-hidden bg-[#050914] text-white">
-                    <div className="pointer-events-none absolute inset-0">
-                        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:60px_60px]" />
-                        <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-                        <div className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
-                    </div>
+                    <HeroBackground />
 
                     <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
                         <div className="mb-6 flex items-center gap-2 text-sm text-slate-400">
@@ -3826,9 +3808,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
 function ITEquipmentCta() {
     return (
         <section className="relative overflow-hidden bg-[#050914] py-16 text-white">
-            <div className="pointer-events-none absolute inset-0">
-                <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-blue-600/10 blur-[120px]" />
-            </div>
+            <HeroBackground />
             <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="grid items-center gap-8 lg:grid-cols-[1fr_1fr]">
                     <div className="max-w-lg">

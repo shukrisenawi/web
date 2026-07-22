@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { ArrowRight } from 'lucide-react';
+import { HeroBackground } from '@/Components/HeroBackground';
 
 export function Hero() {
     const { frontpage } = usePage().props as any;
@@ -7,11 +8,7 @@ export function Hero() {
 
     return (
         <section className="relative overflow-hidden bg-[#050914] text-white">
-            <div className="pointer-events-none absolute inset-0">
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
-                <div className="absolute right-0 top-0 h-[600px] w-[600px] rounded-full bg-blue-600/10 blur-[120px]"></div>
-                <div className="absolute bottom-0 left-1/4 h-[400px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]"></div>
-            </div>
+            <HeroBackground />
 
             <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
                 <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { ArrowRight, Play, Search, ClipboardList, Code2, FlaskConical, Rocket, ShieldCheck, Users, Rocket as RocketIcon, Globe } from 'lucide-react';
+import { HeroBackground } from '@/Components/HeroBackground';
 
 const stats = [
     { icon: ShieldCheck, value: '100+', label: 'Projects\nCompleted' },
@@ -94,10 +95,8 @@ export default function Work() {
                 <LandingHeader />
 
                 {/* Hero */}
-                <section className="relative overflow-hidden bg-slate-950 pt-16 pb-20 text-white">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(37,99,235,0.25),_transparent_50%)]"></div>
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_rgba(37,99,235,0.15),_transparent_50%)]"></div>
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+                <section className="relative overflow-hidden bg-[#050914] pt-16 pb-20 text-white">
+                    <HeroBackground />
 
                     <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
