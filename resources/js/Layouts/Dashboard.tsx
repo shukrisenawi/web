@@ -97,10 +97,16 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
             const res = await fetch('/notifications', {
                 headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
             });
+            if (!res.ok) {
+                console.error('Notifications fetch failed:', res.status, res.statusText);
+                setNotifications([]);
+                return;
+            }
             const data = await res.json();
             setNotifCount(data.count);
-            setNotifications(data.items);
-        } catch {
+            setNotifications(data.items || []);
+        } catch (err) {
+            console.error('Notifications fetch error:', err);
             setNotifications([]);
         }
     };
