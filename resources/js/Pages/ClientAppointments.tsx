@@ -133,13 +133,8 @@ export default function ClientAppointments({ appointments = [] }: { appointments
 
     const submit = () => {
         if (!validate()) return;
+        form.setData('appointment_date', formatYyyyMmDd(form.data.appointment_date));
         form.post('/appointments', {
-            data: {
-                appointment_type: form.data.appointment_type,
-                appointment_date: formatYyyyMmDd(form.data.appointment_date),
-                appointment_time: form.data.appointment_time.trim(),
-                message: form.data.message,
-            },
             onSuccess: () => {
                 setCreateOpen(false);
                 form.reset();
