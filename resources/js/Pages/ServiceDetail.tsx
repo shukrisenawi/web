@@ -2448,18 +2448,13 @@ function WebDevelopmentCta() {
                                 business stand out and grow online.
                             </p>
                         </div>
-                        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-                            <Link
-                                href="/contact"
-                                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
-                            >
-                                Let&apos;s Talk
-                                <ArrowRight className="h-4 w-4" />
-                            </Link>
-                            <span className="text-sm text-slate-400">
-                                or WhatsApp Us
-                            </span>
-                        </div>
+                        <Link
+                            href="/request"
+                            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
+                        >
+                            Request Quotation
+                            <ArrowRight className="h-4 w-4" />
+                        </Link>
                     </div>
                     <div className="pointer-events-none absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-blue-600/20 blur-3xl" />
                 </div>
