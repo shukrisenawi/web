@@ -169,7 +169,7 @@ export default function Services() {
                                             ))}
                                         </ul>
                                         <Link
-                                            href="/contact"
+                                            href="/request"
                                             className={`mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition ${
                                                 promo.variant === 'emerald'
                                                     ? 'bg-emerald-500 hover:bg-emerald-600'
