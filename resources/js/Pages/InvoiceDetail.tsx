@@ -18,6 +18,7 @@ interface Invoice {
     payment_url?: string | null;
     items?: { description: string; amount: number }[];
     proofs?: { id: number; payment_method: string; name: string; status: string; created_at: string }[];
+    has_pending_proof?: boolean;
 }
 
 const invoiceBadgeColor = (status: string) => {
@@ -79,7 +80,7 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                                 <CheckCircle className="h-4 w-4" /> Mark as {form.data.status === 'paid' ? 'Paid' : form.data.status}
                             </button>
                         ) : (
-                            invoice.status !== 'paid' && (
+                            invoice.status !== 'paid' && !invoice.has_pending_proof && (
                                 <button
                                     onClick={makePayment}
                                     className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
@@ -182,7 +183,7 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                         <span className="text-2xl font-bold text-slate-900">{invoice.amount}</span>
                     </div>
 
-                    {!isAdmin && invoice.status !== 'paid' && (
+                    {!isAdmin && invoice.status !== 'paid' && !invoice.has_pending_proof && (
                         <div className="mt-6 rounded-xl bg-blue-50 p-4 text-center print:hidden">
                             <button
                                 onClick={makePayment}

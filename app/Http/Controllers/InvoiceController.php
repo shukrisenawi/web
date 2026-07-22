@@ -210,7 +210,7 @@ class InvoiceController extends Controller
             'amount_raw' => (float) $i->amount,
             'status' => $i->status,
             'payment_url' => $i->payment_url,
-            'has_pending_proof' => $i->paymentProofs->contains(fn ($p) => $p->status === 'pending'),
+            'has_pending_proof' => $i->relationLoaded('paymentProofs') && $i->paymentProofs->contains(fn ($p) => $p->status === 'pending'),
         ];
 
         if ($full) {
