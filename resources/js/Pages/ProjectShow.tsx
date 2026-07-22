@@ -8,6 +8,7 @@ interface Milestone {
     title: string;
     note: string | null;
     due_date: string | null;
+    created_at: string;
     is_active: boolean;
 }
 
@@ -208,7 +209,7 @@ export default function ProjectShow({ project }: { project: Project }) {
                                                 </div>
                                                 <span className="flex shrink-0 items-center gap-1 text-xs text-slate-400">
                                                     <Clock className="h-3 w-3" />
-                                                    {m.due_date ?? 'TBD'}
+                                                    {m.due_date ?? m.created_at}
                                                 </span>
                                             </div>
                                         </div>

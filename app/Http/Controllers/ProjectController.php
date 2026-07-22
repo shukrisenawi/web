@@ -152,6 +152,7 @@ class ProjectController extends Controller
                     'title' => $m->title,
                     'note' => $m->note,
                     'due_date' => $m->due_date?->format('M d, Y'),
+                    'created_at' => $m->created_at->format('M d, Y'),
                     'is_active' => $m->is_active,
                 ]),
             ],
