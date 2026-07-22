@@ -16,6 +16,7 @@ export default function RequestForm() {
         appointment_type: string;
         appointment_date: string;
         appointment_time: string;
+        message: string;
     }>({
         company_name: '',
         contact_name: '',
@@ -26,6 +27,7 @@ export default function RequestForm() {
         appointment_type: '',
         appointment_date: '',
         appointment_time: '',
+        message: '',
     });
 
     const validate = (): boolean => {
@@ -187,6 +189,11 @@ export default function RequestForm() {
                                         <label htmlFor="appointment_time" className={labelClass}>Time <span className="text-red-500">*</span> (h:iA)</label>
                                         <input id="appointment_time" type="text" value={data.appointment_time} onChange={(e) => setData('appointment_time', e.target.value)} className={inputClass} placeholder="10:00AM" />
                                         {errors.appointment_time && <p className="mt-1 text-xs text-red-600">{errors.appointment_time}</p>}
+                                    </div>
+                                    <div className="sm:col-span-2">
+                                        <label htmlFor="message" className={labelClass}>Message</label>
+                                        <textarea id="message" rows={4} value={data.message} onChange={(e) => setData('message', e.target.value)} className={inputClass} placeholder="Tell us more about your project or any special requirements..." />
+                                        {errors.message && <p className="mt-1 text-xs text-red-600">{errors.message}</p>}
                                     </div>
                                 </div>
                             </div>

@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'appointment_type',
     'appointment_date',
     'appointment_time',
+    'message',
     'system_type',
     'features',
     'user_roles',
