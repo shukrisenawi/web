@@ -1,12 +1,22 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Calendar } from 'lucide-react';
 import { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const inputClass =
     'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
 
-function parseDdMmYyyy(value: string): string | null {
+function formatDateToDdMmYyyy(date: Date | null): string {
+    if (!date) return '';
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+function parseDdMmYyyy(value: string): Date | null {
     const match = value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
     if (!match) return null;
     const [, day, month, year] = match;
@@ -14,14 +24,18 @@ function parseDdMmYyyy(value: string): string | null {
     const m = parseInt(month, 10);
     const y = parseInt(year, 10);
     if (m < 1 || m > 12 || d < 1 || d > 31 || y < 1900) return null;
-    return `${year}-${month}-${day}`;
+    const date = new Date(y, m - 1, d);
+    if (date.getFullYear() !== y || date.getMonth() !== m - 1 || date.getDate() !== d) return null;
+    return date;
 }
 
-function formatYyyyMmDdToDdMmYyyy(value: string): string {
-    if (!value) return '';
-    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if (!match) return '';
-    return `${match[3]}/${match[2]}/${match[1]}`;
+function formatYyyyMmDd(value: string): string {
+    const date = parseDdMmYyyy(value);
+    if (!date) return '';
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
 }
 
 export default function RequestForm() {
@@ -50,6 +64,7 @@ export default function RequestForm() {
     });
 
     const [appointmentDateDisplay, setAppointmentDateDisplay] = useState('');
+    const [appointmentDate, setAppointmentDate] = useState<Date | null>(null);
 
     const validate = (): boolean => {
         clearErrors();
@@ -86,9 +101,8 @@ export default function RequestForm() {
             setError('appointment_type', 'Please select an appointment type');
             valid = false;
         }
-        const parsedDate = parseDdMmYyyy(appointmentDateDisplay);
-        if (!parsedDate) {
-            setError('appointment_date', 'Please enter date as dd/mm/yyyy');
+        if (!appointmentDate) {
+            setError('appointment_date', 'Please select an appointment date');
             valid = false;
         }
         if (!data.appointment_time.trim()) {
@@ -105,9 +119,8 @@ export default function RequestForm() {
 
     const handleSubmit = () => {
         if (validate()) {
-            const parsedDate = parseDdMmYyyy(appointmentDateDisplay);
-            if (parsedDate) {
-                setData('appointment_date', parsedDate);
+            if (appointmentDate) {
+                setData('appointment_date', formatYyyyMmDd(appointmentDateDisplay));
                 post('/request', { forceFormData: true });
             }
         }
@@ -117,6 +130,13 @@ export default function RequestForm() {
         if (e.key === 'Enter') {
             e.preventDefault();
         }
+    };
+
+    const handleDateChange = (date: Date | null) => {
+        setAppointmentDate(date);
+        const display = formatDateToDdMmYyyy(date);
+        setAppointmentDateDisplay(display);
+        setData('appointment_date', date ? formatYyyyMmDd(display) : '');
     };
 
     return (
@@ -196,22 +216,25 @@ export default function RequestForm() {
                                         </select>
                                         {errors.appointment_type && <p className="mt-1 text-xs text-red-600">{errors.appointment_type}</p>}
                                     </div>
-                                    <div>
+                                    <div className="relative">
                                         <label htmlFor="appointment_date" className={labelClass}>Date <span className="text-red-500">*</span></label>
-                                        <input
-                                            id="appointment_date"
-                                            type="text"
-                                            value={appointmentDateDisplay}
-                                            onChange={(e) => {
-                                                const display = e.target.value;
-                                                setAppointmentDateDisplay(display);
-                                                const parsed = parseDdMmYyyy(display);
-                                                setData('appointment_date', parsed || '');
-                                            }}
-                                            className={inputClass}
-                                            placeholder="dd/mm/yyyy"
-                                            maxLength={10}
-                                        />
+                                        <div className="relative">
+                                            <DatePicker
+                                                id="appointment_date"
+                                                selected={appointmentDate}
+                                                onChange={handleDateChange}
+                                                dateFormat="dd/MM/yyyy"
+                                                placeholderText="dd/mm/yyyy"
+                                                className={inputClass}
+                                                wrapperClassName="w-full"
+                                                showIcon
+                                                icon={
+                                                    <Calendar className="h-4 w-4 text-slate-400" />
+                                                }
+                                                minDate={new Date()}
+                                                popperPlacement="bottom-start"
+                                            />
+                                        </div>
                                         {errors.appointment_date && <p className="mt-1 text-xs text-red-600">{errors.appointment_date}</p>}
                                     </div>
                                     <div>
