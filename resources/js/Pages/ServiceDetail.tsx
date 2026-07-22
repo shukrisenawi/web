@@ -3347,7 +3347,9 @@ function GameDevelopmentHeroIllustration() {
     );
 }
 
-function ITEquipmentDetail({ service }: { service: any }) {
+function ITEquipmentDetail({ service, products: staticProducts }: { service: any; products?: any[] }) {
+    const { props } = usePage();
+    const productList = (props as any).products?.length ? (props as any).products : staticProducts;
     const heroHighlights = [
         {
             icon: Shield,
@@ -3619,7 +3621,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
                                 </h2>
                             </div>
                             <Link
-                                href="/contact"
+                                href="/products"
                                 className="text-sm font-semibold text-blue-600 inline-flex items-center gap-1 hover:underline"
                             >
                                 View All Products
@@ -3628,7 +3630,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
                         </div>
 
                         <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-                            {products.map((product) => (
+                            {productList.map((product) => (
                                 <div
                                     key={product.name}
                                     className="relative flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
@@ -3642,7 +3644,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
                                     )}
                                     <div className="aspect-[16/10] overflow-hidden">
                                         <img
-                                            src={product.image}
+                                            src={product.image?.startsWith('http') || product.image?.startsWith('/') ? product.image : '/storage/' + product.image}
                                             alt={product.name}
                                             className="h-full w-full object-cover"
                                         />

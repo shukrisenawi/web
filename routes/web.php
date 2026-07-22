@@ -8,6 +8,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProjectRequestAdminController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProjectRequestController;
@@ -23,7 +24,10 @@ Route::get('/services', function () {
 })->name('services');
 
 Route::get('/services/{slug}', function (string $slug) {
-    return inertia('ServiceDetail', ['slug' => $slug]);
+    $products = $slug === 'it-equipment-supply-setup'
+        ? \App\Models\Product::where('is_active', true)->orderBy('sort_order')->get()
+        : [];
+    return inertia('ServiceDetail', ['slug' => $slug, 'products' => $products]);
 })->name('services.show');
 
 Route::get('/work', function () {
@@ -64,6 +68,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/request', [ProjectRequestController::class, 'store'])->name('request.store');
 
 });
+
+Route::get('/products', function () {
+    $products = \App\Models\Product::where('is_active', true)->orderBy('sort_order')->get();
+    return inertia('ProductsPage', ['products' => $products]);
+})->name('products.public');
 
 Route::get('/payment/{invoiceNo}', [PaymentController::class, 'show'])->name('payment.show');
 Route::post('/payment/proof', [PaymentController::class, 'storeProof'])->name('payment.proof.store');
@@ -129,5 +138,10 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
         Route::post('/manage-blog', [BlogPostController::class, 'store'])->name('manage-blog.store');
         Route::put('/manage-blog/{post}', [BlogPostController::class, 'update'])->name('manage-blog.update');
         Route::delete('/manage-blog/{post}', [BlogPostController::class, 'destroy'])->name('manage-blog.destroy');
+
+        Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+        Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+        Route::post('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     });
 });
