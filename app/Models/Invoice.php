@@ -23,6 +23,7 @@ class Invoice extends Model
     {
         return [
             'issue_date' => 'date',
+            'paid_at' => 'datetime',
             'amount' => 'decimal:2',
         ];
     }
