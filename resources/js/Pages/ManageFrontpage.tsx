@@ -231,13 +231,21 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
         e.preventDefault();
         post('/manage-frontpage', {
             preserveScroll: true,
-            onSuccess: () => {
+            onSuccess: (page: any) => {
                 reset('hero_image_file');
                 setData('service_image_files', {});
                 setData('project_image_files', {});
                 setData('client_logo_files', {});
                 setData('about_team_image_files', {});
                 setData('about_event_image_files', {});
+                const c = page.props.content as Record<string, any> | undefined;
+                if (c) {
+                    if (c.services) setData('services', c.services);
+                    if (c.projects) setData('projects', c.projects);
+                    if (c.clients) setData('clients', c.clients);
+                    if (c.about_team) setData('about_team', c.about_team);
+                    if (c.about_events) setData('about_events', c.about_events);
+                }
             },
         });
     };
