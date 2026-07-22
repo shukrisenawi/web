@@ -6,7 +6,6 @@ use App\Models\FrontpageContent;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class FrontpageController extends Controller
@@ -61,7 +60,7 @@ class FrontpageController extends Controller
         // Handle hero image upload
         if ($request->hasFile('hero_image_file')) {
             $path = $request->file('hero_image_file')->store('frontpage', 'public');
-            $validated['hero_image'] = Storage::disk('public')->url($path);
+            $validated['hero_image'] = asset('storage/' . $path);
         }
 
         // Handle service image uploads
@@ -70,7 +69,7 @@ class FrontpageController extends Controller
         foreach ($serviceImageFiles as $idx => $file) {
             if ($file) {
                 $path = $file->store('frontpage/services', 'public');
-                $services[$idx]['image'] = Storage::disk('public')->url($path);
+                $services[$idx]['image'] = asset('storage/' . $path);
             }
         }
         $validated['services'] = $services;
@@ -81,7 +80,7 @@ class FrontpageController extends Controller
         foreach ($projectImageFiles as $idx => $file) {
             if ($file) {
                 $path = $file->store('frontpage/projects', 'public');
-                $projects[$idx]['image'] = Storage::disk('public')->url($path);
+                $projects[$idx]['image'] = asset('storage/' . $path);
             }
         }
         $validated['projects'] = $projects;
@@ -92,7 +91,7 @@ class FrontpageController extends Controller
         foreach ($clientLogoFiles as $idx => $file) {
             if ($file) {
                 $path = $file->store('frontpage/clients', 'public');
-                $clients[$idx]['logo'] = Storage::disk('public')->url($path);
+                $clients[$idx]['logo'] = asset('storage/' . $path);
             }
         }
         $validated['clients'] = $clients;
@@ -103,7 +102,7 @@ class FrontpageController extends Controller
         foreach ($aboutTeamImageFiles as $idx => $file) {
             if ($file) {
                 $path = $file->store('frontpage/about/team', 'public');
-                $aboutTeam[$idx]['image'] = Storage::disk('public')->url($path);
+                $aboutTeam[$idx]['image'] = asset('storage/' . $path);
             }
         }
         $validated['about_team'] = $aboutTeam;
@@ -114,7 +113,7 @@ class FrontpageController extends Controller
         foreach ($aboutEventImageFiles as $idx => $file) {
             if ($file) {
                 $path = $file->store('frontpage/about/events', 'public');
-                $aboutEvents[$idx]['image'] = Storage::disk('public')->url($path);
+                $aboutEvents[$idx]['image'] = asset('storage/' . $path);
             }
         }
         $validated['about_events'] = $aboutEvents;
