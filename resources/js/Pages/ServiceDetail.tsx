@@ -3593,18 +3593,13 @@ function ITEquipmentDetail({ service }: { service: any }) {
                                         Tailored to Your Needs
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-start gap-3">
-                                    <Link
-                                        href="/contact"
-                                        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
-                                    >
-                                        Request for Quotation
-                                        <ArrowRight className="h-4 w-4" />
-                                    </Link>
-                                    <span className="text-sm text-slate-500">
-                                        or WhatsApp Us
-                                    </span>
-                                </div>
+                                <Link
+                                    href="/request"
+                                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+                                >
+                                    Request Quotation
+                                    <ArrowRight className="h-4 w-4" />
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -3663,7 +3658,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
                                             {product.price}
                                         </p>
                                         <Link
-                                            href="/contact"
+                                            href="/request"
                                             className="mt-4 inline-flex items-center justify-center gap-2 rounded-lg border border-blue-600 px-4 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50"
                                         >
                                             Add to Quote
@@ -3844,18 +3839,13 @@ function ITEquipmentCta() {
                             power your business forward.
                         </p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-4">
                         <Link
-                            href="/contact"
+                            href="/request"
                             className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
                         >
-                            Request for Quotation
+                            Request Quotation
                             <ArrowRight className="h-4 w-4" />
                         </Link>
-                        <span className="text-sm text-slate-400">
-                            or WhatsApp Us
-                        </span>
-                    </div>
                 </div>
             </div>
         </section>
