@@ -3347,28 +3347,8 @@ function GameDevelopmentHeroIllustration() {
     );
 }
 
-function ITEquipmentDetail({ service, products: staticProducts }: { service: any; products?: any[] }) {
-    const { props } = usePage();
-    const productList = (props as any).products?.length ? (props as any).products : staticProducts;
-    const heroHighlights = [
-        {
-            icon: Shield,
-            title: "Genuine Products",
-            desc: "100% original and warranty included",
-        },
-        {
-            icon: Settings,
-            title: "Expert Setup",
-            desc: "Professional installation and configuration",
-        },
-        {
-            icon: Headphones,
-            title: "After-Sales Support",
-            desc: "Reliable support when you need it",
-        },
-    ];
-
-    const products = [
+function ITEquipmentDetail({ service }: { service: any }) {
+    const staticProducts = [
         {
             name: "Dell Latitude 5440",
             spec: '14" FHD, Intel i5, 16GB RAM, 512GB SSD, Windows 11 Pro',
@@ -3410,6 +3390,25 @@ function ITEquipmentDetail({ service, products: staticProducts }: { service: any
             price: "RM129.00",
             badge: null,
             image: "/images/products/logitech-mk270.png",
+        },
+    ];
+    const dbProducts = usePage().props.products as any[] | undefined;
+    const productList = dbProducts?.length ? dbProducts : staticProducts;
+    const heroHighlights = [
+        {
+            icon: Shield,
+            title: "Genuine Products",
+            desc: "100% original and warranty included",
+        },
+        {
+            icon: Settings,
+            title: "Expert Setup",
+            desc: "Professional installation and configuration",
+        },
+        {
+            icon: Headphones,
+            title: "After-Sales Support",
+            desc: "Reliable support when you need it",
         },
     ];
 
