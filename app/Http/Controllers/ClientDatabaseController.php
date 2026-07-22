@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\ProjectRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ClientDatabaseController extends Controller
@@ -96,5 +98,49 @@ class ClientDatabaseController extends Controller
                 fn ($p) => ['id' => $p->id, 'label' => $p->title, 'user_id' => $p->user_id]
             ),
         ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        if (! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $client = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', Rule::unique('users')->ignore($client->id)],
+            'company' => ['nullable', 'string', 'max:255'],
+            'business_address' => ['nullable', 'string', 'max:1000'],
+            'whatsapp' => ['nullable', 'string', 'max:255'],
+            'business_no' => ['nullable', 'string', 'max:255'],
+            'business_reg_no' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $client->update($validated);
+
+        return redirect()->route('clients')->with('success', 'Client profile updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        $user = Auth::user();
+
+        if (! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $client = User::findOrFail($id);
+
+        if ($client->isAdmin()) {
+            return redirect()->route('clients')->with('error', 'Cannot delete an admin user.');
+        }
+
+        $client->delete();
+
+        return redirect()->route('clients')->with('success', 'Client deleted successfully.');
     }
 }

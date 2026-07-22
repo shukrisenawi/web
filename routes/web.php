@@ -122,6 +122,8 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
         Route::delete('/support/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
 
         Route::get('/clients', [\App\Http\Controllers\ClientDatabaseController::class, 'index'])->name('clients');
+        Route::put('/clients/{client}', [\App\Http\Controllers\ClientDatabaseController::class, 'update'])->name('clients.update');
+        Route::delete('/clients/{client}', [\App\Http\Controllers\ClientDatabaseController::class, 'destroy'])->name('clients.destroy');
         Route::get('/requests', [ProjectRequestAdminController::class, 'index'])->name('requests');
         Route::put('/requests/{request}', [ProjectRequestAdminController::class, 'update'])->name('requests.update');
         Route::post('/requests/{request}/approve', [ProjectRequestAdminController::class, 'approve'])->name('requests.approve');

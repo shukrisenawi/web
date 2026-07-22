@@ -1,7 +1,7 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowRight, Building2, Search, FolderPlus, FileText, ChevronDown, ChevronUp, Paperclip, Plus, X, Trash2, Save, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ArrowRight, Building2, Search, FolderPlus, FileText, Plus, X, Trash2, Save, CheckCircle2, AlertCircle, Eye, Pencil } from 'lucide-react';
 import { useState } from 'react';
-import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
+import { DashboardLayout, Card } from '@/Layouts/Dashboard';
 
 interface RequestFile {
     id: number;
@@ -42,11 +42,13 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
     const { auth, flash } = usePage().props as any;
     void auth;
     const [search, setSearch] = useState('');
-    const [expanded, setExpanded] = useState<number | null>(null);
     const [billingClient, setBillingClient] = useState<Client | null>(null);
     const [billingError, setBillingError] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
     const [successInfo, setSuccessInfo] = useState({ client: '', project: '', invoiceNo: '' });
+    const [viewClient, setViewClient] = useState<Client | null>(null);
+    const [editClient, setEditClient] = useState<Client | null>(null);
+    const [deleteConfirm, setDeleteConfirm] = useState<Client | null>(null);
 
     const filtered = clients.filter((c) => {
         const q = search.toLowerCase();
@@ -131,6 +133,52 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
 
     const newProject = (id: number) => router.get('/projects', { user_id: id, new: 1 });
 
+    const editForm = useForm({
+        name: '',
+        email: '',
+        company: '',
+        business_address: '',
+        whatsapp: '',
+        business_no: '',
+        business_reg_no: '',
+    });
+
+    const openEdit = (c: Client) => {
+        editForm.clearErrors();
+        editForm.setData({
+            name: c.name,
+            email: c.email,
+            company: c.company ?? '',
+            business_address: c.business_address ?? '',
+            whatsapp: c.whatsapp ?? '',
+            business_no: '',
+            business_reg_no: '',
+        });
+        setEditClient(c);
+    };
+
+    const submitEdit = () => {
+        if (!editClient) return;
+        editForm.put(`/clients/${editClient.id}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setEditClient(null);
+            },
+        });
+    };
+
+    const confirmDelete = (c: Client) => {
+        setDeleteConfirm(c);
+    };
+
+    const executeDelete = () => {
+        if (!deleteConfirm) return;
+        router.delete(`/clients/${deleteConfirm.id}`, {
+            preserveScroll: true,
+            onSuccess: () => setDeleteConfirm(null),
+        });
+    };
+
     return (
         <>
             <Head title="Client Database" />
@@ -150,6 +198,19 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                         Back to Dashboard <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
+
+                {flash?.success && (
+                    <div className="mb-4 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+                        <CheckCircle2 className="h-5 w-5 shrink-0" />
+                        <span className="text-sm font-medium">{flash.success}</span>
+                    </div>
+                )}
+                {flash?.error && (
+                    <div className="mb-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+                        <AlertCircle className="h-5 w-5 shrink-0" />
+                        <span className="text-sm font-medium">{flash.error}</span>
+                    </div>
+                )}
 
                 <Card className="mb-6">
                     <div className="relative">
@@ -186,6 +247,22 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                                 <div className="flex flex-wrap items-center gap-2">
                                     <button
                                         type="button"
+                                        onClick={() => setViewClient(c)}
+                                        className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
+                                        title="View Profile"
+                                    >
+                                        <Eye className="h-4 w-4" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => openEdit(c)}
+                                        className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
+                                        title="Edit Profile"
+                                    >
+                                        <Pencil className="h-4 w-4" />
+                                    </button>
+                                    <button
+                                        type="button"
                                         onClick={() => newProject(c.id)}
                                         className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"
                                     >
@@ -198,61 +275,18 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                                     >
                                         <FileText className="h-3.5 w-3.5" /> Create Billing
                                     </button>
-                                    {c.request && (
-                                        <button
-                                            type="button"
-                                            onClick={() => setExpanded(expanded === c.id ? null : c.id)}
-                                            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50"
-                                        >
-                                            Request
-                                            {expanded === c.id ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                                        </button>
-                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => confirmDelete(c)}
+                                        className="rounded-lg border border-slate-200 p-2 text-red-400 hover:bg-red-50"
+                                        title="Delete Client"
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </button>
                                 </div>
                             </div>
 
-                            {c.request && expanded === c.id && (
-                                <div className="mt-4 border-t border-slate-100 pt-4">
-                                    <div className="mb-3 flex items-center gap-2">
-                                        <p className="text-sm font-semibold text-slate-800">Request Form Details</p>
-                                        <Badge color="slate">{c.request.status}</Badge>
-                                    </div>
-                                    <dl className="grid gap-3 text-sm sm:grid-cols-2">
-                                        <Field label="Industry" value={c.request.industry} />
-                                        <Field label="System Type" value={c.request.system_type} />
-                                        <Field label="Budget" value={c.request.budget} />
-                                        <Field label="Deadline" value={c.request.deadline} />
-                                        <Field label="Features / Modules" value={c.request.features} full />
-                                        <Field label="User Roles" value={c.request.user_roles} full />
-                                        <Field label="Integrations" value={c.request.integrations} full />
-                                        <Field label="Hosting / Domain" value={c.request.hosting_domain} full />
-                                        {c.business_address && <Field label="Address" value={c.business_address} full />}
-                                        <Field label="Additional Notes" value={c.request.additional_notes} full />
-                                        {c.request.files.length > 0 && (
-                                            <div className="sm:col-span-2">
-                                                <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Attached Files</dt>
-                                                <dd className="mt-1 space-y-1">
-                                                    {c.request.files.map((f) => (
-                                                        <a
-                                                            key={f.id}
-                                                            href={f.url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50"
-                                                        >
-                                                            <Paperclip className="h-3.5 w-3.5" />
-                                                            <span className="truncate">{f.filename}</span>
-                                                            <span className="ml-auto shrink-0 text-xs text-slate-400">
-                                                                {f.size > 1024 ? `${(f.size / 1024).toFixed(1)} KB` : `${f.size} B`}
-                                                            </span>
-                                                        </a>
-                                                    ))}
-                                                </dd>
-                                            </div>
-                                        )}
-                                    </dl>
-                                </div>
-                            )}
+
                         </Card>
                     ))}
                 </div>
@@ -447,6 +481,173 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                             </div>
                         </div>
                     </Card>
+                </div>
+            )}
+
+            {viewClient && (
+                // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setViewClient(null)}>
+                    {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                    <div className="w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+                        <Card>
+                            <div className="mb-4 flex items-center justify-between">
+                                <h3 className="text-lg font-bold text-slate-900">Client Profile</h3>
+                                <button type="button" onClick={() => setViewClient(null)} className="text-slate-400 hover:text-slate-700">
+                                    <X className="h-5 w-5" />
+                                </button>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-blue-600 text-white">
+                                        <Building2 className="h-8 w-8" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-xl font-bold text-slate-900">{viewClient.company ?? viewClient.name}</h4>
+                                        <p className="text-sm text-slate-500">{viewClient.name} · {viewClient.email}</p>
+                                    </div>
+                                </div>
+                                <dl className="grid gap-3 text-sm sm:grid-cols-2">
+                                    <Field label="Company" value={viewClient.company} />
+                                    <Field label="Contact Name" value={viewClient.name} />
+                                    <Field label="Email" value={viewClient.email} />
+                                    <Field label="WhatsApp" value={viewClient.whatsapp} />
+                                    <Field label="Business Address" value={viewClient.business_address} full />
+                                    <Field label="Projects" value={`${viewClient.projects_count} project(s)`} />
+                                    <Field label="Invoices" value={`${viewClient.invoices_count} invoice(s)`} />
+                                    <Field label="Joined" value={viewClient.joined} />
+                                </dl>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            )}
+
+            {editClient && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <Card className="w-full max-w-lg">
+                        <div className="mb-4 flex items-center justify-between">
+                            <h3 className="text-lg font-bold text-slate-900">Edit Client Profile</h3>
+                            <button type="button" onClick={() => setEditClient(null)} className="text-slate-400 hover:text-slate-700">
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+
+                        {Object.keys(editForm.errors).length > 0 && (
+                            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+                                {Object.entries(editForm.errors).map(([key, msg]) => (
+                                    <p key={key} className="flex items-center gap-2 text-sm">
+                                        <AlertCircle className="h-4 w-4 shrink-0" />
+                                        <span>{msg}</span>
+                                    </p>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">Contact Name</label>
+                                <input
+                                    type="text"
+                                    value={editForm.data.name}
+                                    onChange={(e) => editForm.setData('name', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
+                                <input
+                                    type="email"
+                                    value={editForm.data.email}
+                                    onChange={(e) => editForm.setData('email', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">Company</label>
+                                <input
+                                    type="text"
+                                    value={editForm.data.company}
+                                    onChange={(e) => editForm.setData('company', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">WhatsApp</label>
+                                <input
+                                    type="text"
+                                    value={editForm.data.whatsapp}
+                                    onChange={(e) => editForm.setData('whatsapp', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">Business Address</label>
+                                <textarea
+                                    rows={2}
+                                    value={editForm.data.business_address}
+                                    onChange={(e) => editForm.setData('business_address', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                />
+                            </div>
+                            <div className="flex justify-end gap-2 pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setEditClient(null)}
+                                    className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={submitEdit}
+                                    disabled={editForm.processing}
+                                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                                >
+                                    <Save className="h-4 w-4" /> Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            )}
+
+            {deleteConfirm && (
+                // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setDeleteConfirm(null)}>
+                    {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                    <div className="w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+                        <Card>
+                            <div className="mb-4 flex items-center gap-3">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+                                    <AlertCircle className="h-6 w-6 text-red-600" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-900">Delete Client</h3>
+                                    <p className="text-sm text-slate-500">This action cannot be undone.</p>
+                                </div>
+                            </div>
+                            <p className="mb-6 text-sm text-slate-700">
+                                Are you sure you want to delete <strong>{deleteConfirm.company ?? deleteConfirm.name}</strong> ({deleteConfirm.name})?
+                                All associated data including projects and invoices will also be removed.
+                            </p>
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setDeleteConfirm(null)}
+                                    className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={executeDelete}
+                                    className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+                                >
+                                    <Trash2 className="h-4 w-4" /> Delete
+                                </button>
+                            </div>
+                        </Card>
+                    </div>
                 </div>
             )}
 
