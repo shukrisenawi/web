@@ -53,7 +53,7 @@ const adminSidebar: SidebarItem[] = [
     { label: 'Invoices', href: '/invoices', icon: FileText },
     { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
     { label: 'Website Content', href: '/manage-frontpage', icon: Home },
-    { label: 'Products', href: '/products', icon: Package },
+    { label: 'Products', href: '/manage-products', icon: Package },
     { label: 'Blog', href: '/manage-blog', icon: FileText },
     { label: 'Profile', href: '/profile', icon: Users },
 ];
