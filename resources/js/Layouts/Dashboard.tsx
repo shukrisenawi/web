@@ -77,7 +77,9 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
     const [notifOpen, setNotifOpen] = useState(false);
     const [notifCount, setNotifCount] = useState(unreadMessagesCount ?? 0);
     const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+    const [profileOpen, setProfileOpen] = useState(false);
     const notifRef = useRef<HTMLDivElement>(null);
+    const profileRef = useRef<HTMLDivElement>(null);
 
     const currentPath = typeof url === 'string' ? new URL(url, window.location.origin).pathname : window.location.pathname;
 
@@ -85,6 +87,9 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
         function handleClickOutside(e: MouseEvent) {
             if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
                 setNotifOpen(false);
+            }
+            if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+                setProfileOpen(false);
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
@@ -213,16 +218,6 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                 </nav>
 
                 <div className="shrink-0 p-4">
-                    <div className="mt-4 flex items-center gap-3 rounded-xl bg-slate-900 p-3">
-                        {renderAvatar('h-10 w-10', 'text-lg')}
-                        <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-semibold">{user.name}</p>
-                            <p className="truncate text-xs text-slate-400">{user.email}</p>
-                        </div>
-                        <Link href="/profile" className="text-slate-400 hover:text-white">
-                            <ArrowRight className="h-4 w-4" />
-                        </Link>
-                    </div>
                     <Link
                         href="/logout"
                         method="post"
@@ -309,19 +304,38 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                             )}
                         </div>
 
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
-                            {renderAvatar('h-full w-full', 'text-sm')}
-                        </div>
+                        <div className="relative" ref={profileRef}>
+                            <button
+                                type="button"
+                                onClick={() => setProfileOpen(!profileOpen)}
+                                className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white hover:opacity-90"
+                            >
+                                {renderAvatar('h-full w-full', 'text-sm')}
+                            </button>
 
-                        <Link
-                            href="/logout"
-                            method="post"
-                            as="button"
-                            className="hidden rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 sm:block"
-                            title="Logout"
-                        >
-                            <LogOut className="h-4 w-4" />
-                        </Link>
+                            {profileOpen && (
+                                <div className="absolute right-0 top-full z-50 mt-2 w-44 rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+                                    <Link
+                                        href="/profile"
+                                        onClick={() => setProfileOpen(false)}
+                                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
+                                    >
+                                        <Users className="h-4 w-4" />
+                                        Profile
+                                    </Link>
+                                    <Link
+                                        href="/logout"
+                                        method="post"
+                                        as="button"
+                                        onClick={() => setProfileOpen(false)}
+                                        className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50"
+                                    >
+                                        <LogOut className="h-4 w-4" />
+                                        Logout
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </header>
 
