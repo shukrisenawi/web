@@ -12,7 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('frontpage_contents', function (Blueprint $table) {
-            $table->dropColumn(['current_projects', 'current_projects_title', 'current_projects_subtitle']);
+            $columns = [];
+            if (Schema::hasColumn('frontpage_contents', 'current_projects')) {
+                $columns[] = 'current_projects';
+            }
+            if (Schema::hasColumn('frontpage_contents', 'current_projects_title')) {
+                $columns[] = 'current_projects_title';
+            }
+            if (Schema::hasColumn('frontpage_contents', 'current_projects_subtitle')) {
+                $columns[] = 'current_projects_subtitle';
+            }
+            if (!empty($columns)) {
+                $table->dropColumn($columns);
+            }
         });
     }
 
