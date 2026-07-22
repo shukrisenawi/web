@@ -54,6 +54,8 @@ class ProjectRequestAdminController extends Controller
             $request->update(['status' => 'reviewed']);
         }
 
+        $this->markNotificationsRead($request);
+
         Notification::create([
             'user_id' => $request->user_id,
             'type' => 'appointment_reviewed',
@@ -64,8 +66,6 @@ class ProjectRequestAdminController extends Controller
             'is_read' => false,
         ]);
 
-        $this->markNotificationsRead($request);
-
         return redirect()->route('requests')->with('success', 'Appointment marked as reviewed.');
     }
 
@@ -74,6 +74,8 @@ class ProjectRequestAdminController extends Controller
         $this->ensureAdmin();
 
         $request->update(['status' => 'approved', 'rejection_reason' => null]);
+
+        $this->markNotificationsRead($request);
 
         Notification::create([
             'user_id' => $request->user_id,
@@ -84,8 +86,6 @@ class ProjectRequestAdminController extends Controller
             'message' => 'Your appointment has been approved successfully.',
             'is_read' => false,
         ]);
-
-        $this->markNotificationsRead($request);
 
         return redirect()->route('requests')->with('success', 'Appointment approved.');
     }
@@ -103,6 +103,8 @@ class ProjectRequestAdminController extends Controller
             'rejection_reason' => $validated['reason'],
         ]);
 
+        $this->markNotificationsRead($projectRequest);
+
         Notification::create([
             'user_id' => $projectRequest->user_id,
             'type' => 'appointment_rejected',
@@ -112,8 +114,6 @@ class ProjectRequestAdminController extends Controller
             'message' => 'Reason: ' . $validated['reason'],
             'is_read' => false,
         ]);
-
-        $this->markNotificationsRead($projectRequest);
 
         return redirect()->route('requests')->with('success', 'Appointment rejected.');
     }

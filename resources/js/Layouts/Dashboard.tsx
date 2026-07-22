@@ -248,9 +248,9 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                     </div>
 
                     <div className="flex items-center gap-3">
-                        {appointmentStatus && !user.isAdmin && (
+                        {(appointmentStatus === 'pending' || appointmentStatus === 'reviewed') && !user.isAdmin && (
                             <div className="flex items-center gap-1.5 rounded-full border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600">
-                                <span className={`h-2 w-2 rounded-full ${appointmentStatus === 'pending' ? 'bg-amber-400' : appointmentStatus === 'reviewed' ? 'bg-blue-500' : 'bg-green-500'}`} />
+                                <span className={`h-2 w-2 rounded-full ${appointmentStatus === 'pending' ? 'bg-amber-400' : 'bg-blue-500'}`} />
                                 {appointmentStatusLabel[appointmentStatus] || appointmentStatus}
                             </div>
                         )}
