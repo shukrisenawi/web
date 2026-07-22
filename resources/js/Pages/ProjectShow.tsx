@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, FolderKanban, ListChecks, CheckCircle2, Clock, Plus } from 'lucide-react';
+import { ArrowRight, FolderKanban, ListChecks, CheckCircle2, Clock, Plus, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
 import Modal from '@/Components/Modal';
@@ -66,6 +66,7 @@ export default function ProjectShow({ project }: { project: Project }) {
     const isAdmin = auth?.user?.isAdmin;
     const [milestoneForm, setMilestoneForm] = useState({ title: '', note: '', progress: project.progress });
     const [showForm, setShowForm] = useState(false);
+    const [editMilestone, setEditMilestone] = useState<Milestone | null>(null);
 
     const submitMilestone = () => {
         if (!milestoneForm.title.trim() || !milestoneForm.note.trim()) return;
@@ -76,6 +77,25 @@ export default function ProjectShow({ project }: { project: Project }) {
                 setShowForm(false);
                 setMilestoneForm({ title: '', note: '', progress: 0 });
             },
+        });
+    };
+
+    const updateMilestone = () => {
+        if (!editMilestone || !milestoneForm.title.trim() || !milestoneForm.note.trim()) return;
+        router.put(`/projects/${project.id}/milestones/${editMilestone.id}`, milestoneForm, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                setEditMilestone(null);
+                setMilestoneForm({ title: '', note: '', progress: 0 });
+            },
+        });
+    };
+
+    const deleteMilestone = (m: Milestone) => {
+        router.delete(`/projects/${project.id}/milestones/${m.id}`, {
+            preserveScroll: true,
+            preserveState: true,
         });
     };
 
@@ -174,7 +194,7 @@ export default function ProjectShow({ project }: { project: Project }) {
                                         </div>
                                         <div className="flex-1 pb-1">
                                             <div className="flex items-start justify-between gap-2">
-                                                <div>
+                                                <div className="flex-1">
                                                     <p className="text-sm font-semibold text-slate-900">
                                                         {m.title}
                                                     </p>
@@ -182,10 +202,32 @@ export default function ProjectShow({ project }: { project: Project }) {
                                                         <p className="mt-0.5 text-xs text-slate-500">{m.note}</p>
                                                     )}
                                                 </div>
-                                                <span className="flex shrink-0 items-center gap-1 text-xs text-slate-400">
-                                                    <Clock className="h-3 w-3" />
-                                                    {m.due_date ?? m.created_at}
-                                                </span>
+                                                <div className="flex shrink-0 items-center gap-2">
+                                                    {isAdmin && (
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => { setEditMilestone(m); setMilestoneForm({ title: m.title, note: m.note ?? '', progress: project.progress }); }}
+                                                                className="text-slate-400 hover:text-blue-600"
+                                                                title="Edit"
+                                                            >
+                                                                <Pencil className="h-3.5 w-3.5" />
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => deleteMilestone(m)}
+                                                                className="text-slate-400 hover:text-red-500"
+                                                                title="Delete"
+                                                            >
+                                                                <Trash2 className="h-3.5 w-3.5" />
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                    <span className="flex items-center gap-1 text-xs text-slate-400">
+                                                        <Clock className="h-3 w-3" />
+                                                        {m.due_date ?? m.created_at}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -249,6 +291,63 @@ export default function ProjectShow({ project }: { project: Project }) {
                             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
                         >
                             Add Update
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal open={editMilestone !== null} onClose={() => { setEditMilestone(null); setMilestoneForm({ title: '', note: '', progress: project.progress }); }}>
+                <div className="px-6 py-5">
+                    <h2 className="mb-4 text-lg font-bold text-slate-900">Edit Update</h2>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Title</label>
+                            <input
+                                type="text"
+                                value={milestoneForm.title}
+                                onChange={(e) => setMilestoneForm({ ...milestoneForm, title: e.target.value })}
+                                className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Details</label>
+                            <textarea
+                                value={milestoneForm.note}
+                                onChange={(e) => setMilestoneForm({ ...milestoneForm, note: e.target.value })}
+                                rows={4}
+                                className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Progress (%)</label>
+                            <div className="mt-1 flex items-center gap-3">
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={100}
+                                    value={milestoneForm.progress}
+                                    onChange={(e) => setMilestoneForm({ ...milestoneForm, progress: Number(e.target.value) })}
+                                    className="w-full accent-blue-600"
+                                />
+                                <span className="w-10 text-right text-sm font-semibold text-blue-600">{milestoneForm.progress}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+                        <button
+                            type="button"
+                            onClick={() => { setEditMilestone(null); setMilestoneForm({ title: '', note: '', progress: project.progress }); }}
+                            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={updateMilestone}
+                            disabled={!milestoneForm.title.trim() || !milestoneForm.note.trim()}
+                            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                        >
+                            Save
                         </button>
                     </div>
                 </div>

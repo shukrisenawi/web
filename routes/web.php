@@ -120,6 +120,8 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
     Route::middleware('role:admin')->group(function () {
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
         Route::post('/projects/{project}/milestones', [ProjectController::class, 'storeMilestone'])->name('projects.milestones.store');
+        Route::put('/projects/{project}/milestones/{milestone}', [ProjectController::class, 'updateMilestone'])->name('projects.milestones.update');
+        Route::delete('/projects/{project}/milestones/{milestone}', [ProjectController::class, 'destroyMilestone'])->name('projects.milestones.destroy');
 
         Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
         Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update');

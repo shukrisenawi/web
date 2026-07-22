@@ -399,4 +399,39 @@ class ProjectController extends Controller
 
         return redirect()->back()->with('success', 'Update added successfully.');
     }
+
+    public function updateMilestone(Request $request, Project $project, Milestone $milestone)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user->isAdmin() || $milestone->project_id !== $project->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'note' => ['required', 'string', 'max:5000'],
+            'progress' => ['required', 'integer', 'min:0', 'max:100'],
+        ]);
+
+        $milestone->update($validated);
+        $project->update(['progress' => $validated['progress']]);
+
+        return redirect()->back()->with('success', 'Update edited successfully.');
+    }
+
+    public function destroyMilestone(Project $project, Milestone $milestone)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user->isAdmin() || $milestone->project_id !== $project->id) {
+            abort(403);
+        }
+
+        $milestone->delete();
+
+        return redirect()->back()->with('success', 'Update deleted successfully.');
+    }
 }
