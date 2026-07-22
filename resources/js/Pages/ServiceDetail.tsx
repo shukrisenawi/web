@@ -760,6 +760,23 @@ function MarketingIllustration() {
 }
 
 function WebSystemDetail({ service }: { service: any }) {
+    const { frontpage } = usePage().props as any;
+    const fp = frontpage ?? {};
+    const allProjects = fp.projects || [];
+    const webProjects = allProjects
+        .filter((p: any) => {
+            const cat = (p.category || '').toLowerCase();
+            return cat === 'web system' || cat === 'web systems';
+        })
+        .slice(0, 4)
+        .map((p: any) => ({
+            title: p.title,
+            category: p.category,
+            desc: p.description || '',
+            image: p.image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80',
+            tags: p.tags || [],
+        }));
+
     const highlights = [
         {
             icon: Code,
@@ -849,33 +866,6 @@ function WebSystemDetail({ service }: { service: any }) {
         { name: "Docker", role: "Containerization" },
         { name: "GitHub", role: "Version Control" },
         { name: "AWS / DigitalOcean", role: "Cloud Hosting" },
-    ];
-
-    const projects = [
-        {
-            title: "SmartSchool System",
-            category: "School Management System",
-            desc: "Complete solution for managing students, teachers, classes, attendance and exams.",
-            image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80",
-        },
-        {
-            title: "RetailPro E-Commerce",
-            category: "E-Commerce Platform",
-            desc: "Multi-vendor e-commerce platform with payment gateway and delivery tracking.",
-            image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=600&q=80",
-        },
-        {
-            title: "HRM Pro System",
-            category: "HR \u0026 Payroll System",
-            desc: "Manage employee data, payroll, leaves, claims and performance in one system.",
-            image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80",
-        },
-        {
-            title: "SalesTrack CRM",
-            category: "CRM System",
-            desc: "Customer relationship management system to streamline sales and leads.",
-            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80",
-        },
     ];
 
     const quotationFeatures = [
@@ -1096,7 +1086,7 @@ function WebSystemDetail({ service }: { service: any }) {
                         </h2>
 
                         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {projects.map((project) => (
+                            {webProjects.map((project: any) => (
                                 <div
                                     key={project.title}
                                     className="group overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
