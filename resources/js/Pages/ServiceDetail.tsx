@@ -2624,6 +2624,24 @@ function WebDevelopmentHeroIllustration() {
 }
 
 function GameDevelopmentDetail({ service }: { service: any }) {
+    const { frontpage } = usePage().props as any;
+    const fp = frontpage ?? {};
+    const allProjects = fp.projects || [];
+    const gamingProjects = allProjects
+        .filter((p: any) => {
+            const cat = (p.category || '').toLowerCase();
+            return cat === 'game development' || cat === 'game';
+        })
+        .slice(0, 4)
+        .map((p: any) => ({
+            title: p.title,
+            category: p.category || '',
+            platforms: p.platforms || '',
+            tags: p.tags || [],
+            image: p.image || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
+            desc: p.description || '',
+        }));
+
     const heroHighlights = [
         {
             icon: Gamepad2,
@@ -2676,37 +2694,6 @@ function GameDevelopmentDetail({ service }: { service: any }) {
     ];
 
     const platforms = ["PC", "Console", "Mobile", "WebGL", "VR / AR"];
-
-    const projects = [
-        {
-            title: "Dragon Legends",
-            category: "RPG Adventure Game",
-            platforms: "PC, Console",
-            tags: ["Unity", "Firebase"],
-            image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
-        },
-        {
-            title: "Speed Rivals",
-            category: "Racing Game",
-            platforms: "Mobile",
-            tags: ["Unity", "PlayFab"],
-            image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80",
-        },
-        {
-            title: "Galaxy Strike",
-            category: "Space Shooter Game",
-            platforms: "PC, WebGL",
-            tags: ["Unreal Engine", "C#"],
-            image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80",
-        },
-        {
-            title: "Kingdom Builder",
-            category: "Strategy Game",
-            platforms: "Mobile",
-            tags: ["Unity", "Firebase"],
-            image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80",
-        },
-    ];
 
     const quotationFeatures = [
         "Free Consultation",
@@ -2914,7 +2901,7 @@ function GameDevelopmentDetail({ service }: { service: any }) {
                         </div>
 
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {projects.map((project) => (
+                            {gamingProjects.map((project: any) => (
                                 <div
                                     key={project.title}
                                     className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition hover:-translate-y-1"
@@ -2930,22 +2917,6 @@ function GameDevelopmentDetail({ service }: { service: any }) {
                                         <h3 className="text-base font-semibold">
                                             {project.title}
                                         </h3>
-                                        <p className="text-xs text-slate-400">
-                                            {project.category}
-                                        </p>
-                                        <p className="mt-2 text-xs text-slate-500">
-                                            {project.platforms}
-                                        </p>
-                                        <div className="mt-3 flex flex-wrap gap-2">
-                                            {project.tags.map((tag) => (
-                                                <span
-                                                    key={tag}
-                                                    className="rounded-full bg-blue-600/20 px-2.5 py-1 text-[10px] font-semibold text-blue-400"
-                                                >
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
                                     </div>
                                 </div>
                             ))}
