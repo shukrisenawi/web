@@ -258,6 +258,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
         { key: 'stats', label: 'Stats' },
         { key: 'cta', label: 'CTA' },
         { key: 'footer', label: 'Footer' },
+        { key: 'payment', label: 'Payment' },
         { key: 'about', label: 'About Us' },
     ] as const;
 
@@ -783,6 +784,19 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                 <Plus className="h-4 w-4" />
                                 Add Social Link
                             </button>
+                        </Section>
+                    )}
+
+                    {activeTab === 'payment' && (
+                        <Section title="Payment Settings">
+                            <ImageUpload
+                                label="Payment QR Logo"
+                                preview={data.payment_logo}
+                                onChange={(file) => setData('payment_logo_file', file)}
+                            />
+                            <p className="mt-2 text-xs text-slate-500">
+                                This logo appears on the payment page under "Accepted via".
+                            </p>
                         </Section>
                     )}
 

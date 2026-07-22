@@ -55,6 +55,7 @@ class FrontpageController extends Controller
             'about_events_title' => 'nullable|string|max:255',
             'about_events_subtitle' => 'nullable|string',
             'about_events' => 'nullable|array',
+            'payment_logo' => 'nullable|string',
         ]);
 
         // Handle hero image upload
@@ -117,6 +118,12 @@ class FrontpageController extends Controller
             }
         }
         $validated['about_events'] = $aboutEvents;
+
+        // Handle payment logo upload
+        if ($request->hasFile('payment_logo_file')) {
+            $path = $request->file('payment_logo_file')->store('frontpage', 'public');
+            $validated['payment_logo'] = asset('storage/' . $path);
+        }
 
         $content->update($validated);
 

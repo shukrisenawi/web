@@ -24,6 +24,7 @@ class FrontpageContent extends Model
             'social_links' => 'array',
             'about_team' => 'array',
             'about_events' => 'array',
+            'payment_logo' => 'string',
         ];
     }
 
@@ -77,6 +78,7 @@ class FrontpageContent extends Model
             'cta_button' => 'Start a New Project',
             'cta_link' => '/request',
             'footer_tagline' => 'Building digital products that move your business forward.',
+            'payment_logo' => '/images/logo-gambar.png',
             'social_links' => [
                 ['name' => 'Twitter', 'url' => 'https://twitter.com'],
                 ['name' => 'LinkedIn', 'url' => 'https://linkedin.com'],

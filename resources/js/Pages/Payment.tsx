@@ -35,7 +35,7 @@ const BANK = {
 };
 
 export default function Payment({ invoice }: { invoice: Invoice }) {
-    const { success } = usePage().props as any;
+    const { success, frontpage } = usePage().props as any;
     const [submitted, setSubmitted] = useState(false);
 
     const form = useForm({
@@ -214,7 +214,7 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                 <p className="mt-3 text-center text-xs text-slate-400">Accepted via:</p>
                                 <div className="mt-2 flex items-center justify-center">
                                     <img
-                                        src="/images/logo-gambar.png"
+                                        src={frontpage?.payment_logo || '/images/logo-gambar.png'}
                                         alt="Payment Logo"
                                         className="h-10 w-auto object-contain"
                                     />
