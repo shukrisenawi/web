@@ -41,7 +41,6 @@ const clientSidebar: SidebarItem[] = [
     { label: 'Projects', href: '/projects', icon: FolderKanban },
     { label: 'Billing', href: '/invoices', icon: FileText, badge: 'pendingInvoicesCount' },
     { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
-    { label: 'Profile', href: '/profile', icon: Users },
 ];
 
 const adminSidebar: SidebarItem[] = [
@@ -55,7 +54,6 @@ const adminSidebar: SidebarItem[] = [
     { label: 'Website Content', href: '/manage-frontpage', icon: Home },
     { label: 'Products', href: '/manage-products', icon: Package },
     { label: 'Blog', href: '/manage-blog', icon: FileText },
-    { label: 'Profile', href: '/profile', icon: Users },
 ];
 
 interface NotificationItem {
@@ -217,16 +215,6 @@ export function DashboardLayout({ children, title }: { children: React.ReactNode
                     })}
                 </nav>
 
-                <div className="shrink-0 p-4">
-                    <Link
-                        href="/logout"
-                        method="post"
-                        as="button"
-                        className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-900 hover:text-white"
-                    >
-                        <LogOut className="h-4 w-4" /> Sign Out
-                    </Link>
-                </div>
             </aside>
 
             {/** Main */}
