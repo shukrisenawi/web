@@ -1468,6 +1468,23 @@ function WebSystemHeroIllustration() {
 }
 
 function MobileAppsDetail({ service }: { service: any }) {
+    const { frontpage } = usePage().props as any;
+    const fp = frontpage ?? {};
+    const allProjects = fp.projects || [];
+    const mobileProjects = allProjects
+        .filter((p: any) => {
+            const cat = (p.category || '').toLowerCase();
+            return cat === 'mobile app' || cat === 'mobile apps';
+        })
+        .slice(0, 4)
+        .map((p: any) => ({
+            title: p.title,
+            category: p.category,
+            desc: p.description || '',
+            image: p.image || 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=600&q=80',
+            tags: p.tags || [],
+        }));
+
     const techStack = [
         {
             name: "Flutter",
@@ -1498,37 +1515,6 @@ function MobileAppsDetail({ service }: { service: any }) {
             name: "GraphQL",
             role: "API Integration",
             logo: "/images/logos/tech/graphql.svg",
-        },
-    ];
-
-    const projects = [
-        {
-            title: "FinTrack",
-            category: "Finance Management App",
-            tags: ["Flutter", "Firebase"],
-            desc: "Personal finance tracking and budgeting app with real-time analytics.",
-            image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80",
-        },
-        {
-            title: "ShopEase",
-            category: "E-commerce App",
-            tags: ["React Native", "Node.js"],
-            desc: "Seamless shopping experience with secure payments and order tracking.",
-            image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80",
-        },
-        {
-            title: "HealthPlus",
-            category: "Healthcare App",
-            tags: ["Flutter", "Firebase"],
-            desc: "Appointment booking, teleconsultation and health records management.",
-            image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80",
-        },
-        {
-            title: "EduLearn",
-            category: "Learning App",
-            tags: ["React Native", "GraphQL"],
-            desc: "Interactive learning platform with courses, quizzes and progress tracking.",
-            image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&w=600&q=80",
         },
     ];
 
@@ -1686,7 +1672,7 @@ function MobileAppsDetail({ service }: { service: any }) {
                         </div>
 
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {projects.map((project) => (
+                            {mobileProjects.map((project: any) => (
                                 <div
                                     key={project.title}
                                     className="group overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
@@ -1705,16 +1691,6 @@ function MobileAppsDetail({ service }: { service: any }) {
                                         <h3 className="mt-1 text-base font-semibold text-slate-900">
                                             {project.title}
                                         </h3>
-                                        <div className="mt-2 flex flex-wrap gap-2">
-                                            {project.tags.map((tag) => (
-                                                <span
-                                                    key={tag}
-                                                    className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600"
-                                                >
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
                                         <p className="mt-3 text-xs leading-relaxed text-slate-600">
                                             {project.desc}
                                         </p>
