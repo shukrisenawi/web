@@ -3629,7 +3629,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
                         </div>
 
                         <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-                            {productList.map((product) => (
+                            {productList.slice(0, 6).map((product) => (
                                 <div
                                     key={product.name}
                                     className="relative flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
