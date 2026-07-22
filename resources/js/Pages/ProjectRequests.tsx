@@ -47,12 +47,12 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
 
     return (
         <>
-            <Head title="Project Requests" />
+            <Head title="Appointment" />
 
-            <DashboardLayout title="Project Requests">
+            <DashboardLayout title="Appointment">
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900">Project Requests</h2>
+                        <h2 className="text-2xl font-bold text-slate-900">Appointment</h2>
                         <p className="text-sm text-slate-500">
                             New registrations submitted through the request form. Review and follow up with clients.
                         </p>
@@ -177,7 +177,7 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
 
                 {filtered.length === 0 && (
                     <div className="py-16 text-center">
-                        <p className="text-lg font-semibold text-slate-900">No project requests found</p>
+                        <p className="text-lg font-semibold text-slate-900">No appointments found</p>
                         <p className="text-sm text-slate-500">New submissions will appear here.</p>
                     </div>
                 )}
