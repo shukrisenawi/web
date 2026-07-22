@@ -1,7 +1,8 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, FolderKanban, ListChecks, CheckCircle2, Clock } from 'lucide-react';
+import { ArrowRight, FolderKanban, ListChecks, CheckCircle2, Clock, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge, Progress } from '@/Layouts/Dashboard';
+import Modal from '@/Components/Modal';
 
 interface Milestone {
     id: number;
@@ -65,6 +66,20 @@ export default function ProjectShow({ project }: { project: Project }) {
     const isAdmin = auth?.user?.isAdmin;
     const [editing, setEditing] = useState(false);
     const [progressValue, setProgressValue] = useState(project.progress);
+    const [milestoneForm, setMilestoneForm] = useState({ title: '', note: '' });
+    const [showForm, setShowForm] = useState(false);
+
+    const submitMilestone = () => {
+        if (!milestoneForm.title.trim() || !milestoneForm.note.trim()) return;
+        router.post(`/projects/${project.id}/milestones`, milestoneForm, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                setShowForm(false);
+                setMilestoneForm({ title: '', note: '' });
+            },
+        });
+    };
 
     return (
         <>
@@ -175,9 +190,20 @@ export default function ProjectShow({ project }: { project: Project }) {
                 </Card>
 
                 <Card>
-                    <div className="mb-6 flex items-center gap-2">
-                        <ListChecks className="h-5 w-5 text-blue-600" />
-                        <h3 className="font-semibold text-slate-900">Milestones & Updates</h3>
+                    <div className="mb-6 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <ListChecks className="h-5 w-5 text-blue-600" />
+                            <h3 className="font-semibold text-slate-900">Milestones & Updates</h3>
+                        </div>
+                        {isAdmin && (
+                            <button
+                                type="button"
+                                onClick={() => setShowForm(true)}
+                                className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
+                            >
+                                <Plus className="h-3.5 w-3.5" /> Update
+                            </button>
+                        )}
                     </div>
 
                     {project.milestones.length === 0 ? (
@@ -217,6 +243,51 @@ export default function ProjectShow({ project }: { project: Project }) {
                         </div>
                     )}
                 </Card>
+
+            <Modal open={showForm} onClose={() => { setShowForm(false); setMilestoneForm({ title: '', note: '' }); }}>
+                <div className="px-6 py-5">
+                    <h2 className="mb-4 text-lg font-bold text-slate-900">Add Update</h2>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Title</label>
+                            <input
+                                type="text"
+                                value={milestoneForm.title}
+                                onChange={(e) => setMilestoneForm({ ...milestoneForm, title: e.target.value })}
+                                className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
+                                placeholder="What's new?"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Details</label>
+                            <textarea
+                                value={milestoneForm.note}
+                                onChange={(e) => setMilestoneForm({ ...milestoneForm, note: e.target.value })}
+                                rows={4}
+                                className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
+                                placeholder="Describe the update..."
+                            />
+                        </div>
+                    </div>
+                    <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+                        <button
+                            type="button"
+                            onClick={() => { setShowForm(false); setMilestoneForm({ title: '', note: '' }); }}
+                            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={submitMilestone}
+                            disabled={!milestoneForm.title.trim() || !milestoneForm.note.trim()}
+                            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                        >
+                            Add Update
+                        </button>
+                    </div>
+                </div>
+            </Modal>
             </DashboardLayout>
         </>
     );
