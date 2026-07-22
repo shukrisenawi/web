@@ -70,11 +70,18 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
             <LandingHeader />
             <Head title="Products" />
 
-            <section className="bg-gradient-to-br from-slate-50 to-blue-50 py-20">
-                <div className="mx-auto max-w-7xl px-4">
+            <section className="relative overflow-hidden bg-[#050914] py-20 text-white">
+                <div className="pointer-events-none absolute inset-0">
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:60px_60px]" />
+                    <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
+                    <div className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
+                </div>
+
+                <div className="relative mx-auto max-w-7xl px-4">
                     <div className="mx-auto max-w-2xl text-center">
-                        <h1 className="text-4xl font-bold text-slate-900">IT Equipment &amp; Supplies</h1>
-                        <p className="mt-4 text-lg text-slate-600">
+                        <span className="text-sm font-semibold uppercase tracking-wider text-blue-500">Our Products</span>
+                        <h1 className="mt-4 text-4xl font-bold leading-[1.05] text-white sm:text-5xl">IT Equipment &amp; Supplies</h1>
+                        <p className="mt-4 text-lg text-slate-300">
                             Browse our range of high-quality IT equipment from trusted brands.
                         </p>
                     </div>
@@ -86,7 +93,7 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
                             placeholder="Search products..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-sm shadow-sm focus:border-blue-500 focus:outline-none"
+                            className="w-full rounded-full border border-slate-700 bg-slate-900/80 py-3 pl-12 pr-4 text-sm text-white shadow-sm backdrop-blur placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
                         />
                         <button
                             type="submit"
