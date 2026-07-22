@@ -25,7 +25,7 @@ export function Cta({ buttonText, buttonHref }: CtaProps) {
                             </p>
                         </div>
                         <Link
-                            href={buttonHref || c.cta_link || '/contact'}
+                            href='/request'
                             className="rounded-lg border border-white px-6 py-3 text-sm font-semibold text-white hover:bg-white hover:text-slate-950 transition-colors inline-flex items-center gap-2"
                         >
                             {buttonText || c.cta_button || 'Get In Touch'}
