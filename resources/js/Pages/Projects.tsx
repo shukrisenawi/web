@@ -139,35 +139,41 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                 </div>
 
                 <Card className="mb-6">
-                    <div className="flex flex-col gap-4 sm:flex-row">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                            <input
-                                type="text"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleFilter()}
-                                placeholder="Search projects..."
-                                className="w-full rounded-lg border border-slate-200 py-2 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none"
-                            />
-                        </div>
-                        <select
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                            className="rounded-lg border border-slate-200 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                        >
-                            {statusOptions.map((o) => (
-                                <option key={o.value} value={o.value}>
+                    <div className="relative mb-4">
+                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleFilter()}
+                            placeholder="Search projects..."
+                            className="w-full rounded-lg border border-slate-200 py-2 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none"
+                        />
+                    </div>
+                    <div className="flex gap-1 rounded-xl bg-slate-100 p-1">
+                        {statusOptions.map((o) => {
+                            const count = o.value === ''
+                                ? projects.length
+                                : projects.filter((p) => p.status === o.value).length;
+                            return (
+                                <button
+                                    key={o.value}
+                                    type="button"
+                                    onClick={() => {
+                                        setStatus(o.value);
+                                        router.get('/projects', { status: o.value, search }, { preserveState: true, replace: true });
+                                    }}
+                                    className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold capitalize transition-colors ${
+                                        status === o.value
+                                            ? 'bg-white text-slate-900 shadow-sm'
+                                            : 'text-slate-500 hover:text-slate-700'
+                                    }`}
+                                >
                                     {o.label}
-                                </option>
-                            ))}
-                        </select>
-                        <button
-                            onClick={handleFilter}
-                            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                        >
-                            Filter
-                        </button>
+                                    <span className="ml-1.5 text-xs text-slate-400">({count})</span>
+                                </button>
+                            );
+                        })}
                     </div>
                 </Card>
 
