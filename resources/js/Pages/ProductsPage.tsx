@@ -1,5 +1,5 @@
-import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, Package, Search } from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import { ArrowRight, ChevronLeft, ChevronRight, Package, Search } from 'lucide-react';
 import { useState } from 'react';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { LandingHeader } from '@/Layouts/LandingHeader';
@@ -13,11 +13,39 @@ interface Product {
     image: string | null;
 }
 
-export default function ProductsPage({ products }: { products: Product[] }) {
+interface PaginatedData<T> {
+    data: T[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number;
+    to: number;
+    links: { url: string | null; label: string; active: boolean }[];
+}
+
+export default function ProductsPage({ products }: { products: PaginatedData<Product> }) {
     const [search, setSearch] = useState('');
-    const filtered = products.filter((p) =>
-        !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.spec?.toLowerCase().includes(search.toLowerCase())
-    );
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filtered = searchQuery
+        ? products.data.filter((p) =>
+              p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              p.spec?.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        : products.data;
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        setSearchQuery(search);
+    };
+
+    const goToPage = (url: string | null) => {
+        if (!url) return;
+        router.get(url, {}, { preserveScroll: true, preserveState: true });
+    };
+
+    const hasPagination = !searchQuery && products.last_page > 1;
 
     return (
         <>
@@ -33,7 +61,7 @@ export default function ProductsPage({ products }: { products: Product[] }) {
                         </p>
                     </div>
 
-                    <div className="relative mx-auto mt-8 max-w-md">
+                    <form onSubmit={handleSearch} className="relative mx-auto mt-8 max-w-md">
                         <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                         <input
                             type="text"
@@ -42,12 +70,24 @@ export default function ProductsPage({ products }: { products: Product[] }) {
                             onChange={(e) => setSearch(e.target.value)}
                             className="w-full rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-sm shadow-sm focus:border-blue-500 focus:outline-none"
                         />
-                    </div>
+                        <button
+                            type="submit"
+                            className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-blue-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-blue-700"
+                        >
+                            Search
+                        </button>
+                    </form>
                 </div>
             </section>
 
             <section className="py-16">
                 <div className="mx-auto max-w-7xl px-4">
+                    {!searchQuery && (
+                        <p className="mb-6 text-sm text-slate-500">
+                            Showing {products.from}–{products.to} of {products.total} products
+                        </p>
+                    )}
+
                     {filtered.length === 0 ? (
                         <div className="flex flex-col items-center py-16">
                             <Package className="h-12 w-12 text-slate-300" />
@@ -91,6 +131,46 @@ export default function ProductsPage({ products }: { products: Product[] }) {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    )}
+
+                    {hasPagination && (
+                        <div className="mt-10 flex items-center justify-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => goToPage(products.links[0]?.url)}
+                                disabled={!products.links[0]?.url}
+                                className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                                <ChevronLeft className="h-4 w-4" /> Previous
+                            </button>
+
+                            {products.links.slice(1, -1).map((link) => {
+                                const page = link.label;
+                                return (
+                                    <button
+                                        key={page}
+                                        type="button"
+                                        onClick={() => goToPage(link.url)}
+                                        className={`inline-flex h-9 w-9 items-center justify-center rounded-lg text-sm font-medium ${
+                                            link.active
+                                                ? 'bg-blue-600 text-white'
+                                                : 'text-slate-600 hover:bg-slate-100'
+                                        }`}
+                                    >
+                                        {page}
+                                    </button>
+                                );
+                            })}
+
+                            <button
+                                type="button"
+                                onClick={() => goToPage(products.links[products.links.length - 1]?.url)}
+                                disabled={!products.links[products.links.length - 1]?.url}
+                                className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                                Next <ChevronRight className="h-4 w-4" />
+                            </button>
                         </div>
                     )}
                 </div>

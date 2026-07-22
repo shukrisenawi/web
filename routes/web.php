@@ -70,7 +70,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::get('/products', function () {
-    $products = \App\Models\Product::where('is_active', true)->orderBy('sort_order')->get();
+    $products = \App\Models\Product::where('is_active', true)->orderBy('sort_order')->paginate(12);
     return inertia('ProductsPage', ['products' => $products]);
 })->name('products.public');
 
