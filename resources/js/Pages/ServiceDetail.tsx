@@ -3076,10 +3076,10 @@ function GameDevelopmentDetail({ service }: { service: any }) {
                                     we can help you achieve your goals.
                                 </p>
                                 <Link
-                                    href="/contact"
+                                    href="/request"
                                     className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
                                 >
-                                    Get In Touch
+                                    Request Quotation
                                     <ArrowRight className="h-4 w-4" />
                                 </Link>
                             </div>
@@ -3130,10 +3130,10 @@ function GameDevelopmentCta() {
                             </p>
                         </div>
                         <Link
-                            href="/contact"
+                            href="/request"
                             className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
                         >
-                            Start Your Project
+                            Request Quotation
                             <ArrowRight className="h-4 w-4" />
                         </Link>
                     </div>
