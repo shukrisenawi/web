@@ -166,14 +166,25 @@ export default function RequestForm() {
     };
 
     const handleSubmit = () => {
-        if (validate()) {
-            if (appointmentDate) {
-                setData('appointment_date', formatYyyyMmDd(appointmentDateDisplay));
-                const formattedTime = formatTimeValue(data.appointment_time);
-                setData('appointment_time', formattedTime);
-                post('/request', { forceFormData: true });
-            }
+        if (!validate()) {
+            return;
         }
+
+        if (!appointmentDate) {
+            setError('appointment_date', 'Please select an appointment date');
+            return;
+        }
+
+        const formattedDate = formatYyyyMmDd(appointmentDateDisplay);
+        const formattedTime = formatTimeValue(data.appointment_time);
+
+        setData({
+            ...data,
+            appointment_date: formattedDate,
+            appointment_time: formattedTime,
+        });
+
+        post('/request', { forceFormData: true });
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
