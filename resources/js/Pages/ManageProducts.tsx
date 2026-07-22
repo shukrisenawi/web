@@ -1,6 +1,6 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { CheckCircle2, Package, Pencil, Plus, Trash2, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DashboardLayout, Card } from '@/Layouts/Dashboard';
 
 const inputClass = 'w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
@@ -22,6 +22,7 @@ export default function ManageProducts({ products }: { products: Product[] }) {
     const [modal, setModal] = useState<{ open: boolean; edit: Product | null }>({ open: false, edit: null });
     const [form, setForm] = useState({ name: '', spec: '', price: '', badge: '', image_file: null as File | null, sort_order: 0 });
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [lightbox, setLightbox] = useState<string | null>(null);
 
     const openCreate = () => {
         setForm({ name: '', spec: '', price: '', badge: '', image_file: null, sort_order: 0 });
@@ -57,6 +58,13 @@ export default function ManageProducts({ products }: { products: Product[] }) {
             });
         }
     };
+
+    useEffect(() => {
+        if (!lightbox) return;
+        const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightbox(null); };
+        window.addEventListener('keydown', handler);
+        return () => window.removeEventListener('keydown', handler);
+    }, [lightbox]);
 
     const confirmDelete = (p: Product) => {
         if (!confirm(`Delete "${p.name}"?`)) return;
@@ -114,7 +122,9 @@ export default function ManageProducts({ products }: { products: Product[] }) {
                                 <tr key={p.id} className="hover:bg-slate-50">
                                     <td className="px-4 py-3">
                                         {p.image ? (
-                                            <img src={'/storage/' + p.image} alt={p.name} className="h-10 w-10 rounded-lg object-cover" />
+                                            <button type="button" onClick={() => setLightbox('/storage/' + p.image)}>
+                                                <img src={'/storage/' + p.image} alt={p.name} className="h-10 w-10 cursor-pointer rounded-lg object-cover hover:ring-2 hover:ring-blue-400" />
+                                            </button>
                                         ) : (
                                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
                                                 <Package className="h-5 w-5" />
@@ -195,6 +205,27 @@ export default function ManageProducts({ products }: { products: Product[] }) {
                             <button type="button" onClick={submit} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">Save</button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {lightbox && (
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4"
+                    onClick={() => setLightbox(null)}
+                >
+                    <button
+                        type="button"
+                        onClick={() => setLightbox(null)}
+                        className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+                    >
+                        <X className="h-6 w-6" />
+                    </button>
+                    <img
+                        src={lightbox}
+                        alt="Product image"
+                        className="max-h-[90vh] max-w-[90vw] rounded-2xl object-contain shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    />
                 </div>
             )}
         </DashboardLayout>
