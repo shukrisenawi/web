@@ -381,14 +381,14 @@ class ProjectController extends Controller
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'note' => ['nullable', 'string', 'max:5000'],
+            'note' => ['required', 'string', 'max:5000'],
             'due_date' => ['nullable', 'date'],
         ]);
 
         Milestone::create([
             'project_id' => $project->id,
             'title' => $validated['title'],
-            'note' => $validated['note'] ?? null,
+            'note' => $validated['note'],
             'due_date' => !empty($validated['due_date']) ? $validated['due_date'] : null,
             'is_active' => false,
         ]);

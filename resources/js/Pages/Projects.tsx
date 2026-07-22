@@ -101,7 +101,7 @@ export default function Projects({ projects, filters, clients = [], preselect_us
     const [showSuccess, setShowSuccess] = useState(false);
 
     const submitMilestone = () => {
-        if (!milestoneProject || !milestoneForm.title.trim()) return;
+        if (!milestoneProject || !milestoneForm.title.trim() || !milestoneForm.note.trim()) return;
         router.post(`/projects/${milestoneProject}/milestones`, milestoneForm, {
             preserveScroll: true,
             preserveState: true,
@@ -519,7 +519,7 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                         <button
                             type="button"
                             onClick={submitMilestone}
-                            disabled={!milestoneForm.title.trim()}
+                            disabled={!milestoneForm.title.trim() || !milestoneForm.note.trim()}
                             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
                         >
                             Add Update
