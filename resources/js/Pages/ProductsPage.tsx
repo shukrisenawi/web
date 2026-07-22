@@ -1,6 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { ArrowRight, ChevronLeft, ChevronRight, Package, Search } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowRight, ChevronLeft, ChevronRight, Package, Search, X, ZoomIn } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 
@@ -27,6 +27,7 @@ interface PaginatedData<T> {
 export default function ProductsPage({ products }: { products: PaginatedData<Product> }) {
     const [search, setSearch] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+    const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
     const filtered = searchQuery
         ? products.data.filter((p) =>
@@ -44,6 +45,23 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
         if (!url) return;
         router.get(url, {}, { preserveScroll: true, preserveState: true });
     };
+
+    const openLightbox = (image: string | null) => {
+        if (!image) return;
+        setLightboxImage(image);
+    };
+
+    const closeLightbox = useCallback(() => setLightboxImage(null), []);
+
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') closeLightbox();
+        };
+        if (lightboxImage) {
+            document.addEventListener('keydown', handleEscape);
+            return () => document.removeEventListener('keydown', handleEscape);
+        }
+    }, [lightboxImage, closeLightbox]);
 
     const hasPagination = !searchQuery && products.last_page > 1;
 
@@ -106,13 +124,20 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
                                             {product.badge}
                                         </span>
                                     )}
-                                    <div className="aspect-[16/10] overflow-hidden">
+                                    <button
+                                        type="button"
+                                        className="relative aspect-[16/10] w-full cursor-pointer overflow-hidden text-left"
+                                        onClick={() => openLightbox(product.image?.startsWith('http') || product.image?.startsWith('/') ? product.image : '/storage/' + product.image)}
+                                    >
                                         <img
                                             src={product.image?.startsWith('http') || product.image?.startsWith('/') ? product.image : '/storage/' + product.image}
                                             alt={product.name}
                                             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                                         />
-                                    </div>
+                                        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 transition group-hover:bg-black/20">
+                                            <ZoomIn className="h-8 w-8 text-white opacity-0 transition group-hover:opacity-100" />
+                                        </div>
+                                    </button>
                                     <div className="flex flex-1 flex-col p-4">
                                         <h3 className="text-base font-semibold text-slate-900">{product.name}</h3>
                                         {product.spec && (
@@ -177,6 +202,23 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
             </section>
 
             <LandingFooter />
+
+            {lightboxImage && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+                    <button
+                        type="button"
+                        onClick={closeLightbox}
+                        className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+                    >
+                        <X className="h-6 w-6" />
+                    </button>
+                    <img
+                        src={lightboxImage}
+                        alt="Product preview"
+                        className="max-h-[90vh] max-w-[90vw] rounded-2xl object-contain shadow-2xl"
+                    />
+                </div>
+            )}
         </>
     );
 }
