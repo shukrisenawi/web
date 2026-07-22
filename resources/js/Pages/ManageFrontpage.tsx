@@ -817,7 +817,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                             </div>
                             <ImageUpload
                                 label="Payment QR Logo"
-                                preview={data.payment_logo}
+                                preview={data.payment_logo_file ? URL.createObjectURL(data.payment_logo_file) : data.payment_logo}
                                 onChange={(file) => setData('payment_logo_file', file)}
                             />
                             <p className="mt-2 text-xs text-slate-500">
