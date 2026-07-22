@@ -308,7 +308,7 @@ class ProjectController extends Controller
 
         $project->update($validated);
 
-        return redirect()->route('projects')->with('success', 'Project updated successfully.');
+        return redirect()->back()->with('success', 'Project updated successfully.');
     }
 
     public function destroy(Project $project)
@@ -322,7 +322,7 @@ class ProjectController extends Controller
 
         $project->delete();
 
-        return redirect()->route('projects')->with('success', 'Project deleted successfully.');
+        return redirect()->back()->with('success', 'Project deleted successfully.');
     }
 
     public function uploadFile(Request $request, Project $project)
