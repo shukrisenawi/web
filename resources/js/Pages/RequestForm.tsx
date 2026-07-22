@@ -1,12 +1,30 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { CheckCircle2, Calendar } from 'lucide-react';
+import { CheckCircle2, Calendar, Clock } from 'lucide-react';
 import { useState } from 'react';
-import DatePicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const inputClass =
     'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
+
+const timeOptions: string[] = [];
+for (let h = 8; h <= 20; h++) {
+    const hour = String(h).padStart(2, '0');
+    timeOptions.push(`${hour}:00`);
+    timeOptions.push(`${hour}:30`);
+}
+
+function formatTimeToAmPm(value: string): string {
+    const match = value.match(/^(\d{2}):(\d{2})$/);
+    if (!match) return value;
+    let hour = parseInt(match[1], 10);
+    const minute = match[2];
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12;
+    if (hour === 0) hour = 12;
+    return `${hour}:${minute}${ampm}`;
+}
 
 function formatDateToDdMmYyyy(date: Date | null): string {
     if (!date) return '';
@@ -237,9 +255,24 @@ export default function RequestForm() {
                                         </div>
                                         {errors.appointment_date && <p className="mt-1 text-xs text-red-600">{errors.appointment_date}</p>}
                                     </div>
-                                    <div>
+                                    <div className="relative">
                                         <label htmlFor="appointment_time" className={labelClass}>Time <span className="text-red-500">*</span></label>
-                                        <input id="appointment_time" type="text" value={data.appointment_time} onChange={(e) => setData('appointment_time', e.target.value)} className={inputClass} placeholder="10:00AM" />
+                                        <div className="relative">
+                                            <select
+                                                id="appointment_time"
+                                                value={data.appointment_time}
+                                                onChange={(e) => setData('appointment_time', e.target.value)}
+                                                className={`${inputClass} !pl-9 appearance-none bg-white`}
+                                            >
+                                                <option value="">Select time…</option>
+                                                {timeOptions.map((time) => (
+                                                    <option key={time} value={formatTimeToAmPm(time)}>
+                                                        {formatTimeToAmPm(time)}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <Clock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                        </div>
                                         {errors.appointment_time && <p className="mt-1 text-xs text-red-600">{errors.appointment_time}</p>}
                                     </div>
                                     <div className="sm:col-span-2">
