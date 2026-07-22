@@ -121,12 +121,14 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Link
-                            href="/projects/create"
-                            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                        >
-                            <Plus className="h-4 w-4" /> New Project
-                        </Link>
+                        {isAdmin && (
+                            <Link
+                                href="/projects/create"
+                                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                            >
+                                <Plus className="h-4 w-4" /> New Project
+                            </Link>
+                        )}
                         <Link
                             href="/dashboard"
                             className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
