@@ -543,12 +543,20 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                             <Field label="Title">
                                                 <input
                                                     type="text"
                                                     value={project.title || ''}
                                                     onChange={(e) => updateArray('projects', idx, 'title', e.target.value)}
+                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                />
+                                            </Field>
+                                            <Field label="Category">
+                                                <input
+                                                    type="text"
+                                                    value={project.category || ''}
+                                                    onChange={(e) => updateArray('projects', idx, 'category', e.target.value)}
                                                     className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                                                 />
                                             </Field>
@@ -572,7 +580,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
 
                             <button
                                 type="button"
-                                onClick={() => addItem('projects', { title: '', description: '', image: '' })}
+                                onClick={() => addItem('projects', { title: '', category: '', description: '', image: '' })}
                                 className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                             >
                                 <Plus className="h-4 w-4" />

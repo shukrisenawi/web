@@ -29,6 +29,7 @@ function slugify(title: string): string {
 
 interface Project {
     title: string;
+    category?: string;
     description?: string;
     image: string;
     slug?: string;
@@ -38,6 +39,13 @@ export default function Work() {
     const { frontpage } = usePage().props as any;
     const c = frontpage ?? {};
     const projects: Project[] = (c.projects || []);
+
+    const categories = ['All Projects', ...Array.from(new Set(projects.map((p: Project) => p.category).filter(Boolean))) as string[]];
+    const [activeCategory, setActiveCategory] = useState('All Projects');
+
+    const filteredProjects = activeCategory === 'All Projects'
+        ? projects
+        : projects.filter((p: Project) => p.category === activeCategory);
 
     return (
         <>
@@ -105,8 +113,25 @@ export default function Work() {
                 {/* Projects */}
                 <section className="py-20">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        <div className="flex flex-wrap items-center justify-center gap-3">
+                            {categories.map((category: string) => (
+                                <button
+                                    type="button"
+                                    key={category}
+                                    onClick={() => setActiveCategory(category)}
+                                    className={`rounded-lg border px-5 py-2 text-sm font-medium transition-colors ${
+                                        activeCategory === category
+                                            ? 'border-blue-600 bg-blue-600 text-white'
+                                            : 'border-slate-200 bg-white text-slate-600 hover:border-blue-600 hover:text-blue-600'
+                                    }`}
+                                >
+                                    {category}
+                                </button>
+                            ))}
+                        </div>
+
                         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {projects.map((project: Project) => {
+                            {filteredProjects.map((project: Project) => {
                                 const slug = project.slug || slugify(project.title);
                                 return (
                                     <div
@@ -124,6 +149,7 @@ export default function Work() {
                                         </Link>
                                         <div className="p-5">
                                             <h3 className="font-semibold text-slate-900">{project.title}</h3>
+                                            <p className="mt-1 text-sm font-medium text-blue-600">{project.category}</p>
                                             <p className="mt-1 text-sm text-slate-500 line-clamp-2">{project.description}</p>
                                             <Link
                                                 href={`/work/${slug}`}
