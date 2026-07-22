@@ -12,15 +12,6 @@ const stats = [
     { icon: Globe, value: '10+', label: 'Industries\nServed' },
 ];
 
-const defaultCategories = [
-    'All Projects',
-    'Web Development',
-    'Mobile App',
-    'Web System',
-    'Game Development',
-    'Digital Marketing',
-];
-
 const processSteps = [
     { icon: Search, number: '1.', title: 'Discover', desc: 'We listen and understand your goals and challenges.' },
     { icon: ClipboardList, number: '2.', title: 'Plan', desc: 'We create a strategy and roadmap tailored for you.' },
@@ -38,27 +29,15 @@ function slugify(title: string): string {
 
 interface Project {
     title: string;
-    category: string;
+    description?: string;
     image: string;
     slug?: string;
-    link?: string;
 }
 
 export default function Work() {
     const { frontpage } = usePage().props as any;
     const c = frontpage ?? {};
     const projects: Project[] = (c.projects || []);
-
-    const categories = useMemo(() => {
-        const set = new Set(projects.map((p: Project) => p.category).filter(Boolean));
-        return ['All Projects', ...Array.from(set)];
-    }, [projects]);
-
-    const [activeCategory, setActiveCategory] = useState('All Projects');
-
-    const filteredProjects = activeCategory === 'All Projects'
-        ? projects
-        : projects.filter((p: Project) => p.category === activeCategory);
 
     return (
         <>
@@ -126,25 +105,8 @@ export default function Work() {
                 {/* Projects */}
                 <section className="py-20">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <div className="flex flex-wrap items-center justify-center gap-3">
-                            {categories.map((category: string) => (
-                                <button
-                                    type="button"
-                                    key={category}
-                                    onClick={() => setActiveCategory(category)}
-                                    className={`rounded-lg border px-5 py-2 text-sm font-medium transition-colors ${
-                                        activeCategory === category
-                                            ? 'border-blue-600 bg-blue-600 text-white'
-                                            : 'border-slate-200 bg-white text-slate-600 hover:border-blue-600 hover:text-blue-600'
-                                    }`}
-                                >
-                                    {category}
-                                </button>
-                            ))}
-                        </div>
-
                         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {filteredProjects.map((project: Project) => {
+                            {projects.map((project: Project) => {
                                 const slug = project.slug || slugify(project.title);
                                 return (
                                     <div
@@ -158,18 +120,11 @@ export default function Work() {
                                                     alt={project.title}
                                                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                                 />
-                                                {project.category === 'Game Development' && (
-                                                    <div className="absolute inset-0 flex items-center justify-center">
-                                                        <div className="rounded-full bg-white/90 p-3 shadow-lg">
-                                                            <Play className="h-6 w-6 fill-blue-600 text-blue-600" />
-                                                        </div>
-                                                    </div>
-                                                )}
                                             </div>
                                         </Link>
                                         <div className="p-5">
                                             <h3 className="font-semibold text-slate-900">{project.title}</h3>
-                                            <p className="mt-1 text-sm text-slate-500">{project.category}</p>
+                                            <p className="mt-1 text-sm text-slate-500 line-clamp-2">{project.description}</p>
                                             <Link
                                                 href={`/work/${slug}`}
                                                 className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
