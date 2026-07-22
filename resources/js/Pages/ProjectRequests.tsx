@@ -19,10 +19,21 @@ interface ProjectRequestItem {
     user_id: number;
 }
 
+const TABS = ['pending', 'approved', 'rejected'] as const;
+type Tab = (typeof TABS)[number];
+
+const tabCounts = (items: ProjectRequestItem[]) => {
+    const pending = items.filter((r) => r.status === 'pending' || r.status === 'reviewed').length;
+    const approved = items.filter((r) => r.status === 'approved').length;
+    const rejected = items.filter((r) => r.status === 'rejected').length;
+    return { pending, approved, rejected };
+};
+
 export default function ProjectRequests({ requests }: { requests: ProjectRequestItem[] }) {
     const { flash } = usePage().props as any;
     const [search, setSearch] = useState('');
     const [expanded, setExpanded] = useState<number | null>(null);
+    const [tab, setTab] = useState<Tab>('pending');
 
     const [rejectModal, setRejectModal] = useState<ProjectRequestItem | null>(null);
     const [rejectReason, setRejectReason] = useState('');
@@ -30,7 +41,13 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
     const [editModal, setEditModal] = useState<ProjectRequestItem | null>(null);
     const [editForm, setEditForm] = useState({ appointment_type: 'Online', appointment_date: '', appointment_time: '', message: '' });
 
+    const counts = tabCounts(requests);
+
     const filtered = requests.filter((r) => {
+        const statusMatch = tab === 'pending'
+            ? r.status === 'pending' || r.status === 'reviewed'
+            : r.status === tab;
+        if (!statusMatch) return false;
         const q = search.toLowerCase();
         return (
             r.company_name.toLowerCase().includes(q) ||
@@ -123,6 +140,24 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
                         />
                     </div>
                 </Card>
+
+                <div className="mb-6 flex gap-1 rounded-xl bg-slate-100 p-1">
+                    {TABS.map((t) => (
+                        <button
+                            key={t}
+                            type="button"
+                            onClick={() => setTab(t)}
+                            className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold capitalize transition-colors ${
+                                tab === t
+                                    ? 'bg-white text-slate-900 shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-700'
+                            }`}
+                        >
+                            {t}
+                            <span className="ml-1.5 text-xs text-slate-400">({counts[t]})</span>
+                        </button>
+                    ))}
+                </div>
 
                 <div className="space-y-4">
                     {filtered.map((r) => (
