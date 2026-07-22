@@ -201,7 +201,7 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
                 </div>
             </section>
 
-            <LandingFooter />
+            <LandingFooter mode="dark" />
 
             {lightboxImage && (
                 <div
