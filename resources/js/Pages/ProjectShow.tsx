@@ -67,6 +67,7 @@ export default function ProjectShow({ project }: { project: Project }) {
     const [milestoneForm, setMilestoneForm] = useState({ title: '', note: '', progress: project.progress });
     const [showForm, setShowForm] = useState(false);
     const [editMilestone, setEditMilestone] = useState<Milestone | null>(null);
+    const [deleteConfirm, setDeleteConfirm] = useState<Milestone | null>(null);
 
     const submitMilestone = () => {
         if (!milestoneForm.title.trim() || !milestoneForm.note.trim()) return;
@@ -93,9 +94,15 @@ export default function ProjectShow({ project }: { project: Project }) {
     };
 
     const deleteMilestone = (m: Milestone) => {
-        router.delete(`/projects/${project.id}/milestones/${m.id}`, {
+        setDeleteConfirm(m);
+    };
+
+    const confirmDeleteMilestone = () => {
+        if (!deleteConfirm) return;
+        router.delete(`/projects/${project.id}/milestones/${deleteConfirm.id}`, {
             preserveScroll: true,
             preserveState: true,
+            onSuccess: () => setDeleteConfirm(null),
         });
     };
 
@@ -348,6 +355,31 @@ export default function ProjectShow({ project }: { project: Project }) {
                             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
                         >
                             Save
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
+                <div className="px-6 py-5">
+                    <h2 className="mb-2 text-lg font-bold text-slate-900">Confirm Delete</h2>
+                    <p className="text-sm text-slate-500">
+                        Are you sure you want to delete <span className="font-semibold text-slate-700">{deleteConfirm?.title}</span>? This cannot be undone.
+                    </p>
+                    <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+                        <button
+                            type="button"
+                            onClick={() => setDeleteConfirm(null)}
+                            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={confirmDeleteMilestone}
+                            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+                        >
+                            Delete
                         </button>
                     </div>
                 </div>
