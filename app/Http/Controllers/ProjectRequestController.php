@@ -126,7 +126,7 @@ class ProjectRequestController extends Controller
         foreach ($adminUsers as $admin) {
             AdminNotification::create([
                 'user_id' => $admin->id,
-                'type' => 'project_request',
+                'type' => 'appointment_booked',
                 'notifiable_type' => ProjectRequest::class,
                 'notifiable_id' => $projectRequest->id,
                 'title' => 'New appointment: ' . ($user->company ?? $user->name),

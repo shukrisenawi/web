@@ -134,7 +134,7 @@ class NotificationController extends Controller
 
             $notificationItems = Notification::where('user_id', $user->id)
                 ->where('is_read', false)
-                ->where('type', 'project_request')
+                ->whereIn('type', ['project_request', 'appointment_booked'])
                 ->with('notifiable')
                 ->orderByDesc('created_at')
                 ->get()
