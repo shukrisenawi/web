@@ -46,37 +46,6 @@ const stats = [
     { icon: Headphones, value: '24/7', label: 'Support' },
 ];
 
-const currentProjects = [
-    {
-        category: 'Web System',
-        title: 'FinTrack Dashboard',
-        description: 'A financial analytics dashboard for business monitoring and reporting.',
-        progress: 25,
-        image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80',
-    },
-    {
-        category: 'Mobile App',
-        title: 'HealthHub App',
-        description: 'A mobile app that connects users with health professionals.',
-        progress: 60,
-        image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80',
-    },
-    {
-        category: 'E-Commerce',
-        title: 'ShopZen Platform',
-        description: 'An e-commerce platform with modern UI and seamless checkout.',
-        progress: 80,
-        image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=600&q=80',
-    },
-    {
-        category: 'Web System',
-        title: 'School Management System',
-        description: 'A comprehensive system to manage schools, students, and staff.',
-        progress: 65,
-        image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80',
-    },
-];
-
 const visionMission = [
     {
         icon: Code2,
@@ -113,8 +82,9 @@ export default function About({
     about_events_title,
     about_events_subtitle,
 }: AboutProps) {
-    const { props } = usePage();
+    const { props, currentProjects: sharedProjects } = usePage().props as any;
     void props;
+    const currentProjects = sharedProjects || [];
 
     const team = about_team.length > 0 ? about_team : defaultTeam;
     const events = about_events.length > 0 ? about_events : defaultEvents;
