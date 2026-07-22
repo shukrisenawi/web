@@ -3661,7 +3661,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
                                             href="/request"
                                             className="mt-4 inline-flex items-center justify-center gap-2 rounded-lg border border-blue-600 px-4 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50"
                                         >
-                                            Add to Quote
+                                            Request Quotation
                                         </Link>
                                     </div>
                                 </div>
