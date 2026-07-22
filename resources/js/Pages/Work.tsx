@@ -256,7 +256,7 @@ export default function Work() {
                                     href="/contact"
                                     className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                                 >
-                                    Get In Touch
+                                    Request Quotation
                                     <ArrowRight className="h-4 w-4" />
                                 </Link>
                             </div>
