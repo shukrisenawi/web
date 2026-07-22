@@ -184,13 +184,13 @@ export default function ServiceDetail({ slug }: ServiceDetailProps) {
                                     ))}
                                 </ul>
 
-                                <Link
-                                    href="/contact"
-                                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
-                                >
-                                    Get a Quote
-                                    <ArrowRight className="h-4 w-4" />
-                                </Link>
+                                    <Link
+                                        href="/request"
+                                        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+                                    >
+                                        Request Quotation
+                                        <ArrowRight className="h-4 w-4" />
+                                    </Link>
                             </div>
                         </div>
                     </div>
@@ -1838,10 +1838,10 @@ function MobileAppsCta() {
                             </p>
                         </div>
                         <Link
-                            href="/contact"
+                            href="/request"
                             className="inline-flex items-center gap-2 rounded-lg border border-white bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-100"
                         >
-                            Get In Touch
+                            Request Quotation
                             <ArrowRight className="h-4 w-4" />
                         </Link>
                     </div>
