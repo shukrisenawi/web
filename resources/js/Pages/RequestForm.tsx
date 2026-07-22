@@ -8,22 +8,38 @@ const inputClass =
     'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
 
-const timeOptions: string[] = [];
-for (let h = 0; h < 24; h++) {
-    const hour = String(h).padStart(2, '0');
-    timeOptions.push(`${hour}:00`);
-    timeOptions.push(`${hour}:30`);
+function parseTimeInput(value: string): { hour: number; minute: number } | null {
+    const cleaned = value.toUpperCase().replace(/[^\dAPM]/g, '');
+    const hasPm = cleaned.includes('P');
+    const hasAm = cleaned.includes('A');
+    const digits = cleaned.replace(/\D/g, '').slice(0, 4);
+
+    if (digits.length < 3) return null;
+
+    let hour = parseInt(digits.slice(0, 2), 10);
+    const minute = parseInt(digits.slice(2, 4), 10);
+
+    if (Number.isNaN(hour) || Number.isNaN(minute)) return null;
+    if (minute > 59) return null;
+
+    if (hasPm && hour !== 12) hour += 12;
+    if (hasAm && hour === 12) hour = 0;
+
+    return { hour, minute };
 }
 
-function formatTimeToAmPm(value: string): string {
-    const match = value.match(/^(\d{2}):(\d{2})$/);
-    if (!match) return value;
-    let hour = parseInt(match[1], 10);
-    const minute = match[2];
+function formatTimeValue(value: string): string {
+    const parsed = parseTimeInput(value);
+    if (!parsed) return value;
+    const { hour, minute } = parsed;
     const ampm = hour >= 12 ? 'PM' : 'AM';
-    hour = hour % 12;
-    if (hour === 0) hour = 12;
-    return `${hour}:${minute}${ampm}`;
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+    const displayMinute = String(minute).padStart(2, '0');
+    return `${displayHour}:${displayMinute} ${ampm}`;
+}
+
+function validateTimeFormat(value: string): boolean {
+    return /^\d{1,2}:\d{2} (AM|PM)$/i.test(value.trim());
 }
 
 function formatDateToDdMmYyyy(date: Date | null): string {
@@ -123,8 +139,9 @@ export default function RequestForm() {
             setError('appointment_date', 'Please select an appointment date');
             valid = false;
         }
-        if (!data.appointment_time.trim()) {
-            setError('appointment_time', 'Please enter a time');
+        const formattedTime = formatTimeValue(data.appointment_time);
+        if (!validateTimeFormat(formattedTime)) {
+            setError('appointment_time', 'Please enter time as h:mm AM/PM (e.g. 2:30 PM)');
             valid = false;
         }
         if (!data.message.trim()) {
@@ -139,6 +156,8 @@ export default function RequestForm() {
         if (validate()) {
             if (appointmentDate) {
                 setData('appointment_date', formatYyyyMmDd(appointmentDateDisplay));
+                const formattedTime = formatTimeValue(data.appointment_time);
+                setData('appointment_time', formattedTime);
                 post('/request', { forceFormData: true });
             }
         }
@@ -258,19 +277,20 @@ export default function RequestForm() {
                                     <div className="relative">
                                         <label htmlFor="appointment_time" className={labelClass}>Time <span className="text-red-500">*</span></label>
                                         <div className="relative">
-                                            <select
+                                            <input
                                                 id="appointment_time"
+                                                type="text"
                                                 value={data.appointment_time}
                                                 onChange={(e) => setData('appointment_time', e.target.value)}
-                                                className={`${inputClass} !pl-9 appearance-none bg-white`}
-                                            >
-                                                <option value="">Select time…</option>
-                                                {timeOptions.map((time) => (
-                                                    <option key={time} value={formatTimeToAmPm(time)}>
-                                                        {formatTimeToAmPm(time)}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                                onBlur={() => {
+                                                    const formatted = formatTimeValue(data.appointment_time);
+                                                    if (validateTimeFormat(formatted)) {
+                                                        setData('appointment_time', formatted);
+                                                    }
+                                                }}
+                                                className={`${inputClass} !pl-9`}
+                                                placeholder="2:30 PM"
+                                            />
                                             <Clock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                         </div>
                                         {errors.appointment_time && <p className="mt-1 text-xs text-red-600">{errors.appointment_time}</p>}
