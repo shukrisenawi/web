@@ -142,6 +142,8 @@ export default function Work() {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-600/15 blur-3xl" />
+                                    <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-600/15 blur-3xl" />
                                 </div>
                             </div>
                         </div>

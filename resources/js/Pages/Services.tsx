@@ -108,6 +108,8 @@ export default function Services() {
                                         alt="Digital solutions illustration"
                                         className="relative z-10 w-full rounded-2xl shadow-2xl shadow-blue-900/20"
                                     />
+                                    <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-blue-600/20 blur-3xl" />
+                                    <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-indigo-600/20 blur-3xl" />
                                 </div>
                             </div>
                         </div>

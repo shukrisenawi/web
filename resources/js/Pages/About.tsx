@@ -174,6 +174,8 @@ export default function About() {
                                         alt="Kenju Tech digital solutions"
                                         className="relative w-full rounded-3xl object-cover shadow-2xl"
                                     />
+                                    <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-blue-600/20 blur-3xl" />
+                                    <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-indigo-600/20 blur-3xl" />
                                 </div>
                             </div>
                         </div>
