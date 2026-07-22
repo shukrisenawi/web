@@ -132,12 +132,14 @@ export default function RequestForm() {
                         </span>
                         <div className="text-left">
                             <p className="text-sm font-semibold text-slate-900">Business Information</p>
+                            <p className="text-xs text-slate-500">Company & contact details</p>
                         </div>
                     </div>
 
                     <form onKeyDown={handleKeyDown} className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:p-8">
                         <div className="mb-6">
                             <h2 className="text-lg font-semibold text-slate-900">Business Information</h2>
+                            <p className="text-sm text-slate-500">Company & contact details</p>
                         </div>
 
                         <div className="space-y-5">
