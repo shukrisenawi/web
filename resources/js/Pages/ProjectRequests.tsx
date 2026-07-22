@@ -239,7 +239,7 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
                                             </a>
                                         )}
                                         <Link
-                                            href={`/projects?user_id=${r.user_id}&new=1`}
+                                            href={`/projects/create?user_id=${r.user_id}`}
                                             className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"
                                         >
                                             <Calendar className="h-3.5 w-3.5" /> Create Project
