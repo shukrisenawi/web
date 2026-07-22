@@ -79,6 +79,9 @@ class FrontpageContent extends Model
             'cta_link' => '/request',
             'footer_tagline' => 'Building digital products that move your business forward.',
             'payment_logo' => '/images/logo-gambar.png',
+            'bank_name' => 'MAYBANK BERHAD',
+            'bank_account_name' => 'KENJU TECH SDN. BHD.',
+            'bank_account_number' => '5622 4512 3456',
             'social_links' => [
                 ['name' => 'Twitter', 'url' => 'https://twitter.com'],
                 ['name' => 'LinkedIn', 'url' => 'https://linkedin.com'],

@@ -28,14 +28,15 @@ interface Invoice {
     proofs: PaymentProof[];
 }
 
-const BANK = {
-    name: 'MAYBANK BERHAD',
-    accountName: 'KENJU TECH SDN. BHD.',
-    accountNumber: '5622 4512 3456',
-};
+const BANK = (frontpage: any) => ({
+    name: frontpage?.bank_name || 'MAYBANK BERHAD',
+    accountName: frontpage?.bank_account_name || 'KENJU TECH SDN. BHD.',
+    accountNumber: frontpage?.bank_account_number || '5622 4512 3456',
+});
 
 export default function Payment({ invoice }: { invoice: Invoice }) {
     const { success, frontpage } = usePage().props as any;
+    const bank = BANK(frontpage);
     const [submitted, setSubmitted] = useState(false);
 
     const form = useForm({
@@ -169,15 +170,15 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                 <div className="space-y-2 rounded-xl bg-slate-50 p-4 text-sm">
                                     <div className="flex justify-between">
                                         <span className="text-slate-500">Bank Name</span>
-                                        <span className="font-semibold text-slate-900">{BANK.name}</span>
+                                        <span className="font-semibold text-slate-900">{bank.name}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-slate-500">Account Name</span>
-                                        <span className="font-semibold text-slate-900">{BANK.accountName}</span>
+                                        <span className="font-semibold text-slate-900">{bank.accountName}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-slate-500">Account Number</span>
-                                        <span className="font-mono font-semibold text-slate-900">{BANK.accountNumber}</span>
+                                        <span className="font-mono font-semibold text-slate-900">{bank.accountNumber}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-slate-500">Reference</span>

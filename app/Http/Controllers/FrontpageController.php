@@ -56,6 +56,9 @@ class FrontpageController extends Controller
             'about_events_subtitle' => 'nullable|string',
             'about_events' => 'nullable|array',
             'payment_logo' => 'nullable|string',
+            'bank_name' => 'nullable|string|max:255',
+            'bank_account_name' => 'nullable|string|max:255',
+            'bank_account_number' => 'nullable|string|max:255',
         ]);
 
         // Handle hero image upload

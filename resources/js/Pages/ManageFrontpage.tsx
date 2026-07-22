@@ -789,6 +789,32 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
 
                     {activeTab === 'payment' && (
                         <Section title="Payment Settings">
+                            <div className="mb-6 grid gap-5 sm:grid-cols-2">
+                                <Field label="Bank Name">
+                                    <input
+                                        type="text"
+                                        value={data.bank_name || ''}
+                                        onChange={(e) => setData('bank_name', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                                <Field label="Account Name">
+                                    <input
+                                        type="text"
+                                        value={data.bank_account_name || ''}
+                                        onChange={(e) => setData('bank_account_name', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                                <Field label="Account Number">
+                                    <input
+                                        type="text"
+                                        value={data.bank_account_number || ''}
+                                        onChange={(e) => setData('bank_account_number', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                            </div>
                             <ImageUpload
                                 label="Payment QR Logo"
                                 preview={data.payment_logo}
