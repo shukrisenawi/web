@@ -28,10 +28,10 @@ interface SidebarItem {
 }
 
 const appointmentStatusLabel: Record<string, string> = {
-    pending: 'Appoint pending review',
-    reviewed: 'Appoint reviewed',
-    approved: 'Appoint approved',
-    rejected: 'Appoint rejected',
+    pending: 'Appointment pending review',
+    reviewed: 'Appointment reviewed',
+    approved: 'Appointment approved',
+    rejected: 'Appointment rejected',
 };
 
 const clientSidebar: SidebarItem[] = [
