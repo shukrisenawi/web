@@ -39,10 +39,6 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
         );
     });
 
-    const markAsReviewed = (id: number) => {
-        router.post(`/requests/${id}/review`, {}, { preserveScroll: true });
-    };
-
     const confirmApprove = (id: number) => {
         if (!confirm('Approve this appointment?')) return;
         router.post(`/requests/${id}/approve`, {}, { preserveScroll: true });
@@ -87,8 +83,6 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
             default: return 'amber';
         }
     };
-
-    const canAct = (status: string) => status === 'pending' || status === 'reviewed';
 
     return (
         <>
@@ -151,15 +145,8 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2">
                                     <Badge color={getStatusColor(r.status)}>{r.status}</Badge>
-                                    {canAct(r.status) && (
+                                    {r.status === 'pending' && (
                                         <>
-                                            <button
-                                                type="button"
-                                                onClick={() => markAsReviewed(r.id)}
-                                                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"
-                                            >
-                                                <CheckCircle2 className="h-3.5 w-3.5" /> Review
-                                            </button>
                                             <button
                                                 type="button"
                                                 onClick={() => confirmApprove(r.id)}

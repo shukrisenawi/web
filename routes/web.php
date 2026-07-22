@@ -118,7 +118,6 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
         Route::get('/clients', [\App\Http\Controllers\ClientDatabaseController::class, 'index'])->name('clients');
         Route::get('/requests', [ProjectRequestAdminController::class, 'index'])->name('requests');
         Route::put('/requests/{request}', [ProjectRequestAdminController::class, 'update'])->name('requests.update');
-        Route::post('/requests/{request}/review', [ProjectRequestAdminController::class, 'markReviewed'])->name('requests.review');
         Route::post('/requests/{request}/approve', [ProjectRequestAdminController::class, 'approve'])->name('requests.approve');
         Route::post('/requests/{request}/reject', [ProjectRequestAdminController::class, 'reject'])->name('requests.reject');
 

@@ -46,29 +46,6 @@ class ProjectRequestAdminController extends Controller
         ]);
     }
 
-    public function markReviewed(ProjectRequest $request): RedirectResponse
-    {
-        $this->ensureAdmin();
-
-        if ($request->status === 'pending') {
-            $request->update(['status' => 'reviewed']);
-        }
-
-        $this->markNotificationsRead($request);
-
-        Notification::create([
-            'user_id' => $request->user_id,
-            'type' => 'appointment_reviewed',
-            'notifiable_type' => ProjectRequest::class,
-            'notifiable_id' => $request->id,
-            'title' => 'Appointment Reviewed',
-            'message' => 'Your appointment has been reviewed by our team.',
-            'is_read' => false,
-        ]);
-
-        return redirect()->route('requests')->with('success', 'Appointment marked as reviewed.');
-    }
-
     public function approve(ProjectRequest $request): RedirectResponse
     {
         $this->ensureAdmin();
