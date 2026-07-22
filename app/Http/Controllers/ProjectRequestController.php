@@ -69,15 +69,7 @@ class ProjectRequestController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with([
-            'success' => 'Your request has been submitted successfully. Our team will review it shortly.',
-            'appointment' => [
-                'type' => $validated['appointment_type'],
-                'date' => $validated['appointment_date'],
-                'time' => $validated['appointment_time'],
-                'status' => 'pending',
-            ],
-        ]);
+        return redirect()->route('appointments')->with('success', 'Your appointment has been submitted successfully. Our team will review it shortly.');
     }
 
     public function index()
