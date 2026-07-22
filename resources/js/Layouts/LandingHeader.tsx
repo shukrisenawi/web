@@ -70,6 +70,7 @@ export function Logo({ className = '' }: { className?: string }) {
 const nav = [
     { label: 'Home', href: '/' },
     { label: 'Services', href: '/services' },
+    { label: 'Work', href: '/work' },
     { label: 'About Us', href: '/about' },
     { label: 'Contact', href: '/contact' },
 ];
