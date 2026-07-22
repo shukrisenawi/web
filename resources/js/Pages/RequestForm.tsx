@@ -122,7 +122,7 @@ export default function RequestForm() {
                         </Link>
                         <h1 className="mt-6 text-2xl font-bold text-slate-900">Request a Project</h1>
                         <p className="mt-2 text-sm text-slate-500">
-                            Fill in your business details. We&apos;ll set up your client account so you can track progress.
+                            Tell us about your business. We&apos;ll create your client account and follow up with a project discussion.
                         </p>
                     </div>
 
