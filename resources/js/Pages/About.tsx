@@ -299,6 +299,7 @@ export default function About({
                                     </div>
                                     <div className="p-5">
                                         <h3 className="font-semibold text-slate-900">{project.title}</h3>
+                                        <p className="mt-2 text-sm text-slate-600">{project.description}</p>
                                     </div>
                                 </div>
                             ))}

@@ -55,6 +55,7 @@ export function CurrentProjects() {
                             </div>
                             <div className="p-5">
                                 <h3 className="font-semibold text-slate-900">{project.title}</h3>
+                                <p className="mt-1 text-sm text-slate-500">{project.description}</p>
                             </div>
                         </div>
                     ))}
