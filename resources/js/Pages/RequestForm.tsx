@@ -8,31 +8,44 @@ const inputClass =
     'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
 
-function parseTimeInput(value: string): { hour: number; minute: number } | null {
-    const cleaned = value.toUpperCase().replace(/[^\dAPM]/g, '');
-    const hasPm = cleaned.includes('P');
-    const hasAm = cleaned.includes('A');
-    const digits = cleaned.replace(/\D/g, '').slice(0, 4);
+function parseTimeInput(value: string): { hour: number; minute: number; ampm: string } | null {
+    const upper = value.toUpperCase().trim();
+    const hasPm = upper.includes('PM') || upper.endsWith('P');
+    const hasAm = upper.includes('AM') || upper.endsWith('A');
+    let ampm = hasPm ? 'PM' : hasAm ? 'AM' : '';
 
+    const digits = upper.replace(/\D/g, '').slice(0, 4);
     if (digits.length < 3) return null;
 
     let hour = parseInt(digits.slice(0, 2), 10);
-    const minute = parseInt(digits.slice(2, 4), 10);
+    let minute = parseInt(digits.slice(2, 4), 10);
 
     if (Number.isNaN(hour) || Number.isNaN(minute)) return null;
-    if (minute > 59) return null;
+    if (minute > 59) minute = 59;
 
-    if (hasPm && hour !== 12) hour += 12;
-    if (hasAm && hour === 12) hour = 0;
+    // If user typed single hour before colon (e.g. "3:30"), digits could be "0330"
+    if (digits.length === 3) {
+        hour = parseInt(digits.slice(0, 1), 10);
+        minute = parseInt(digits.slice(1, 3), 10);
+    }
 
-    return { hour, minute };
+    if (hour > 12) {
+        hour = hour % 12 || 12;
+        if (!ampm) ampm = 'PM';
+    }
+
+    if (ampm === 'PM' && hour !== 12) hour += 12;
+    if (ampm === 'AM' && hour === 12) hour = 0;
+
+    if (!ampm) ampm = hour >= 12 ? 'PM' : 'AM';
+
+    return { hour, minute, ampm };
 }
 
 function formatTimeValue(value: string): string {
     const parsed = parseTimeInput(value);
     if (!parsed) return value;
-    const { hour, minute } = parsed;
-    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const { hour, minute, ampm } = parsed;
     const displayHour = hour % 12 === 0 ? 12 : hour % 12;
     const displayMinute = String(minute).padStart(2, '0');
     return `${displayHour}:${displayMinute} ${ampm}`;
