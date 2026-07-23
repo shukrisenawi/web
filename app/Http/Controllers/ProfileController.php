@@ -38,7 +38,7 @@ class ProfileController extends Controller
                 'whatsapp' => $user->whatsapp,
                 'business_reg_no' => $user->business_reg_no,
                 'persons_in_charge' => $user->persons_in_charge ?? [],
-                'avatar' => $user->avatar ? asset('storage/' . $user->avatar) : null,
+                'avatar' => $user->avatar ? asset('uploads/' . $user->avatar) : null,
             ],
         ]);
     }

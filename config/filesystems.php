@@ -40,8 +40,8 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => public_path('storage'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'root' => public_path('uploads'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/uploads',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -74,7 +74,7 @@ return [
     */
 
     'links' => [
-        // Disabled because public disk writes directly to public/storage for shared-hosting compatibility.
+        // Disabled because public disk writes directly to public/uploads for shared-hosting compatibility.
         // public_path('storage') => storage_path('app/public'),
     ],
 

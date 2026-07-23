@@ -64,7 +64,7 @@ class FrontpageController extends Controller
         // Handle hero image upload
         if ($request->hasFile('hero_image_file')) {
             $path = $request->file('hero_image_file')->store('frontpage', 'public');
-            $validated['hero_image'] = asset('storage/' . $path);
+            $validated['hero_image'] = asset('uploads/' . $path);
         }
 
         // Handle service image uploads
@@ -73,7 +73,7 @@ class FrontpageController extends Controller
         foreach ($serviceImageFiles as $idx => $file) {
             if ($file) {
                 $path = $file->store('frontpage/services', 'public');
-                $services[$idx]['image'] = asset('storage/' . $path);
+                $services[$idx]['image'] = asset('uploads/' . $path);
             }
         }
         $validated['services'] = $services;
@@ -84,7 +84,7 @@ class FrontpageController extends Controller
         foreach ($projectImageFiles as $idx => $file) {
             if ($file) {
                 $path = $file->store('frontpage/projects', 'public');
-                $projects[$idx]['image'] = asset('storage/' . $path);
+                $projects[$idx]['image'] = asset('uploads/' . $path);
             }
         }
         $validated['projects'] = $projects;
@@ -95,7 +95,7 @@ class FrontpageController extends Controller
         foreach ($clientLogoFiles as $idx => $file) {
             if ($file) {
                 $path = $file->store('frontpage/clients', 'public');
-                $clients[$idx]['logo'] = asset('storage/' . $path);
+                $clients[$idx]['logo'] = asset('uploads/' . $path);
             }
         }
         $validated['clients'] = $clients;
@@ -106,7 +106,7 @@ class FrontpageController extends Controller
         foreach ($aboutTeamImageFiles as $idx => $file) {
             if ($file) {
                 $path = $file->store('frontpage/about/team', 'public');
-                $aboutTeam[$idx]['image'] = asset('storage/' . $path);
+                $aboutTeam[$idx]['image'] = asset('uploads/' . $path);
             }
         }
         $validated['about_team'] = $aboutTeam;
@@ -117,7 +117,7 @@ class FrontpageController extends Controller
         foreach ($aboutEventImageFiles as $idx => $file) {
             if ($file) {
                 $path = $file->store('frontpage/about/events', 'public');
-                $aboutEvents[$idx]['image'] = asset('storage/' . $path);
+                $aboutEvents[$idx]['image'] = asset('uploads/' . $path);
             }
         }
         $validated['about_events'] = $aboutEvents;
@@ -125,7 +125,7 @@ class FrontpageController extends Controller
         // Handle payment logo upload
         if ($request->hasFile('payment_logo_file')) {
             $path = $request->file('payment_logo_file')->store('frontpage', 'public');
-            $validated['payment_logo'] = asset('storage/' . $path);
+            $validated['payment_logo'] = asset('uploads/' . $path);
         }
 
         $content->update($validated);

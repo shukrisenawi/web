@@ -3556,7 +3556,7 @@ function ITEquipmentDetail({ service }: { service: any }) {
                                     )}
                                     <div className="aspect-[16/10] overflow-hidden">
                                         <img
-                                            src={product.image?.startsWith('http') || product.image?.startsWith('/') ? product.image : '/storage/' + product.image}
+                                            src={product.image?.startsWith('http') || product.image?.startsWith('/') ? product.image : '/uploads/' + product.image}
                                             alt={product.name}
                                             className="h-full w-full object-cover"
                                         />

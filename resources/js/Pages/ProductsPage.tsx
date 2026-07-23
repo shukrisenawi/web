@@ -131,10 +131,10 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
                                     <button
                                         type="button"
                                         className="relative aspect-[16/10] w-full cursor-pointer overflow-hidden text-left"
-                                        onClick={() => openLightbox(product.image?.startsWith('http') || product.image?.startsWith('/') ? product.image : '/storage/' + product.image)}
+                                        onClick={() => openLightbox(product.image?.startsWith('http') || product.image?.startsWith('/') ? product.image : '/uploads/' + product.image)}
                                     >
                                         <img
-                                            src={product.image?.startsWith('http') || product.image?.startsWith('/') ? product.image : '/storage/' + product.image}
+                                            src={product.image?.startsWith('http') || product.image?.startsWith('/') ? product.image : '/uploads/' + product.image}
                                             alt={product.name}
                                             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                                         />

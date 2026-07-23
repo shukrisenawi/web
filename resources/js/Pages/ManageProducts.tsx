@@ -34,7 +34,7 @@ export default function ManageProducts({ products }: { products: Product[] }) {
 
     const openEdit = (p: Product) => {
         setForm({ name: p.name, spec: p.spec || '', price: p.price || '', badge: p.badge || '', image_file: null, sort_order: p.sort_order });
-        setImagePreview(p.image ? '/storage/' + p.image : null);
+        setImagePreview(p.image ? '/uploads/' + p.image : null);
         setModal({ open: true, edit: p });
     };
 
@@ -124,8 +124,8 @@ export default function ManageProducts({ products }: { products: Product[] }) {
                                 <tr key={p.id} className="hover:bg-slate-50">
                                     <td className="px-4 py-3">
                                         {p.image ? (
-                                            <button type="button" onClick={() => setLightbox('/storage/' + p.image)}>
-                                                <img src={'/storage/' + p.image} alt={p.name} className="h-10 w-10 cursor-pointer rounded-lg object-cover hover:ring-2 hover:ring-blue-400" />
+                                            <button type="button" onClick={() => setLightbox('/uploads/' + p.image)}>
+                                                <img src={'/uploads/' + p.image} alt={p.name} className="h-10 w-10 cursor-pointer rounded-lg object-cover hover:ring-2 hover:ring-blue-400" />
                                             </button>
                                         ) : (
                                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
