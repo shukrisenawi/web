@@ -234,6 +234,28 @@ class FrontpageController extends Controller
         return redirect()->route('frontpage.manage')->with('success', 'Frontpage content updated.');
     }
 
+    public function uploadWysiwygImage(Request $request)
+    {
+        $request->validate([
+            'files' => 'required|array',
+            'files.*' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+        ]);
+
+        $file = $request->file('files')[0];
+        $path = $file->store('wysiwyg', 'public');
+        $filename = basename($path);
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'files' => [$filename],
+                'isImages' => [true],
+                'path' => 'wysiwyg/',
+                'baseurl' => asset('uploads/wysiwyg').'/',
+            ],
+        ]);
+    }
+
     public function searchLogos(Request $request)
     {
         $query = $request->query('query');

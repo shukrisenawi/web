@@ -38,7 +38,12 @@ export default function WysiwygEditor({ value, onChange, placeholder, id }: Wysi
                 'redo',
             ],
             uploader: {
-                insertImageAsBase64URI: true,
+                url: '/upload/wysiwyg-image',
+                insertImageAsBase64URI: false,
+                format: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
+                },
             },
             askBeforePasteHTML: false,
             askBeforePasteFromWord: false,
