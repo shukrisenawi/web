@@ -82,7 +82,7 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
                             <div className="space-y-6">
                                 <h2 className="text-2xl font-bold text-slate-900">About {project.title}</h2>
                                 <div
-                                    className="wysiwyg-content max-w-none leading-relaxed text-slate-600"
+                                    className="wysiwyg-content max-w-none text-slate-600"
                                     dangerouslySetInnerHTML={{ __html: project.full_description || extra.content }}
                                 />
 
