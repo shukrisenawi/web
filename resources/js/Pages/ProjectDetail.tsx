@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Calendar, CheckCircle2, User } from 'lucide-react';
+import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { Cta } from '@/Components/Cta';
@@ -37,13 +37,6 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
             </>
         );
     }
-
-    const highlights = [
-        'Modern technology architecture',
-        'Responsive and user-friendly interface',
-        'Scalable for future growth',
-        'Delivered on time and within scope',
-    ];
 
     return (
         <>
@@ -93,22 +86,7 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
                                     dangerouslySetInnerHTML={{ __html: project.full_description || extra.content }}
                                 />
 
-                                <ul className="space-y-3">
-                                    {highlights.map((item, idx) => (
-                                        <li key={idx} className="flex items-start gap-3">
-                                            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />
-                                            <span className="text-sm text-slate-700">{item}</span>
-                                        </li>
-                                    ))}
-                                </ul>
 
-                                <Link
-                                    href="/contact"
-                                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
-                                >
-                                    Request Quotation
-                                    <ArrowLeft className="h-4 w-4 rotate-180" />
-                                </Link>
                             </div>
                         </div>
                     </div>
