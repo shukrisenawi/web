@@ -23,6 +23,9 @@ const availableIcons = [
     'TrendingUp',
     'Gamepad2',
     'Shield',
+    'ShieldCheck',
+    'Users',
+    'Rocket',
     'Code',
     'Megaphone',
     'BarChart',
@@ -608,6 +611,16 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                             <div className="space-y-3">
                                 {(data.stats || []).map((stat: any, idx: number) => (
                                     <div key={idx} className="flex items-center gap-3">
+                                        <select
+                                            value={stat.icon || ''}
+                                            onChange={(e) => updateArray('stats', idx, 'icon', e.target.value)}
+                                            className="w-36 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                        >
+                                            <option value="">Icon</option>
+                                            {availableIcons.map((icon) => (
+                                                <option key={icon} value={icon}>{icon}</option>
+                                            ))}
+                                        </select>
                                         <input
                                             type="text"
                                             value={stat.value || ''}
@@ -635,7 +648,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
 
                             <button
                                 type="button"
-                                onClick={() => addItem('stats', { value: '', label: '' })}
+                                onClick={() => addItem('stats', { icon: 'ShieldCheck', value: '', label: '' })}
                                 className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                             >
                                 <Plus className="h-4 w-4" />

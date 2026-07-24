@@ -2,15 +2,46 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { useState, useMemo } from 'react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
-import { ArrowRight, Play, Search, ClipboardList, Code2, FlaskConical, Rocket, ShieldCheck, Users, Rocket as RocketIcon, Globe } from 'lucide-react';
+import { ArrowRight, Play, Search, ClipboardList, Code2, FlaskConical, Rocket, ShieldCheck, Users, Rocket as RocketIcon, Globe, TrendingUp } from 'lucide-react';
 import { HeroBackground } from '@/Components/HeroBackground';
 
-const stats = [
-    { icon: ShieldCheck, value: '100+', label: 'Projects\nCompleted' },
-    { icon: Users, value: '50+', label: 'Happy\nClients' },
-    { icon: RocketIcon, value: '5+', label: 'Years of\nExperience' },
-    { icon: Globe, value: '10+', label: 'Industries\nServed' },
-];
+const iconMap: Record<string, any> = {
+    ShieldCheck,
+    Users,
+    Rocket: RocketIcon,
+    Globe,
+    TrendingUp,
+};
+
+function WorkStatsDisplay() {
+    const { frontpage } = usePage().props as any;
+    const dbStats = frontpage?.stats || [];
+
+    const stats = dbStats.length
+        ? dbStats.map((s: any) => ({
+              icon: iconMap[s.icon] || ShieldCheck,
+              value: s.value || '',
+              label: s.label || '',
+          }))
+        : [
+              { icon: ShieldCheck, value: '100+', label: 'Projects\nCompleted' },
+              { icon: Users, value: '50+', label: 'Happy\nClients' },
+              { icon: RocketIcon, value: '5+', label: 'Years of\nExperience' },
+              { icon: Globe, value: '10+', label: 'Industries\nServed' },
+          ];
+
+    return (
+        <>
+            {stats.map((stat: any) => (
+                <div key={stat.label} className="text-center sm:text-left">
+                    <stat.icon className="mx-auto mb-3 h-7 w-7 text-blue-500 sm:mx-0" />
+                    <p className="text-3xl font-bold">{stat.value}</p>
+                    <p className="mt-1 whitespace-pre-line text-sm text-slate-400">{stat.label}</p>
+                </div>
+            ))}
+        </>
+    );
+}
 
 const processSteps = [
     { icon: Search, number: '1.', title: 'Discover', desc: 'We listen and understand your goals and challenges.' },
@@ -71,14 +102,8 @@ export default function Work() {
                                     {h.subtitle || 'We take pride in building digital solutions that make a difference. Here are some of the projects we’ve built for our amazing clients.'}
                                 </p>
 
-                                <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
-                                    {stats.map((stat) => (
-                                        <div key={stat.label} className="text-center sm:text-left">
-                                            <stat.icon className="mx-auto mb-3 h-7 w-7 text-blue-500 sm:mx-0" />
-                                            <p className="text-3xl font-bold">{stat.value}</p>
-                                            <p className="mt-1 whitespace-pre-line text-sm text-slate-400">{stat.label}</p>
-                                        </div>
-                                    ))}
+                                <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+                                    <WorkStatsDisplay />
                                 </div>
                             </div>
 
