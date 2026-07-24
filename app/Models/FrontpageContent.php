@@ -96,6 +96,12 @@ class FrontpageContent extends Model
                 'title' => 'Native \u0026 Cross-Platform Mobile Applications',
                 'subtitle' => 'Our mobile app team creates intuitive iOS and Android applications that deliver great user experiences.',
                 'image' => 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format\u0026fit=crop\u0026w=1200\u0026q=80',
+                'primary_cta' => 'Request Quotation',
+                'primary_link' => '/request',
+                'secondary_cta' => 'View Our Work',
+                'secondary_link' => '/work',
+                'trusted_text' => 'Trusted by 100+ clients',
+                'trusted_subtext' => 'from startups to enterprise',
             ],
             'web_system_hero' => [
                 'badge' => 'Web System',

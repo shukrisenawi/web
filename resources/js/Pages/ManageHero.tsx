@@ -133,7 +133,7 @@ function PageHeroForm({
                     />
                 </Field>
             </div>
-            {heroKey === 'home_hero' && (
+            {(heroKey === 'home_hero' || heroKey === 'mobile_apps_hero') && (
                 <>
                     <Field label="Primary CTA">
                         <input
@@ -148,6 +148,22 @@ function PageHeroForm({
                             type="text"
                             value={hero.primary_link || ''}
                             onChange={(e) => setHeroField('primary_link', e.target.value)}
+                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                        />
+                    </Field>
+                    <Field label="Secondary CTA">
+                        <input
+                            type="text"
+                            value={hero.secondary_cta || ''}
+                            onChange={(e) => setHeroField('secondary_cta', e.target.value)}
+                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                        />
+                    </Field>
+                    <Field label="Secondary Link">
+                        <input
+                            type="text"
+                            value={hero.secondary_link || ''}
+                            onChange={(e) => setHeroField('secondary_link', e.target.value)}
                             className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                         />
                     </Field>
@@ -460,13 +476,13 @@ export default function ManageHero({ content }: ManageHeroProps) {
                         </>
                     )}
 
-                    {activeTab !== 'home' && (
+                    {activeTab !== 'home' && activeTab !== 'mobile_apps_hero' && (
                         <>
                             <Section title={`${pageHeroTabs.find((t) => t.key === activeTab)?.label} Hero`}>
                                 <PageHeroForm heroKey={activeTab} data={data} setData={setData} />
                             </Section>
 
-                            {['services_hero', 'web_development_hero', 'web_system_hero', 'mobile_apps_hero', 'game_development_hero', 'it_equipment_hero', 'digital_marketing_hero'].includes(activeTab) && (
+                            {['services_hero', 'web_development_hero', 'web_system_hero', 'game_development_hero', 'it_equipment_hero', 'digital_marketing_hero'].includes(activeTab) && (
                                 <Section title="Hero Info Cards">
                                     <p className="mb-4 text-sm text-slate-600">
                                         These cards appear below the subtitle in the hero section.
@@ -475,6 +491,64 @@ export default function ManageHero({ content }: ManageHeroProps) {
                                     <CardsEditor heroKey={activeTab} data={data} setData={setData} />
                                 </Section>
                             )}
+                        </>
+                    )}
+
+                    {activeTab === 'mobile_apps_hero' && (
+                        <>
+                            <Section title="Mobile Apps Hero">
+                                <PageHeroForm heroKey="mobile_apps_hero" data={data} setData={setData} />
+                            </Section>
+
+                            <Section title="Trusted-by Avatars">
+                                <p className="mb-4 text-sm text-slate-600">
+                                    These avatars appear next to the trusted text in the Mobile Apps hero section.
+                                </p>
+
+                                <div className="space-y-4">
+                                    {(data.hero_avatars || []).map((avatar: any, idx: number) => (
+                                        <div key={`ma-avatar-${avatar.image ? avatar.image.slice(-12) : idx}`} className="rounded-lg border border-slate-200 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-sm font-semibold text-slate-700">Avatar #{idx + 1}</span>
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => moveItem('hero_avatars', idx, -1)}
+                                                        className="rounded p-1 text-slate-400 hover:bg-slate-100"
+                                                    >
+                                                        <GripVertical className="h-4 w-4" />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeItem('hero_avatars', idx)}
+                                                        className="rounded p-1 text-red-500 hover:bg-red-50"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <ImageUpload
+                                                label="Avatar Image"
+                                                preview={
+                                                    data.hero_avatar_files[idx]
+                                                        ? URL.createObjectURL(data.hero_avatar_files[idx]!)
+                                                        : avatar.image
+                                                }
+                                                onChange={(file) => setHeroAvatar(idx, file)}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={() => addItem('hero_avatars', { image: '' })}
+                                    className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                                >
+                                    <Plus className="h-4 w-4" />
+                                    Add Avatar
+                                </button>
+                            </Section>
                         </>
                     )}
 
