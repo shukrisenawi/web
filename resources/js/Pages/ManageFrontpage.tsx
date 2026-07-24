@@ -169,7 +169,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
         about_event_image_files: {} as Record<number, File | null>,
     } as any);
 
-    const [activeTab, setActiveTab] = useState<'services' | 'projects' | 'clients' | 'stats' | 'cta' | 'footer' | 'payment' | 'about'>('services');
+    const [activeTab, setActiveTab] = useState<'home' | 'services' | 'projects' | 'clients' | 'stats' | 'cta' | 'footer' | 'payment' | 'about'>('home');
 
     const updateArray = (key: string, index: number, field: string, value: any) => {
         const list = [...(data[key] || [])];
@@ -249,6 +249,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
     };
 
     const tabs = [
+        { key: 'home', label: 'Home' },
         { key: 'services', label: 'Services' },
         { key: 'projects', label: 'Work' },
         { key: 'clients', label: 'Clients' },
@@ -315,6 +316,49 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                             {processing ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>
+
+                    {activeTab === 'home' && (
+                        <Section title="Let's Build Something Great Together">
+                            <div className="grid gap-5 sm:grid-cols-2">
+                                <div className="sm:col-span-2">
+                                    <Field label="Title">
+                                        <input
+                                            type="text"
+                                            value={data.cta_title || ''}
+                                            onChange={(e) => setData('cta_title', e.target.value)}
+                                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                        />
+                                    </Field>
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <Field label="Subtitle">
+                                        <textarea
+                                            value={data.cta_subtitle || ''}
+                                            onChange={(e) => setData('cta_subtitle', e.target.value)}
+                                            rows={2}
+                                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                        />
+                                    </Field>
+                                </div>
+                                <Field label="Button Text">
+                                    <input
+                                        type="text"
+                                        value={data.cta_button || ''}
+                                        onChange={(e) => setData('cta_button', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                                <Field label="Button Link">
+                                    <input
+                                        type="text"
+                                        value={data.cta_link || ''}
+                                        onChange={(e) => setData('cta_link', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                            </div>
+                        </Section>
+                    )}
 
                     {activeTab === 'services' && (
                         <Section title="Services Section">
