@@ -280,8 +280,8 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
             </DashboardLayout>
 
             {showSuccess && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <Card className="w-full max-w-sm text-center">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4">
+                    <Card className="my-8 w-full max-w-sm text-center">
                         <div className="mb-2 flex justify-center">
                             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
                                 <CheckCircle2 className="h-7 w-7 text-emerald-600" />
@@ -311,8 +311,8 @@ export default function Invoices({ invoices, filters, widgets, clients = [], pro
             )}
 
             {isAdmin && createOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <Card className="w-full max-w-lg">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4">
+                    <Card className="my-8 w-full max-w-lg">
                         <div className="mb-4 flex items-center justify-between">
                             <h3 className="text-lg font-bold text-slate-900">Generate Invoice</h3>
                             <button onClick={() => setCreateOpen(false)} className="text-slate-400 hover:text-slate-700">

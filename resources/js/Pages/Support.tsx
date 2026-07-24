@@ -256,8 +256,8 @@ export default function Support({ tickets }: SupportProps) {
             </DashboardLayout>
 
             {!isAdmin && createOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <Card className="w-full max-w-lg">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4">
+                    <Card className="my-8 w-full max-w-lg">
                         <div className="mb-4 flex items-center justify-between">
                             <h3 className="text-lg font-bold text-slate-900">New Support Ticket</h3>
                             <button onClick={() => setCreateOpen(false)} className="text-slate-400 hover:text-slate-700">
@@ -320,8 +320,8 @@ export default function Support({ tickets }: SupportProps) {
             )}
 
             {viewId !== null && ticket && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <Card className="flex max-h-[90vh] w-full max-w-2xl flex-col">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4">
+                    <Card className="my-8 flex max-h-[90vh] w-full max-w-2xl flex-col">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                             <div className="flex items-center gap-2">
                                 <h3 className="text-lg font-bold text-slate-900">{ticket.subject}</h3>

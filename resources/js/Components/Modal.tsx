@@ -20,11 +20,11 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4"
             onClick={onClose}
         >
             <div
-                className="w-full max-w-md rounded-2xl bg-white shadow-xl"
+                className="my-8 w-full max-w-md rounded-2xl bg-white shadow-xl"
                 onClick={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
             >

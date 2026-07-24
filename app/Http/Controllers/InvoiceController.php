@@ -246,7 +246,7 @@ class InvoiceController extends Controller
             $data['issue_date'] = $i->issue_date->format('M d, Y');
             $data['items'] = $i->items->map(fn ($item) => [
                 'description' => $item->description,
-                'amount' => '$'.number_format($item->amount, 2),
+                'amount' => (float) $item->amount,
             ])->values();
             $data['proofs'] = $i->paymentProofs->map(fn ($p) => [
                 'id' => $p->id,

@@ -305,8 +305,8 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
             </DashboardLayout>
 
             {billingClient && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <Card className="w-full max-w-lg">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4">
+                    <Card className="my-8 w-full max-w-lg">
                         <div className="mb-4 flex items-center justify-between">
                             <h3 className="text-lg font-bold text-slate-900">Generate Invoice</h3>
                             <button type="button" onClick={() => setBillingClient(null)} className="text-slate-400 hover:text-slate-700">
@@ -491,9 +491,9 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
 
             {viewClient && (
                 // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setViewClient(null)}>
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4" onClick={() => setViewClient(null)}>
                     {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                    <div className="w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+                    <div className="my-8 w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
                         <Card>
                             <div className="mb-4 flex items-center justify-between">
                                 <h3 className="text-lg font-bold text-slate-900">Client Profile</h3>
@@ -532,8 +532,8 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
             )}
 
             {editClient && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <Card className="w-full max-w-lg">
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4">
+                    <Card className="my-8 w-full max-w-lg">
                         <div className="mb-4 flex items-center justify-between">
                             <h3 className="text-lg font-bold text-slate-900">Edit Client Profile</h3>
                             <button type="button" onClick={() => setEditClient(null)} className="text-slate-400 hover:text-slate-700">
@@ -622,9 +622,9 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
 
             {deleteConfirm && (
                 // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setDeleteConfirm(null)}>
+                <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4" onClick={() => setDeleteConfirm(null)}>
                     {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                    <div className="w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+                    <div className="my-8 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
                         <Card>
                             <div className="mb-4 flex items-center gap-3">
                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
@@ -662,10 +662,10 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
 
             {showSuccess && (
                 // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions
-                <div role="dialog" className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowSuccess(false)} onKeyDown={(e) => { if (e.key === 'Escape') setShowSuccess(false); }}>
+                <div role="dialog" className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4" onClick={() => setShowSuccess(false)} onKeyDown={(e) => { if (e.key === 'Escape') setShowSuccess(false); }}>
                     <div
                         role="dialog"
-                        className="flex flex-col items-center gap-4 rounded-2xl bg-white px-10 py-8 shadow-2xl"
+                        className="my-8 flex flex-col items-center gap-4 rounded-2xl bg-white px-10 py-8 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                         onKeyDown={(e) => { if (e.key === 'Escape') setShowSuccess(false); }}
                     >

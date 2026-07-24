@@ -211,7 +211,7 @@ export default function ProductsPage({ products }: { products: PaginatedData<Pro
                 <div
                     role="button"
                     tabIndex={0}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+                    className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 p-4"
                     onClick={(e) => { if (e.target === e.currentTarget) closeLightbox(); }}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') closeLightbox(); }}
                 >
