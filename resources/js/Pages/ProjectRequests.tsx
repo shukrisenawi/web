@@ -208,7 +208,7 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
                                                 onClick={() => confirmApprove(r.id)}
                                                 className="inline-flex items-center gap-1.5 rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white hover:bg-green-700"
                                             >
-                                                <ThumbsUp className="h-3.5 w-3.5" /> Approve
+                                                <ThumbsUp className="h-3.5 w-3.5" /> Accept
                                             </button>
                                             <button
                                                 type="button"
@@ -460,9 +460,9 @@ export default function ProjectRequests({ requests }: { requests: ProjectRequest
                 open={approveId !== null}
                 onClose={() => setApproveId(null)}
                 onConfirm={submitApprove}
-                title="Approve Appointment"
-                message="Are you sure you want to approve this appointment?"
-                confirmText="Approve"
+                title="Accept Appointment"
+                message="Are you sure you want to accept this appointment?"
+                confirmText="Accept"
                 confirmColor="blue"
             />
         </>
