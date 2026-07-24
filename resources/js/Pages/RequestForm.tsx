@@ -248,7 +248,7 @@ export default function RequestForm() {
                                         {errors.contact_email && <p className="mt-1 text-xs text-red-600">{errors.contact_email}</p>}
                                     </div>
                                     <div>
-                                        <label htmlFor="password" className={labelClass}>Password <span className="text-red-500">*</span></label>
+                                        <label htmlFor="password" className={labelClass}>Password <span className="text-red-500">*</span> (create a password to sign in)</label>
                                         <input id="password" type="password" autoComplete="new-password" value={data.password} onChange={(e) => setData('password', e.target.value)} className={inputClass} placeholder="••••••••" />
                                         {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password}</p>}
                                     </div>
