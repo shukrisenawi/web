@@ -33,7 +33,7 @@ export function Hero() {
                         </div>
                         <div className="mt-10 flex items-center gap-3">
                             <div className="flex -space-x-3">
-                                {(h.trusted_avatars || [
+                                {(frontpage?.hero_avatars || [
                                     { image: 'https://i.pravatar.cc/150?img=11' },
                                     { image: 'https://i.pravatar.cc/150?img=12' },
                                     { image: 'https://i.pravatar.cc/150?img=13' },

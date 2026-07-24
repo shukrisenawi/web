@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Milestone;
 use App\Models\Project;
 use App\Models\Ticket;
+use App\Models\FrontpageContent;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -45,6 +46,8 @@ class DatabaseSeeder extends Seeder
                 'avatar' => null,
             ]
         );
+
+        FrontpageContent::firstOrCreate([], FrontpageContent::defaultRecord());
 
         $projectsData = [
             ['title' => 'Fintech Mobile App', 'category' => 'Mobile App Development', 'progress' => 75, 'status' => 'in_progress', 'icon_color' => '#2563eb'],
