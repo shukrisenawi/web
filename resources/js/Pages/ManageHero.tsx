@@ -151,22 +151,6 @@ function PageHeroForm({
                             className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                         />
                     </Field>
-                    <Field label="Secondary CTA">
-                        <input
-                            type="text"
-                            value={hero.secondary_cta || ''}
-                            onChange={(e) => setHeroField('secondary_cta', e.target.value)}
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                        />
-                    </Field>
-                    <Field label="Secondary Link">
-                        <input
-                            type="text"
-                            value={hero.secondary_link || ''}
-                            onChange={(e) => setHeroField('secondary_link', e.target.value)}
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                        />
-                    </Field>
                     <Field label="Trusted Text">
                         <input
                             type="text"
