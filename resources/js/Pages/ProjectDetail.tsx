@@ -88,7 +88,10 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
 
                             <div className="space-y-6">
                                 <h2 className="text-2xl font-bold text-slate-900">About {project.title}</h2>
-                                <p className="leading-relaxed text-slate-600">{extra.content}</p>
+                                <div
+                                    className="prose prose-slate max-w-none leading-relaxed text-slate-600"
+                                    dangerouslySetInnerHTML={{ __html: project.full_description || extra.content }}
+                                />
 
                                 <ul className="space-y-3">
                                     {highlights.map((item, idx) => (

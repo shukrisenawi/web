@@ -1,6 +1,7 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { DashboardLayout, Card } from '@/Layouts/Dashboard';
+import WysiwygEditor from '@/Components/WysiwygEditor';
 import {
     Save,
     Plus,
@@ -538,13 +539,22 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                                 onChange={(file) => setProjectImage(idx, file)}
                                             />
                                         </div>
+                                        <div className="mt-4">
+                                            <Field label="Full Description">
+                                                <WysiwygEditor
+                                                    value={project.full_description || ''}
+                                                    onChange={(value) => updateArray('projects', idx, 'full_description', value)}
+                                                    placeholder="Enter detailed project description..."
+                                                />
+                                            </Field>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
 
                             <button
                                 type="button"
-                                onClick={() => addItem('projects', { title: '', category: '', description: '', image: '' })}
+                                onClick={() => addItem('projects', { title: '', category: '', description: '', full_description: '', image: '' })}
                                 className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                             >
                                 <Plus className="h-4 w-4" />
