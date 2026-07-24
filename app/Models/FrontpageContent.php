@@ -236,6 +236,9 @@ class FrontpageContent extends Model
             'bank_name' => 'MAYBANK BERHAD',
             'bank_account_name' => 'KENJU TECH SDN. BHD.',
             'bank_account_number' => '5622 4512 3456',
+            'invoice_company_name' => 'Kenju Tech Sdn Bhd',
+            'invoice_email' => 'hello@kenju.tech',
+            'invoice_contact_no' => '',
             'social_links' => [
                 ['name' => 'Twitter', 'url' => 'https://twitter.com'],
                 ['name' => 'LinkedIn', 'url' => 'https://linkedin.com'],

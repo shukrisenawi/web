@@ -21,6 +21,12 @@ interface Invoice {
     has_pending_proof?: boolean;
 }
 
+interface InvoiceSettings {
+    company_name: string;
+    email: string;
+    contact_no: string;
+}
+
 const invoiceBadgeColor = (status: string) => {
     switch (status) {
         case 'paid':
@@ -32,7 +38,7 @@ const invoiceBadgeColor = (status: string) => {
     }
 };
 
-export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
+export default function InvoiceDetail({ invoice, invoiceSettings }: { invoice: Invoice; invoiceSettings: InvoiceSettings }) {
     const { auth } = usePage().props as any;
     const isAdmin = auth?.user?.isAdmin;
 
@@ -103,13 +109,16 @@ export default function InvoiceDetail({ invoice }: { invoice: Invoice }) {
                         <div>
                             <div className="flex items-center gap-2">
                                 <span className="font-mono text-2xl font-black text-blue-600">{'</>'}</span>
-                                <span className="font-bold">
-                                    <span className="text-slate-900">KENJU</span>
-                                    <span className="ml-2 text-blue-600">TECH</span>
-                                </span>
-                            </div>
-                            <p className="mt-2 text-xs text-slate-500">Kenju Tech Sdn Bhd</p>
-                            <p className="text-xs text-slate-500">hello@kenju.tech</p>
+                            <span className="font-bold">
+                                <span className="text-slate-900">KENJU</span>
+                                <span className="ml-2 text-blue-600">TECH</span>
+                            </span>
+                        </div>
+                        <p className="mt-2 text-xs text-slate-500">{invoiceSettings.company_name}</p>
+                        <p className="text-xs text-slate-500">{invoiceSettings.email}</p>
+                        {invoiceSettings.contact_no && (
+                            <p className="text-xs text-slate-500">{invoiceSettings.contact_no}</p>
+                        )}
                         </div>
                         <div className="text-right">
                             <p className="text-lg font-bold text-slate-900">INVOICE</p>

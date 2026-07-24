@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\NewInvoiceMail;
 use App\Models\ActivityLog;
+use App\Models\FrontpageContent;
 use App\Models\Invoice;
 use App\Models\Project;
 use App\Models\User;
@@ -81,9 +82,15 @@ class InvoiceController extends Controller
         }
 
         $invoice->load('project', 'user', 'items', 'paymentProofs');
+        $content = FrontpageContent::getCurrent();
 
         return Inertia::render('InvoiceDetail', [
             'invoice' => $this->formatInvoice($invoice, true),
+            'invoiceSettings' => [
+                'company_name' => $content->invoice_company_name ?? 'Kenju Tech Sdn Bhd',
+                'email' => $content->invoice_email ?? 'hello@kenju.tech',
+                'contact_no' => $content->invoice_contact_no ?? '',
+            ],
         ]);
     }
 

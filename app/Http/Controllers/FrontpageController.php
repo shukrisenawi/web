@@ -92,6 +92,9 @@ class FrontpageController extends Controller
             'contact_email' => 'nullable|string|max:255',
             'contact_phone' => 'nullable|string|max:255',
             'contact_office' => 'nullable|string',
+            'invoice_company_name' => 'nullable|string|max:255',
+            'invoice_email' => 'nullable|string|max:255',
+            'invoice_contact_no' => 'nullable|string|max:255',
         ]);
 
         // Handle hero image upload
