@@ -184,6 +184,10 @@ class FrontpageContent extends Model
                 'subtitle' => 'Kenju Tech was founded with a simple mission: to help businesses grow through technology.',
                 'image' => '/images/hero.png',
             ],
+            'about_vision_title' => 'Our Vision',
+            'about_vision_description' => 'To be a trusted digital partner for businesses worldwide, delivering innovation with impact.',
+            'about_mission_title' => 'Our Mission',
+            'about_mission_description' => 'To empower businesses with smart digital solutions that are scalable, reliable, and future-ready.',
             'services_title' => 'Services We Provide',
             'services_subtitle' => 'From strategy to deployment, we deliver end-to-end digital solutions tailored to your business goals.',
             'services' => [

@@ -8,6 +8,7 @@ import {
     Rocket,
     Headphones,
     MapPin,
+    LucideIcon,
 } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
@@ -45,19 +46,6 @@ const stats = [
     { icon: Headphones, value: '24/7', label: 'Support' },
 ];
 
-const visionMission = [
-    {
-        icon: Code2,
-        title: 'Our Vision',
-        description: 'To be a trusted digital partner for businesses worldwide, delivering innovation with impact.',
-    },
-    {
-        icon: Target,
-        title: 'Our Mission',
-        description: 'To empower businesses with smart digital solutions that are scalable, reliable, and future-ready.',
-    },
-];
-
 const defaultTeam: TeamMember[] = [
     { name: 'Kenji Tan', role: 'Founder & CEO', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80' },
     { name: 'Alicia Chong', role: 'UI/UX Designer', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80' },
@@ -88,6 +76,19 @@ export default function About({
 
     const team = about_team.length > 0 ? about_team : defaultTeam;
     const events = about_events.length > 0 ? about_events : defaultEvents;
+
+    const fp = props?.frontpage ?? {};
+    const vision: { icon: LucideIcon; title: string; description: string } = {
+        icon: Code2,
+        title: fp.about_vision_title || 'Our Vision',
+        description: fp.about_vision_description || 'To be a trusted digital partner for businesses worldwide, delivering innovation with impact.',
+    };
+    const mission: { icon: LucideIcon; title: string; description: string } = {
+        icon: Target,
+        title: fp.about_mission_title || 'Our Mission',
+        description: fp.about_mission_description || 'To empower businesses with smart digital solutions that are scalable, reliable, and future-ready.',
+    };
+    const visionMission = [vision, mission];
 
     return (
         <>

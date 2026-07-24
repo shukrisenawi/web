@@ -963,6 +963,44 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                 <Plus className="h-4 w-4" />
                                 Add Event
                             </button>
+
+                            <div className="my-6 border-t border-slate-100" />
+
+                            <h4 className="mb-4 text-sm font-semibold text-slate-800">Vision & Mission</h4>
+                            <div className="grid gap-5 sm:grid-cols-2">
+                                <Field label="Vision Title">
+                                    <input
+                                        type="text"
+                                        value={data.about_vision_title || ''}
+                                        onChange={(e) => setData('about_vision_title', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                                <Field label="Mission Title">
+                                    <input
+                                        type="text"
+                                        value={data.about_mission_title || ''}
+                                        onChange={(e) => setData('about_mission_title', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                                <Field label="Vision Description">
+                                    <textarea
+                                        value={data.about_vision_description || ''}
+                                        onChange={(e) => setData('about_vision_description', e.target.value)}
+                                        rows={3}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                                <Field label="Mission Description">
+                                    <textarea
+                                        value={data.about_mission_description || ''}
+                                        onChange={(e) => setData('about_mission_description', e.target.value)}
+                                        rows={3}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                            </div>
                         </Section>
                     )}
 
