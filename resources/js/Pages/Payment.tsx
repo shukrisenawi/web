@@ -207,7 +207,7 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                 <p className="mb-3 text-xs font-semibold text-blue-600">Scan & Pay</p>
                                 <div className="flex items-center justify-center rounded-xl bg-slate-50 p-6">
                                     <img
-                                        src="/images/qr.png"
+                                        src={frontpage?.payment_logo || '/images/qr.png'}
                                         alt="QR Code Payment"
                                         className="h-40 w-40 rounded-xl object-contain"
                                     />
@@ -215,7 +215,7 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                 <p className="mt-3 text-center text-xs text-slate-400">Accepted via:</p>
                                 <div className="mt-2 flex items-center justify-center">
                                     <img
-                                        src={frontpage?.payment_logo || '/images/logo-gambar.png'}
+                                        src={frontpage?.payment_accepted_logo || '/images/logo-payment-accepted.png'}
                                         alt="Payment Logo"
                                         className="h-10 w-auto object-contain"
                                     />

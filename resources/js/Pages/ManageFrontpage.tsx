@@ -831,13 +831,24 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                 </Field>
                             </div>
                             <ImageUpload
-                                label="Payment QR Logo"
+                                label="Payment QR Code"
                                 preview={data.payment_logo_file ? URL.createObjectURL(data.payment_logo_file) : data.payment_logo}
                                 onChange={(file) => setData('payment_logo_file', file)}
                             />
                             <p className="mt-2 text-xs text-slate-500">
-                                This logo appears on the payment page under "Accepted via".
+                                This QR code appears on the payment page above "Accepted via".
                             </p>
+
+                            <div className="mt-6">
+                                <ImageUpload
+                                    label="Accepted Via Logo"
+                                    preview={data.payment_accepted_logo_file ? URL.createObjectURL(data.payment_accepted_logo_file) : data.payment_accepted_logo}
+                                    onChange={(file) => setData('payment_accepted_logo_file', file)}
+                                />
+                                <p className="mt-2 text-xs text-slate-500">
+                                    This logo appears below "Accepted via" on the payment page.
+                                </p>
+                            </div>
                         </Section>
                     )}
 

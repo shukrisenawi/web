@@ -65,6 +65,7 @@ class FrontpageController extends Controller
             'about_events_subtitle' => 'nullable|string',
             'about_events' => 'nullable|array',
             'payment_logo' => 'nullable|string',
+            'payment_accepted_logo' => 'nullable|string',
             'bank_name' => 'nullable|string|max:255',
             'bank_account_name' => 'nullable|string|max:255',
             'bank_account_number' => 'nullable|string|max:255',
@@ -230,6 +231,12 @@ class FrontpageController extends Controller
         if ($request->hasFile('payment_logo_file')) {
             $path = $request->file('payment_logo_file')->store('frontpage', 'public');
             $validated['payment_logo'] = asset('uploads/' . $path);
+        }
+
+        // Handle accepted via logo upload
+        if ($request->hasFile('payment_accepted_logo_file')) {
+            $path = $request->file('payment_accepted_logo_file')->store('frontpage', 'public');
+            $validated['payment_accepted_logo'] = asset('uploads/' . $path);
         }
 
         $content->update($validated);
