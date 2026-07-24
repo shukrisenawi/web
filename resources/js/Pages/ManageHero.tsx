@@ -133,7 +133,7 @@ function PageHeroForm({
                     />
                 </Field>
             </div>
-            {(heroKey === 'home_hero' || heroKey === 'mobile_apps_hero' || heroKey === 'digital_marketing_hero') && (
+            {(heroKey === 'home_hero' || heroKey === 'mobile_apps_hero' || heroKey === 'digital_marketing_hero' || heroKey === 'game_development_hero') && (
                 <>
                     <Field label="Primary CTA">
                         <input
@@ -303,6 +303,7 @@ export default function ManageHero({ content }: ManageHeroProps) {
         hero_avatar_files: {} as Record<number, File | null>,
         mobile_apps_hero_avatar_files: {} as Record<number, File | null>,
         digital_marketing_hero_avatar_files: {} as Record<number, File | null>,
+        game_development_hero_avatar_files: {} as Record<number, File | null>,
         ...Object.fromEntries(pageHeroTabs.map((t) => [`${t.key}_image_file`, null as File | null])),
     } as any);
 
@@ -339,6 +340,11 @@ export default function ManageHero({ content }: ManageHeroProps) {
             delete files[index];
             setData('digital_marketing_hero_avatar_files', files);
         }
+        if (key === 'game_development_hero_avatars') {
+            const files = { ...data.game_development_hero_avatar_files };
+            delete files[index];
+            setData('game_development_hero_avatar_files', files);
+        }
     };
 
     const moveItem = (key: string, index: number, direction: number) => {
@@ -361,6 +367,10 @@ export default function ManageHero({ content }: ManageHeroProps) {
         setData('digital_marketing_hero_avatar_files', { ...data.digital_marketing_hero_avatar_files, [idx]: file });
     };
 
+    const setGameDevHeroAvatar = (idx: number, file: File | null) => {
+        setData('game_development_hero_avatar_files', { ...data.game_development_hero_avatar_files, [idx]: file });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post('/manage-hero', {
@@ -370,6 +380,7 @@ export default function ManageHero({ content }: ManageHeroProps) {
                 setData('hero_avatar_files', {});
                 setData('mobile_apps_hero_avatar_files', {});
                 setData('digital_marketing_hero_avatar_files', {});
+                setData('game_development_hero_avatar_files', {});
                 pageHeroTabs.forEach((t) => {
                     setData(`${t.key}_image_file`, null);
                 });
@@ -378,6 +389,7 @@ export default function ManageHero({ content }: ManageHeroProps) {
                     if (c.hero_avatars) setData('hero_avatars', c.hero_avatars);
                     if (c.mobile_apps_hero_avatars) setData('mobile_apps_hero_avatars', c.mobile_apps_hero_avatars);
                     if (c.digital_marketing_hero_avatars) setData('digital_marketing_hero_avatars', c.digital_marketing_hero_avatars);
+                    if (c.game_development_hero_avatars) setData('game_development_hero_avatars', c.game_development_hero_avatars);
                     pageHeroTabs.forEach((t) => {
                         if (c[t.key]) setData(t.key, c[t.key]);
                     });
@@ -513,6 +525,58 @@ export default function ManageHero({ content }: ManageHeroProps) {
                                     </p>
 
                                     <CardsEditor heroKey={activeTab} data={data} setData={setData} />
+                                </Section>
+                            )}
+
+                            {activeTab === 'game_development_hero' && (
+                                <Section title="Trusted-by Avatars">
+                                    <p className="mb-4 text-sm text-slate-600">
+                                        These avatars appear next to the trusted text in the Game Development hero section.
+                                    </p>
+
+                                    <div className="space-y-4">
+                                        {(data.game_development_hero_avatars || []).map((avatar: any, idx: number) => (
+                                            <div key={`gd-avatar-${avatar.image ? avatar.image.slice(-12) : idx}`} className="rounded-lg border border-slate-200 p-4">
+                                                <div className="mb-3 flex items-center justify-between">
+                                                    <span className="text-sm font-semibold text-slate-700">Avatar #{idx + 1}</span>
+                                                    <div className="flex items-center gap-1">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => moveItem('game_development_hero_avatars', idx, -1)}
+                                                            className="rounded p-1 text-slate-400 hover:bg-slate-100"
+                                                        >
+                                                            <GripVertical className="h-4 w-4" />
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeItem('game_development_hero_avatars', idx)}
+                                                            className="rounded p-1 text-red-500 hover:bg-red-50"
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <ImageUpload
+                                                    label="Avatar Image"
+                                                    preview={
+                                                        data.game_development_hero_avatar_files[idx]
+                                                            ? URL.createObjectURL(data.game_development_hero_avatar_files[idx]!)
+                                                            : avatar.image
+                                                    }
+                                                    onChange={(file) => setGameDevHeroAvatar(idx, file)}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => addItem('game_development_hero_avatars', { image: '' })}
+                                        className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                                    >
+                                        <Plus className="h-4 w-4" />
+                                        Add Avatar
+                                    </button>
                                 </Section>
                             )}
                         </>

@@ -71,6 +71,7 @@ class FrontpageController extends Controller
             'hero_avatars' => 'nullable|array',
             'mobile_apps_hero_avatars' => 'nullable|array',
             'digital_marketing_hero_avatars' => 'nullable|array',
+            'game_development_hero_avatars' => 'nullable|array',
             'home_hero' => 'nullable|array',
             'services_hero' => 'nullable|array',
             'web_development_hero' => 'nullable|array',
@@ -121,6 +122,17 @@ class FrontpageController extends Controller
             }
         }
         $validated['digital_marketing_hero_avatars'] = $dmAvatars;
+
+        // Handle game development hero avatar uploads
+        $gameAvatars = $request->input('game_development_hero_avatars', []);
+        $gameAvatarFiles = $request->file('game_development_hero_avatar_files') ?? [];
+        foreach ($gameAvatarFiles as $idx => $file) {
+            if ($file) {
+                $path = $file->store('frontpage/avatars', 'public');
+                $gameAvatars[$idx]['image'] = asset('uploads/' . $path);
+            }
+        }
+        $validated['game_development_hero_avatars'] = $gameAvatars;
 
         // Handle per-page hero image uploads
         $pageHeroKeys = [
