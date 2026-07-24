@@ -69,6 +69,16 @@ class FrontpageController extends Controller
             'bank_account_name' => 'nullable|string|max:255',
             'bank_account_number' => 'nullable|string|max:255',
             'hero_avatars' => 'nullable|array',
+            'home_hero' => 'nullable|array',
+            'services_hero' => 'nullable|array',
+            'web_development_hero' => 'nullable|array',
+            'mobile_apps_hero' => 'nullable|array',
+            'web_system_hero' => 'nullable|array',
+            'digital_marketing_hero' => 'nullable|array',
+            'game_development_hero' => 'nullable|array',
+            'it_equipment_hero' => 'nullable|array',
+            'work_hero' => 'nullable|array',
+            'about_hero' => 'nullable|array',
         ]);
 
         // Handle hero image upload
@@ -87,6 +97,30 @@ class FrontpageController extends Controller
             }
         }
         $validated['hero_avatars'] = $heroAvatars;
+
+        // Handle per-page hero image uploads
+        $pageHeroKeys = [
+            'home_hero',
+            'services_hero',
+            'web_development_hero',
+            'mobile_apps_hero',
+            'web_system_hero',
+            'digital_marketing_hero',
+            'game_development_hero',
+            'it_equipment_hero',
+            'work_hero',
+            'about_hero',
+        ];
+
+        foreach ($pageHeroKeys as $key) {
+            $hero = $request->input($key, []);
+            $fileKey = $key . '_image_file';
+            if ($request->hasFile($fileKey)) {
+                $path = $request->file($fileKey)->store('frontpage/heroes', 'public');
+                $hero['image'] = asset('uploads/' . $path);
+            }
+            $validated[$key] = $hero;
+        }
 
         // Handle service image uploads
         $services = $request->input('services', []);

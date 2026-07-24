@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight, Check, Code, Rocket, ShieldCheck } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
@@ -54,6 +54,9 @@ const promotions = [
 ];
 
 export default function Services() {
+    const { frontpage } = usePage().props as any;
+    const h = frontpage?.services_hero ?? {};
+
     return (
         <>
             <Head title="Services" />
@@ -68,12 +71,12 @@ export default function Services() {
                     <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
                         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">
                             <div className="max-w-xl">
-                                <span className="text-sm font-semibold uppercase tracking-wider text-blue-500">Our Services</span>
+                                <span className="text-sm font-semibold uppercase tracking-wider text-blue-500">{h.badge || 'Our Services'}</span>
                                 <h1 className="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-[3.5rem]">
-                                    Digital Solutions Built for <span className="text-blue-500">Growth</span>
+                                    {h.title || <>Digital Solutions Built for <span className="text-blue-500">Growth</span></>}
                                 </h1>
                                 <p className="mt-5 text-base leading-relaxed text-slate-300">
-                                    We help businesses of all sizes leverage technology to solve problems, engage customers, and accelerate growth.
+                                    {h.subtitle || 'We help businesses of all sizes leverage technology to solve problems, engage customers, and accelerate growth.'}
                                 </p>
 
                                 <div className="mt-10 grid grid-cols-3 gap-4">
@@ -104,7 +107,7 @@ export default function Services() {
                             <div className="relative flex items-center justify-center">
                                 <div className="relative w-full max-w-2xl">
                                     <img
-                                        src="/images/hero.png"
+                                        src={h.image || '/images/hero.png'}
                                         alt="Digital solutions illustration"
                                         className="relative z-10 w-full rounded-2xl shadow-2xl shadow-blue-900/20"
                                     />

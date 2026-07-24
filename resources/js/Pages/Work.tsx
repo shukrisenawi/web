@@ -38,6 +38,7 @@ interface Project {
 export default function Work() {
     const { frontpage } = usePage().props as any;
     const c = frontpage ?? {};
+    const h = frontpage?.work_hero ?? {};
     const projects: Project[] = (c.projects || []);
 
     const categories = ['All Projects', ...Array.from(new Set(projects.map((p: Project) => p.category).filter(Boolean))) as string[]];
@@ -61,13 +62,13 @@ export default function Work() {
                     <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
                             <div>
-                                <p className="text-sm font-semibold uppercase tracking-wider text-blue-500">Our Work</p>
+                                <p className="text-sm font-semibold uppercase tracking-wider text-blue-500">{h.badge || 'Our Work'}</p>
                                 <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-                                    Real Solutions. <br />
-                                    <span className="text-blue-500">Real Results.</span>
+                                    {h.title || <>Real Solutions. <br />
+                                    <span className="text-blue-500">Real Results.</span></>}
                                 </h1>
                                 <p className="mt-6 max-w-lg text-slate-300">
-                                    We take pride in building digital solutions that make a difference. Here are some of the projects we’ve built for our amazing clients.
+                                    {h.subtitle || 'We take pride in building digital solutions that make a difference. Here are some of the projects we’ve built for our amazing clients.'}
                                 </p>
 
                                 <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
@@ -87,7 +88,7 @@ export default function Work() {
                                         <Code2 className="h-full w-full text-white" />
                                     </div>
                                     <img
-                                        src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80"
+                                        src={h.image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80'}
                                         alt="Digital solutions preview"
                                         className="rounded-2xl border border-white/10 shadow-2xl shadow-blue-900/30"
                                     />

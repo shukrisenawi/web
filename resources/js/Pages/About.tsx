@@ -84,6 +84,7 @@ export default function About({
     const { props, currentProjects: sharedProjects } = usePage().props as any;
     void props;
     const currentProjects = sharedProjects || [];
+    const h = props?.frontpage?.about_hero ?? {};
 
     const team = about_team.length > 0 ? about_team : defaultTeam;
     const events = about_events.length > 0 ? about_events : defaultEvents;
@@ -101,14 +102,13 @@ export default function About({
                     <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
                             <div>
-                                <p className="text-sm font-semibold uppercase tracking-wider text-blue-500">About Us</p>
+                                <p className="text-sm font-semibold uppercase tracking-wider text-blue-500">{h.badge || 'About Us'}</p>
                                 <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-                                    Building Digital <br />
-                                    Solutions That <span className="text-blue-500">Matter</span>
+                                    {h.title || <>Building Digital <br />
+                                    Solutions That <span className="text-blue-500">Matter</span></>}
                                 </h1>
                                 <p className="mt-6 max-w-lg text-slate-300">
-                                    Kenju Tech was founded with a simple mission: to help businesses grow through technology.
-                                    We build modern websites, powerful applications, and digital experiences that drive real results.
+                                    {h.subtitle || 'Kenju Tech was founded with a simple mission: to help businesses grow through technology. We build modern websites, powerful applications, and digital experiences that drive real results.'}
                                 </p>
 
                                 <div className="mt-10 grid gap-6 sm:grid-cols-2">
@@ -128,7 +128,7 @@ export default function About({
                                 <div className="relative w-full max-w-xl">
                                     <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-blue-600/20 to-transparent"></div>
                                     <img
-                                        src="/images/hero.png"
+                                        src={h.image || '/images/hero.png'}
                                         alt="Kenju Tech digital solutions"
                                         className="relative w-full rounded-3xl object-cover shadow-2xl"
                                     />
@@ -270,7 +270,7 @@ export default function About({
                         </div>
 
                         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {currentProjects.map((project) => (
+                            {currentProjects.map((project: any) => (
                                 <div
                                     key={project.title}
                                     className="group overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"

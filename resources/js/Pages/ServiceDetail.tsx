@@ -207,6 +207,8 @@ export default function ServiceDetail({ slug }: ServiceDetailProps) {
 }
 
 function DigitalMarketingDetail({ service }: { service: any }) {
+    const { frontpage } = usePage().props as any;
+    const h = frontpage?.digital_marketing_hero ?? {};
     const growthItems = [
         {
             icon: Megaphone,
@@ -325,32 +327,41 @@ function DigitalMarketingDetail({ service }: { service: any }) {
                         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">
                             <div className="max-w-md">
                                 <span className="text-sm font-semibold uppercase tracking-wider text-blue-500">
-                                    Our Services
+                                    {h.badge || 'Our Services'}
                                 </span>
                                 <h1 className="mt-4 text-[2.85rem] font-bold leading-[1.05] sm:text-[3.45rem] lg:text-[3.6rem]">
-                                    Digital Marketing That Drives Results
+                                    {h.title || 'Digital Marketing That Drives Results'}
                                 </h1>
                                 <p className="mt-5 text-base leading-relaxed text-slate-300">
-                                    Data-driven strategies, creative campaigns
-                                    and performance optimization to grow your
-                                    brand, attract the right audience and
-                                    increase conversions.
+                                    {h.subtitle || 'Data-driven strategies, creative campaigns and performance optimization to grow your brand, attract the right audience and increase conversions.'}
                                 </p>
                                 <div className="mt-8 flex flex-wrap items-center gap-4">
                                     <Link
-                                        href="/request"
+                                        href={h.primary_link || '/request'}
                                         className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                                     >
-                                        Request Quotation
+                                        {h.primary_cta || 'Request Quotation'}
                                         <ArrowRight className="h-4 w-4" />
                                     </Link>
+                                    {h.secondary_cta && h.secondary_link && (
+                                        <Link
+                                            href={h.secondary_link}
+                                            className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                                        >
+                                            {h.secondary_cta}
+                                        </Link>
+                                    )}
                                 </div>
                                 <div className="mt-10 flex items-center gap-3">
                                     <div className="flex -space-x-3">
-                                        {[11, 12, 13].map((i) => (
+                                        {(h.trusted_avatars || [
+                                            { image: 'https://i.pravatar.cc/150?img=11' },
+                                            { image: 'https://i.pravatar.cc/150?img=12' },
+                                            { image: 'https://i.pravatar.cc/150?img=13' },
+                                        ]).map((avatar: any, idx: number) => (
                                             <img
-                                                key={i}
-                                                src={`https://i.pravatar.cc/150?img=${i}`}
+                                                key={`dm-avatar-${avatar.image ? avatar.image.slice(-12) : idx}`}
+                                                src={avatar.image || `https://i.pravatar.cc/150?img=${11 + idx}`}
                                                 alt="Client"
                                                 className="h-10 w-10 rounded-full border-2 border-[#050914] object-cover"
                                             />
@@ -358,10 +369,10 @@ function DigitalMarketingDetail({ service }: { service: any }) {
                                     </div>
                                     <div className="text-sm">
                                         <p className="font-semibold">
-                                            Trusted by 100+ clients
+                                            {h.trusted_text || 'Trusted by 100+ clients'}
                                         </p>
                                         <p className="text-slate-400">
-                                            from startups to enterprise
+                                            {h.trusted_subtext || 'from startups to enterprise'}
                                         </p>
                                     </div>
                                 </div>
@@ -762,6 +773,7 @@ function MarketingIllustration() {
 function WebSystemDetail({ service }: { service: any }) {
     const { frontpage } = usePage().props as any;
     const fp = frontpage ?? {};
+    const h = frontpage?.web_system_hero ?? {};
     const allProjects = fp.projects || [];
     const webProjects = allProjects
         .filter((p: any) => {
@@ -925,41 +937,48 @@ function WebSystemDetail({ service }: { service: any }) {
                             </Link>
                             <span>/</span>
                             <span className="text-white">
-                                Web System Development
+                                {h.title || 'Web System Development'}
                             </span>
                         </div>
 
                         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">
                             <div className="max-w-xl">
+                                {h.badge && (
+                                    <span className="mb-4 inline-block text-sm font-semibold uppercase tracking-wider text-blue-500">
+                                        {h.badge}
+                                    </span>
+                                )}
                                 <h1 className="text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-[3.5rem]">
-                                    Web System Development
+                                    {h.title || 'Web System Development'}
                                 </h1>
                                 <p className="mt-4 text-2xl font-light leading-snug text-slate-300">
-                                    Custom Web Systems That Power{" "}
-                                    <span className="font-semibold text-blue-500">
-                                        Your Business
-                                    </span>
+                                    {h.subtitle || (
+                                        <>
+                                            Custom Web Systems That Power{" "}
+                                            <span className="font-semibold text-blue-500">
+                                                Your Business
+                                            </span>
+                                        </>
+                                    )}
                                 </p>
                                 <p className="mt-5 text-base leading-relaxed text-slate-400">
-                                    We build secure, scalable, and
-                                    high-performance web systems tailored to
-                                    your business processes and needs.
+                                    {h.description || 'We build secure, scalable, and high-performance web systems tailored to your business processes and needs.'}
                                 </p>
 
                                 <div className="mt-8 grid grid-cols-3 gap-4">
-                                    {highlights.map((h) => (
+                                    {highlights.map((item) => (
                                         <div
-                                            key={h.title}
+                                            key={item.title}
                                             className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur"
                                         >
                                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400">
-                                                <h.icon className="h-5 w-5" />
+                                                <item.icon className="h-5 w-5" />
                                             </div>
                                             <h3 className="mt-3 text-sm font-semibold">
-                                                {h.title}
+                                                {item.title}
                                             </h3>
                                             <p className="mt-1 text-xs text-slate-400">
-                                                {h.desc}
+                                                {item.desc}
                                             </p>
                                         </div>
                                     ))}
@@ -967,7 +986,15 @@ function WebSystemDetail({ service }: { service: any }) {
                             </div>
 
                             <div className="relative">
-                                <WebSystemHeroIllustration />
+                                {h.image ? (
+                                    <img
+                                        src={h.image}
+                                        alt="Web system illustration"
+                                        className="w-full rounded-2xl object-cover"
+                                    />
+                                ) : (
+                                    <WebSystemHeroIllustration />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -1461,6 +1488,7 @@ function WebSystemHeroIllustration() {
 function MobileAppsDetail({ service }: { service: any }) {
     const { frontpage } = usePage().props as any;
     const fp = frontpage ?? {};
+    const h = frontpage?.mobile_apps_hero ?? {};
     const allProjects = fp.projects || [];
     const mobileProjects = allProjects
         .filter((p: any) => {
@@ -1549,30 +1577,41 @@ function MobileAppsDetail({ service }: { service: any }) {
                         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">
                             <div className="max-w-md">
                                 <span className="text-sm font-semibold uppercase tracking-wider text-blue-500">
-                                    Our Services
+                                    {h.badge || 'Our Services'}
                                 </span>
                                 <h1 className="mt-4 text-[2.85rem] font-bold leading-[1.05] sm:text-[3.45rem] lg:text-[3.6rem]">
-                                    Mobile Apps Development
+                                    {h.title || 'Mobile Apps Development'}
                                 </h1>
                                 <p className="mt-5 text-base leading-relaxed text-slate-300">
-                                    We build high-performance mobile apps that
-                                    engage users and drive business growth.
+                                    {h.subtitle || 'We build high-performance mobile apps that engage users and drive business growth.'}
                                 </p>
                                 <div className="mt-8 flex flex-wrap items-center gap-4">
                                     <Link
-                                        href="/request"
+                                        href={h.primary_link || '/request'}
                                         className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                                     >
-                                        Request Quotation
+                                        {h.primary_cta || 'Request Quotation'}
                                         <ArrowRight className="h-4 w-4" />
                                     </Link>
+                                    {h.secondary_cta && h.secondary_link && (
+                                        <Link
+                                            href={h.secondary_link}
+                                            className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                                        >
+                                            {h.secondary_cta}
+                                        </Link>
+                                    )}
                                 </div>
                                 <div className="mt-10 flex items-center gap-3">
                                     <div className="flex -space-x-3">
-                                        {[11, 12, 13].map((i) => (
+                                        {(h.trusted_avatars || [
+                                            { image: 'https://i.pravatar.cc/150?img=11' },
+                                            { image: 'https://i.pravatar.cc/150?img=12' },
+                                            { image: 'https://i.pravatar.cc/150?img=13' },
+                                        ]).map((avatar: any, idx: number) => (
                                             <img
-                                                key={i}
-                                                src={`https://i.pravatar.cc/150?img=${i}`}
+                                                key={`ma-avatar-${avatar.image ? avatar.image.slice(-12) : idx}`}
+                                                src={avatar.image || `https://i.pravatar.cc/150?img=${11 + idx}`}
                                                 alt="Client"
                                                 className="h-10 w-10 rounded-full border-2 border-[#050914] object-cover"
                                             />
@@ -1580,17 +1619,25 @@ function MobileAppsDetail({ service }: { service: any }) {
                                     </div>
                                     <div className="text-sm">
                                         <p className="font-semibold">
-                                            Trusted by 100+ clients
+                                            {h.trusted_text || 'Trusted by 100+ clients'}
                                         </p>
                                         <p className="text-slate-400">
-                                            from startups to enterprise
+                                            {h.trusted_subtext || 'from startups to enterprise'}
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="relative">
-                                <MobileAppsHeroIllustration />
+                                {h.image ? (
+                                    <img
+                                        src={h.image}
+                                        alt="Mobile apps illustration"
+                                        className="w-full rounded-2xl object-cover"
+                                    />
+                                ) : (
+                                    <MobileAppsHeroIllustration />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -1934,6 +1981,8 @@ function MobileAppsHeroIllustration() {
 }
 
 function WebDevelopmentDetail({ service }: { service: any }) {
+    const { frontpage } = usePage().props as any;
+    const h = frontpage?.web_development_hero ?? {};
     const heroHighlights = [
         {
             icon: Palette,
@@ -2109,41 +2158,43 @@ function WebDevelopmentDetail({ service }: { service: any }) {
                             </Link>
                             <span>/</span>
                             <span className="text-white">
-                                Website Development
+                                {h.title || 'Website Development'}
                             </span>
                         </div>
 
                         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">
                             <div className="max-w-xl">
                                 <span className="text-sm font-semibold uppercase tracking-wider text-blue-500">
-                                    Our Services
+                                    {h.badge || 'Our Services'}
                                 </span>
                                 <h1 className="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-[3.5rem]">
-                                    Website Development That Drives{" "}
-                                    <span className="text-blue-500">
-                                        Results
-                                    </span>
+                                    {h.title || (
+                                        <>
+                                            Website Development That Drives{" "}
+                                            <span className="text-blue-500">
+                                                Results
+                                            </span>
+                                        </>
+                                    )}
                                 </h1>
                                 <p className="mt-5 text-base leading-relaxed text-slate-300">
-                                    We build modern, fast, and secure websites
-                                    that not only look great but also help your
-                                    business grow online.
+                                    {h.subtitle || 'We build modern, fast, and secure websites that not only look great but also help your business grow online.'}
                                 </p>
 
                                 <div className="mt-8 grid grid-cols-3 gap-4">
-                                    {heroHighlights.map((h) => (
+                                    {heroHighlights.map((item) => (
                                         <div
-                                            key={h.title}
+                                            key={item.title}
                                             className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur"
                                         >
                                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400">
-                                                <h.icon className="h-5 w-5" />
+                                                <item.icon className="h-5 w-5" />
                                             </div>
                                             <h3 className="mt-3 text-sm font-semibold">
-                                                {h.title}
+                                                {item.title}
                                             </h3>
                                             <p className="mt-1 text-xs text-slate-400">
-                                                {h.desc}
+                                                {item.desc}
                                             </p>
                                         </div>
                                     ))}
@@ -2151,7 +2202,15 @@ function WebDevelopmentDetail({ service }: { service: any }) {
                             </div>
 
                             <div className="relative">
-                                <WebDevelopmentHeroIllustration />
+                                {h.image ? (
+                                    <img
+                                        src={h.image}
+                                        alt="Website development illustration"
+                                        className="w-full rounded-2xl object-cover"
+                                    />
+                                ) : (
+                                    <WebDevelopmentHeroIllustration />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -2626,6 +2685,7 @@ function WebDevelopmentHeroIllustration() {
 function GameDevelopmentDetail({ service }: { service: any }) {
     const { frontpage } = usePage().props as any;
     const fp = frontpage ?? {};
+    const h = frontpage?.game_development_hero ?? {};
     const allProjects = fp.projects || [];
     const gamingProjects = allProjects
         .filter((p: any) => {
@@ -2745,39 +2805,49 @@ function GameDevelopmentDetail({ service }: { service: any }) {
                                 Services
                             </Link>
                             <span>/</span>
-                            <span className="text-white">Game Development</span>
+                            <span className="text-white">{h.title || 'Game Development'}</span>
                         </div>
 
                         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">
                             <div className="max-w-xl">
                                 <span className="text-sm font-semibold uppercase tracking-wider text-blue-500">
-                                    Our Services
+                                    {h.badge || 'Our Services'}
                                 </span>
                                 <h1 className="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-[3.5rem]">
-                                    Game Development Services
+                                    {h.title || 'Game Development Services'}
                                 </h1>
                                 <p className="mt-5 text-base leading-relaxed text-slate-300">
-                                    We create engaging, high-quality games that
-                                    captivate players and deliver unforgettable
-                                    experiences across all platforms.
+                                    {h.subtitle || 'We create engaging, high-quality games that captivate players and deliver unforgettable experiences across all platforms.'}
                                 </p>
 
                                 <div className="mt-8 flex flex-wrap items-center gap-4">
                                     <Link
-                                        href="/request"
+                                        href={h.primary_link || '/request'}
                                         className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                                     >
-                                        Request Quotation
+                                        {h.primary_cta || 'Request Quotation'}
                                         <ArrowRight className="h-4 w-4" />
                                     </Link>
+                                    {h.secondary_cta && h.secondary_link && (
+                                        <Link
+                                            href={h.secondary_link}
+                                            className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                                        >
+                                            {h.secondary_cta}
+                                        </Link>
+                                    )}
                                 </div>
 
                                 <div className="mt-10 flex items-center gap-3">
                                     <div className="flex -space-x-3">
-                                        {[11, 12, 13].map((i) => (
+                                        {(h.trusted_avatars || [
+                                            { image: 'https://i.pravatar.cc/150?img=11' },
+                                            { image: 'https://i.pravatar.cc/150?img=12' },
+                                            { image: 'https://i.pravatar.cc/150?img=13' },
+                                        ]).map((avatar: any, idx: number) => (
                                             <img
-                                                key={i}
-                                                src={`https://i.pravatar.cc/150?img=${i}`}
+                                                key={`gd-avatar-${avatar.image ? avatar.image.slice(-12) : idx}`}
+                                                src={avatar.image || `https://i.pravatar.cc/150?img=${11 + idx}`}
                                                 alt="Client"
                                                 className="h-10 w-10 rounded-full border-2 border-[#050914] object-cover"
                                             />
@@ -2785,10 +2855,10 @@ function GameDevelopmentDetail({ service }: { service: any }) {
                                     </div>
                                     <div className="text-sm">
                                         <p className="font-semibold">
-                                            Trusted by 100+ clients
+                                            {h.trusted_text || 'Trusted by 100+ clients'}
                                         </p>
                                         <p className="text-slate-400">
-                                            from startups to enterprise
+                                            {h.trusted_subtext || 'from startups to enterprise'}
                                         </p>
                                     </div>
                                 </div>
@@ -2796,7 +2866,7 @@ function GameDevelopmentDetail({ service }: { service: any }) {
 
                             <div className="relative">
                                 <img
-                                    src="/images/game-hero.png"
+                                    src={h.image || '/images/game-hero.png'}
                                     alt="Game Development by Kenju Tech"
                                     className="w-full rounded-2xl object-cover"
                                 />
@@ -3265,6 +3335,8 @@ function GameDevelopmentHeroIllustration() {
 }
 
 function ITEquipmentDetail({ service }: { service: any }) {
+    const { frontpage } = usePage().props as any;
+    const h = frontpage?.it_equipment_hero ?? {};
     const staticProducts = [
         {
             name: "Dell Latitude 5440",
@@ -3431,41 +3503,43 @@ function ITEquipmentDetail({ service }: { service: any }) {
                             </Link>
                             <span>/</span>
                             <span className="text-white">
-                                IT Equipment Supply & Setup
+                                {h.title || 'IT Equipment Supply & Setup'}
                             </span>
                         </div>
 
                         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.25fr]">
                             <div className="max-w-xl">
                                 <span className="text-sm font-semibold uppercase tracking-wider text-blue-500">
-                                    Our Services
+                                    {h.badge || 'Our Services'}
                                 </span>
                                 <h1 className="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-[3.5rem]">
-                                    IT Equipment Supply & Setup Built for{" "}
-                                    <span className="text-blue-500">
-                                        Productivity
-                                    </span>
+                                    {h.title || (
+                                        <>
+                                            IT Equipment Supply & Setup Built for{" "}
+                                            <span className="text-blue-500">
+                                                Productivity
+                                            </span>
+                                        </>
+                                    )}
                                 </h1>
                                 <p className="mt-5 text-base leading-relaxed text-slate-300">
-                                    We supply high-quality IT equipment and
-                                    provide professional setup and configuration
-                                    to get your business running smoothly.
+                                    {h.subtitle || 'We supply high-quality IT equipment and provide professional setup and configuration to get your business running smoothly.'}
                                 </p>
 
                                 <div className="mt-8 grid grid-cols-3 gap-4">
-                                    {heroHighlights.map((h) => (
+                                    {heroHighlights.map((item) => (
                                         <div
-                                            key={h.title}
+                                            key={item.title}
                                             className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur"
                                         >
                                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400">
-                                                <h.icon className="h-5 w-5" />
+                                                <item.icon className="h-5 w-5" />
                                             </div>
                                             <h3 className="mt-3 text-sm font-semibold">
-                                                {h.title}
+                                                {item.title}
                                             </h3>
                                             <p className="mt-1 text-xs text-slate-400">
-                                                {h.desc}
+                                                {item.desc}
                                             </p>
                                         </div>
                                     ))}
@@ -3473,7 +3547,15 @@ function ITEquipmentDetail({ service }: { service: any }) {
                             </div>
 
                             <div className="relative">
-                                <ITEquipmentHeroIllustration />
+                                {h.image ? (
+                                    <img
+                                        src={h.image}
+                                        alt="IT equipment illustration"
+                                        className="w-full rounded-2xl object-cover"
+                                    />
+                                ) : (
+                                    <ITEquipmentHeroIllustration />
+                                )}
                             </div>
                         </div>
                     </div>
