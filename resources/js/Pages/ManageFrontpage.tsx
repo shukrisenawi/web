@@ -628,12 +628,12 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                             placeholder="Value"
                                             className="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                                         />
-                                        <input
-                                            type="text"
+                                        <textarea
                                             value={stat.label || ''}
                                             onChange={(e) => updateArray('stats', idx, 'label', e.target.value)}
-                                            placeholder="Label"
-                                            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                            placeholder="Label (guna Enter untuk baris baru)"
+                                            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none resize-none"
+                                            rows={2}
                                         />
                                         <button
                                             type="button"
