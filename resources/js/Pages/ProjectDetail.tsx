@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Calendar, User } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { Cta } from '@/Components/Cta';
@@ -52,25 +52,7 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
                             <ArrowLeft className="h-4 w-4" />
                             Back to Work
                         </Link>
-                        <span className="mt-6 block text-sm font-semibold uppercase tracking-wider text-blue-500">{project.category}</span>
-                        <h1 className="mt-3 text-3xl font-bold sm:text-4xl lg:text-5xl">{project.title}</h1>
-                        <p className="mt-4 text-lg text-slate-300">{extra?.description || project.description}</p>
-                        {(extra?.client || project.client || extra?.year || project.year) && (
-                            <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-400">
-                                {(extra?.client || project.client) && (
-                                    <span className="flex items-center gap-1">
-                                        <User className="h-4 w-4" />
-                                        {extra?.client || project.client}
-                                    </span>
-                                )}
-                                {(extra?.year || project.year) && (
-                                    <span className="flex items-center gap-1">
-                                        <Calendar className="h-4 w-4" />
-                                        {extra?.year || project.year}
-                                    </span>
-                                )}
-                            </div>
-                        )}
+                        <h1 className="mt-6 text-3xl font-bold sm:text-4xl lg:text-5xl">{project.title}</h1>
                     </div>
                 </div>
 
