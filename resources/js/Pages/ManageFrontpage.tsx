@@ -11,6 +11,7 @@ import {
     AlertCircle,
     CheckCircle2,
     Search,
+    Pencil,
 } from 'lucide-react';
 
 interface ManageFrontpageProps {
@@ -174,6 +175,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
     } as any);
 
     const [activeTab, setActiveTab] = useState<'home' | 'services' | 'projects' | 'clients' | 'stats' | 'cta' | 'footer' | 'payment' | 'about' | 'contact'>('home');
+    const [editingProject, setEditingProject] = useState<number | null>(null);
 
     const updateArray = (key: string, index: number, field: string, value: any) => {
         const list = [...(data[key] || [])];
@@ -480,81 +482,116 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                 </Field>
                             </div>
 
-                            <div className="space-y-4">
-                                {(data.projects || []).map((project: any, idx: number) => (
-                                    <div key={idx} className="rounded-lg border border-slate-200 p-4">
-                                        <div className="mb-3 flex items-center justify-between">
-                                            <span className="text-sm font-semibold text-slate-700">Project #{idx + 1}</span>
-                                            <div className="flex items-center gap-1">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => moveItem('projects', idx, -1)}
-                                                    className="rounded p-1 text-slate-400 hover:bg-slate-100"
-                                                >
-                                                    <GripVertical className="h-4 w-4" />
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeItem('projects', idx)}
-                                                    className="rounded p-1 text-red-500 hover:bg-red-50"
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </button>
+                            <div className="space-y-3">
+                                {(data.projects || []).map((project: any, idx: number) => {
+                                    const isOpen = editingProject === idx;
+                                    return (
+                                        <div key={idx} className="rounded-lg border border-slate-200">
+                                            <div className="flex items-center justify-between gap-3 px-4 py-3">
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-sm font-semibold text-slate-700">#{idx + 1}</span>
+                                                        <span className="truncate text-sm font-medium text-slate-900">
+                                                            {project.title || 'Untitled Project'}
+                                                        </span>
+                                                        <span className="hidden rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 sm:inline-block">
+                                                            {project.category || 'No category'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => moveItem('projects', idx, -1)}
+                                                        className="rounded p-1 text-slate-400 hover:bg-slate-100"
+                                                        title="Move"
+                                                    >
+                                                        <GripVertical className="h-4 w-4" />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setEditingProject(isOpen ? null : idx)}
+                                                        className={`inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium ${isOpen ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
+                                                    >
+                                                        <Pencil className="h-3 w-3" />
+                                                        {isOpen ? 'Close' : 'Edit'}
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            removeItem('projects', idx);
+                                                            if (editingProject === idx) setEditingProject(null);
+                                                        }}
+                                                        className="rounded p-1 text-red-500 hover:bg-red-50"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </button>
+                                                </div>
                                             </div>
+
+                                            {isOpen && (
+                                                <div className="border-t border-slate-100 p-4">
+                                                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                                        <Field label="Title">
+                                                            <input
+                                                                type="text"
+                                                                value={project.title || ''}
+                                                                onChange={(e) => updateArray('projects', idx, 'title', e.target.value)}
+                                                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                            />
+                                                        </Field>
+                                                        <Field label="Category">
+                                                            <select
+                                                                value={project.category || ''}
+                                                                onChange={(e) => updateArray('projects', idx, 'category', e.target.value)}
+                                                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                            >
+                                                                <option value="">Select category</option>
+                                                                <option value="Web Development">Web Development</option>
+                                                                <option value="Mobile App">Mobile App</option>
+                                                                <option value="Web System">Web System</option>
+                                                                <option value="Game Development">Game Development</option>
+                                                                <option value="Digital Marketing">Digital Marketing</option>
+                                                            </select>
+                                                        </Field>
+                                                        <Field label="Description">
+                                                            <textarea
+                                                                value={project.description || ''}
+                                                                onChange={(e) => updateArray('projects', idx, 'description', e.target.value)}
+                                                                rows={3}
+                                                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                            />
+                                                        </Field>
+                                                        <ImageUpload
+                                                            label="Project Image"
+                                                            preview={data.project_image_files[idx] ? URL.createObjectURL(data.project_image_files[idx]!) : project.image}
+                                                            onChange={(file) => setProjectImage(idx, file)}
+                                                        />
+                                                    </div>
+                                                    <div className="mt-4">
+                                                        <Field label="Full Description">
+                                                            <WysiwygEditor
+                                                                value={project.full_description || ''}
+                                                                onChange={(value) => updateArray('projects', idx, 'full_description', value)}
+                                                                placeholder="Enter detailed project description..."
+                                                            />
+                                                        </Field>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
-                                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                                            <Field label="Title">
-                                                <input
-                                                    type="text"
-                                                    value={project.title || ''}
-                                                    onChange={(e) => updateArray('projects', idx, 'title', e.target.value)}
-                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                                />
-                                            </Field>
-                                            <Field label="Category">
-                                                <select
-                                                    value={project.category || ''}
-                                                    onChange={(e) => updateArray('projects', idx, 'category', e.target.value)}
-                                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                                >
-                                                    <option value="">Select category</option>
-                                                    <option value="Web Development">Web Development</option>
-                                                    <option value="Mobile App">Mobile App</option>
-                                                    <option value="Web System">Web System</option>
-                                                    <option value="Game Development">Game Development</option>
-                                                    <option value="Digital Marketing">Digital Marketing</option>
-                                                </select>
-                                            </Field>
-                                            <Field label="Description">
-                                                <textarea
-                                                    value={project.description || ''}
-                                                    onChange={(e) => updateArray('projects', idx, 'description', e.target.value)}
-                                                    rows={3}
-                                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                                />
-                                            </Field>
-                                            <ImageUpload
-                                                label="Project Image"
-                                                preview={data.project_image_files[idx] ? URL.createObjectURL(data.project_image_files[idx]!) : project.image}
-                                                onChange={(file) => setProjectImage(idx, file)}
-                                            />
-                                        </div>
-                                        <div className="mt-4">
-                                            <Field label="Full Description">
-                                                <WysiwygEditor
-                                                    value={project.full_description || ''}
-                                                    onChange={(value) => updateArray('projects', idx, 'full_description', value)}
-                                                    placeholder="Enter detailed project description..."
-                                                />
-                                            </Field>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
 
                             <button
                                 type="button"
-                                onClick={() => addItem('projects', { title: '', category: '', description: '', full_description: '', image: '' })}
+                                onClick={() => {
+                                    const nextIndex = (data.projects || []).length;
+                                    addItem('projects', { title: '', category: '', description: '', full_description: '', image: '' });
+                                    setEditingProject(nextIndex);
+                                }}
                                 className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                             >
                                 <Plus className="h-4 w-4" />
