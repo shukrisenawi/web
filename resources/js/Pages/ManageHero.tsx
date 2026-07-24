@@ -301,6 +301,7 @@ export default function ManageHero({ content }: ManageHeroProps) {
         ...content,
         hero_image_file: null as File | null,
         hero_avatar_files: {} as Record<number, File | null>,
+        mobile_apps_hero_avatar_files: {} as Record<number, File | null>,
         ...Object.fromEntries(pageHeroTabs.map((t) => [`${t.key}_image_file`, null as File | null])),
     } as any);
 
@@ -327,6 +328,11 @@ export default function ManageHero({ content }: ManageHeroProps) {
             delete files[index];
             setData('hero_avatar_files', files);
         }
+        if (key === 'mobile_apps_hero_avatars') {
+            const files = { ...data.mobile_apps_hero_avatar_files };
+            delete files[index];
+            setData('mobile_apps_hero_avatar_files', files);
+        }
     };
 
     const moveItem = (key: string, index: number, direction: number) => {
@@ -341,6 +347,10 @@ export default function ManageHero({ content }: ManageHeroProps) {
         setData('hero_avatar_files', { ...data.hero_avatar_files, [idx]: file });
     };
 
+    const setMobileAppsHeroAvatar = (idx: number, file: File | null) => {
+        setData('mobile_apps_hero_avatar_files', { ...data.mobile_apps_hero_avatar_files, [idx]: file });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post('/manage-hero', {
@@ -348,12 +358,14 @@ export default function ManageHero({ content }: ManageHeroProps) {
             onSuccess: (page: any) => {
                 reset('hero_image_file');
                 setData('hero_avatar_files', {});
+                setData('mobile_apps_hero_avatar_files', {});
                 pageHeroTabs.forEach((t) => {
                     setData(`${t.key}_image_file`, null);
                 });
                 const c = page.props.content as Record<string, any> | undefined;
                 if (c) {
                     if (c.hero_avatars) setData('hero_avatars', c.hero_avatars);
+                    if (c.mobile_apps_hero_avatars) setData('mobile_apps_hero_avatars', c.mobile_apps_hero_avatars);
                     pageHeroTabs.forEach((t) => {
                         if (c[t.key]) setData(t.key, c[t.key]);
                     });
@@ -506,21 +518,21 @@ export default function ManageHero({ content }: ManageHeroProps) {
                                 </p>
 
                                 <div className="space-y-4">
-                                    {(data.hero_avatars || []).map((avatar: any, idx: number) => (
+                                    {(data.mobile_apps_hero_avatars || []).map((avatar: any, idx: number) => (
                                         <div key={`ma-avatar-${avatar.image ? avatar.image.slice(-12) : idx}`} className="rounded-lg border border-slate-200 p-4">
                                             <div className="mb-3 flex items-center justify-between">
                                                 <span className="text-sm font-semibold text-slate-700">Avatar #{idx + 1}</span>
                                                 <div className="flex items-center gap-1">
                                                     <button
                                                         type="button"
-                                                        onClick={() => moveItem('hero_avatars', idx, -1)}
+                                                        onClick={() => moveItem('mobile_apps_hero_avatars', idx, -1)}
                                                         className="rounded p-1 text-slate-400 hover:bg-slate-100"
                                                     >
                                                         <GripVertical className="h-4 w-4" />
                                                     </button>
                                                     <button
                                                         type="button"
-                                                        onClick={() => removeItem('hero_avatars', idx)}
+                                                        onClick={() => removeItem('mobile_apps_hero_avatars', idx)}
                                                         className="rounded p-1 text-red-500 hover:bg-red-50"
                                                     >
                                                         <Trash2 className="h-4 w-4" />
@@ -530,11 +542,11 @@ export default function ManageHero({ content }: ManageHeroProps) {
                                             <ImageUpload
                                                 label="Avatar Image"
                                                 preview={
-                                                    data.hero_avatar_files[idx]
-                                                        ? URL.createObjectURL(data.hero_avatar_files[idx]!)
+                                                    data.mobile_apps_hero_avatar_files[idx]
+                                                        ? URL.createObjectURL(data.mobile_apps_hero_avatar_files[idx]!)
                                                         : avatar.image
                                                 }
-                                                onChange={(file) => setHeroAvatar(idx, file)}
+                                                onChange={(file) => setMobileAppsHeroAvatar(idx, file)}
                                             />
                                         </div>
                                     ))}
@@ -542,7 +554,7 @@ export default function ManageHero({ content }: ManageHeroProps) {
 
                                 <button
                                     type="button"
-                                    onClick={() => addItem('hero_avatars', { image: '' })}
+                                    onClick={() => addItem('mobile_apps_hero_avatars', { image: '' })}
                                     className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                                 >
                                     <Plus className="h-4 w-4" />

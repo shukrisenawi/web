@@ -69,6 +69,7 @@ class FrontpageController extends Controller
             'bank_account_name' => 'nullable|string|max:255',
             'bank_account_number' => 'nullable|string|max:255',
             'hero_avatars' => 'nullable|array',
+            'mobile_apps_hero_avatars' => 'nullable|array',
             'home_hero' => 'nullable|array',
             'services_hero' => 'nullable|array',
             'web_development_hero' => 'nullable|array',
@@ -97,6 +98,17 @@ class FrontpageController extends Controller
             }
         }
         $validated['hero_avatars'] = $heroAvatars;
+
+        // Handle mobile apps hero avatar uploads
+        $mobileAppsAvatars = $request->input('mobile_apps_hero_avatars', []);
+        $mobileAppsAvatarFiles = $request->file('mobile_apps_hero_avatar_files') ?? [];
+        foreach ($mobileAppsAvatarFiles as $idx => $file) {
+            if ($file) {
+                $path = $file->store('frontpage/avatars', 'public');
+                $mobileAppsAvatars[$idx]['image'] = asset('uploads/' . $path);
+            }
+        }
+        $validated['mobile_apps_hero_avatars'] = $mobileAppsAvatars;
 
         // Handle per-page hero image uploads
         $pageHeroKeys = [

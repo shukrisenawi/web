@@ -26,6 +26,7 @@ class FrontpageContent extends Model
             'about_events' => 'array',
             'payment_logo' => 'string',
             'hero_avatars' => 'array',
+            'mobile_apps_hero_avatars' => 'array',
             'home_hero' => 'array',
             'services_hero' => 'array',
             'web_development_hero' => 'array',
@@ -102,6 +103,11 @@ class FrontpageContent extends Model
                 'secondary_link' => '/work',
                 'trusted_text' => 'Trusted by 100+ clients',
                 'trusted_subtext' => 'from startups to enterprise',
+            ],
+            'mobile_apps_hero_avatars' => [
+                ['image' => 'https://i.pravatar.cc/150?img=11'],
+                ['image' => 'https://i.pravatar.cc/150?img=12'],
+                ['image' => 'https://i.pravatar.cc/150?img=13'],
             ],
             'web_system_hero' => [
                 'badge' => 'Web System',
