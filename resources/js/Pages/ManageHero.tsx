@@ -11,6 +11,14 @@ import {
     CheckCircle2,
 } from 'lucide-react';
 
+const heroCardIcons = [
+    'Code', 'Shield', 'Zap', 'Palette', 'Rocket', 'ShieldCheck',
+    'Gamepad2', 'Headphones', 'Settings', 'Megaphone', 'Users',
+    'TrendingUp', 'Filter', 'DollarSign', 'Globe', 'Smartphone',
+    'Code2', 'BarChart', 'Layers', 'Monitor', 'Printer', 'Eye',
+    'Target', 'Star', 'Heart', 'Award',
+];
+
 const vmIcons = [
     'Code2', 'Target', 'Globe', 'Smartphone', 'Palette', 'TrendingUp',
     'Gamepad2', 'Shield', 'ShieldCheck', 'Users', 'Rocket', 'Code',
@@ -248,16 +256,20 @@ function CardsEditor({
                         </div>
                         <div className="grid gap-4 sm:grid-cols-2">
                             <Field label="Icon">
-                                <input
-                                    type="text"
+                                <select
                                     value={card.icon || ''}
                                     onChange={(e) => {
                                         const newCards = [...cards];
                                         newCards[idx] = { ...newCards[idx], icon: e.target.value };
                                         setCards(newCards);
                                     }}
-                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                />
+                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                >
+                                    <option value="">Icon</option>
+                                    {heroCardIcons.map((ic) => (
+                                        <option key={ic} value={ic}>{ic}</option>
+                                    ))}
+                                </select>
                             </Field>
                             <Field label="Title">
                                 <input
