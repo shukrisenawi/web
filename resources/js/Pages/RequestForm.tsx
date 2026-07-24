@@ -85,6 +85,17 @@ function formatYyyyMmDd(value: string): string {
     return `${y}-${m}-${d}`;
 }
 
+function formatTimeFromDate(date: Date | null): string {
+    if (!date) return '';
+    let hour = date.getHours();
+    const minute = date.getMinutes();
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12;
+    hour = hour || 12;
+    const minuteStr = String(minute).padStart(2, '0');
+    return `${hour}:${minuteStr} ${ampm}`;
+}
+
 export default function RequestForm() {
     const { data, setData, post, processing, errors, setError, clearErrors } = useForm<{
         company_name: string;
@@ -112,6 +123,7 @@ export default function RequestForm() {
 
     const [appointmentDateDisplay, setAppointmentDateDisplay] = useState('');
     const [appointmentDate, setAppointmentDate] = useState<Date | null>(null);
+    const [appointmentTime, setAppointmentTime] = useState<Date | null>(null);
 
     const validate = (): boolean => {
         clearErrors();
@@ -345,21 +357,27 @@ export default function RequestForm() {
                                     <div className="relative">
                                         <label htmlFor="appointment_time" className={labelClass}>Time <span className="text-red-500">*</span></label>
                                         <div className="relative">
-                                            <input
+                                            <DatePicker
                                                 id="appointment_time"
-                                                type="text"
-                                                value={data.appointment_time}
-                                                onChange={(e) => setData('appointment_time', e.target.value)}
-                                                onBlur={() => {
-                                                    const formatted = formatTimeValue(data.appointment_time);
-                                                    if (validateTimeFormat(formatted)) {
-                                                        setData('appointment_time', formatted);
-                                                    }
+                                                selected={appointmentTime}
+                                                onChange={(date: Date | null) => {
+                                                    setAppointmentTime(date);
+                                                    setData('appointment_time', formatTimeFromDate(date));
                                                 }}
+                                                showTimeSelect
+                                                showTimeSelectOnly
+                                                timeFormat="h:mm aa"
+                                                timeIntervals={15}
+                                                dateFormat="h:mm aa"
+                                                placeholderText="2:30 PM"
                                                 className={`${inputClass} !pl-9`}
-                                                placeholder="2:30 PM"
+                                                wrapperClassName="w-full"
+                                                showIcon
+                                                icon={
+                                                    <Clock className="h-4 w-4 text-slate-400" />
+                                                }
+                                                popperPlacement="bottom-start"
                                             />
-                                            <Clock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                         </div>
                                         {errors.appointment_time && <p className="mt-1 text-xs text-red-600">{errors.appointment_time}</p>}
                                     </div>
