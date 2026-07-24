@@ -1,5 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { CheckCircle2, Calendar, Clock } from 'lucide-react';
+import { CheckCircle2, Calendar, Clock, MapPin, MonitorPlay, Check } from 'lucide-react';
 import { useState } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -264,18 +264,62 @@ export default function RequestForm() {
                                 <p className="mb-4 text-sm font-semibold text-slate-800">Make an Appointment</p>
                                 <div className="grid gap-5 sm:grid-cols-2">
                                     <div className="sm:col-span-2">
-                                        <label htmlFor="appointment_type" className={labelClass}>Appointment Type <span className="text-red-500">*</span></label>
-                                        <select
-                                            id="appointment_type"
-                                            value={data.appointment_type}
-                                            onChange={(e) => setData('appointment_type', e.target.value)}
-                                            className={inputClass}
-                                        >
-                                            <option value="">Select appointment type…</option>
-                                            <option value="Physical">Physical</option>
-                                            <option value="Online">Online</option>
-                                        </select>
-                                        {errors.appointment_type && <p className="mt-1 text-xs text-red-600">{errors.appointment_type}</p>}
+                                        <div className={labelClass}>Appointment Type <span className="text-red-500">*</span></div>
+                                        <div className="mt-2 grid gap-4 sm:grid-cols-2">
+                                            {[
+                                                {
+                                                    value: 'Physical',
+                                                    label: 'Physical',
+                                                    description: 'Meet us in person at our office.',
+                                                    icon: MapPin,
+                                                },
+                                                {
+                                                    value: 'Online',
+                                                    label: 'Online',
+                                                    description: 'Join via video call from anywhere.',
+                                                    icon: MonitorPlay,
+                                                },
+                                            ].map((option) => {
+                                                const Icon = option.icon;
+                                                const selected = data.appointment_type === option.value;
+                                                return (
+                                                    <label
+                                                        key={option.value}
+                                                        className={`relative flex cursor-pointer items-start gap-4 rounded-xl border bg-white p-4 transition-all ${
+                                                            selected
+                                                                ? 'border-blue-600 ring-1 ring-blue-600'
+                                                                : 'border-slate-200 hover:border-slate-300'
+                                                        }`}
+                                                    >
+                                                        <input
+                                                            type="radio"
+                                                            name="appointment_type"
+                                                            value={option.value}
+                                                            checked={selected}
+                                                            onChange={() => setData('appointment_type', option.value)}
+                                                            className="sr-only"
+                                                        />
+                                                        <div
+                                                            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${
+                                                                selected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'
+                                                            }`}
+                                                        >
+                                                            <Icon className="h-5 w-5" />
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <p className="text-sm font-semibold text-slate-900">{option.label}</p>
+                                                            <p className="mt-0.5 text-xs text-slate-500">{option.description}</p>
+                                                        </div>
+                                                        {selected && (
+                                                            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
+                                                                <Check className="h-3 w-3" />
+                                                            </div>
+                                                        )}
+                                                    </label>
+                                                );
+                                            })}
+                                        </div>
+                                        {errors.appointment_type && <p className="mt-2 text-xs text-red-600">{errors.appointment_type}</p>}
                                     </div>
                                     <div className="relative">
                                         <label htmlFor="appointment_date" className={labelClass}>Date <span className="text-red-500">*</span></label>
