@@ -55,16 +55,22 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
                         <span className="mt-6 block text-sm font-semibold uppercase tracking-wider text-blue-500">{project.category}</span>
                         <h1 className="mt-3 text-3xl font-bold sm:text-4xl lg:text-5xl">{project.title}</h1>
                         <p className="mt-4 text-lg text-slate-300">{extra?.description || project.description}</p>
-                        <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-400">
-                            <span className="flex items-center gap-1">
-                                <User className="h-4 w-4" />
-                                {extra?.client || project.client || 'Kenju Tech Client'}
-                            </span>
-                            <span className="flex items-center gap-1">
-                                <Calendar className="h-4 w-4" />
-                                {extra?.year || project.year || new Date().getFullYear().toString()}
-                            </span>
-                        </div>
+                        {(extra?.client || project.client || extra?.year || project.year) && (
+                            <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-400">
+                                {(extra?.client || project.client) && (
+                                    <span className="flex items-center gap-1">
+                                        <User className="h-4 w-4" />
+                                        {extra?.client || project.client}
+                                    </span>
+                                )}
+                                {(extra?.year || project.year) && (
+                                    <span className="flex items-center gap-1">
+                                        <Calendar className="h-4 w-4" />
+                                        {extra?.year || project.year}
+                                    </span>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
 

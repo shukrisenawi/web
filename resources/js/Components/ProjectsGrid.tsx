@@ -1,7 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import { ArrowRight, Play } from 'lucide-react';
 
-const projectsData: Record<string, { description: string; content: string; client: string; year: string; image: string }> = {
+const projectsData: Record<string, { description: string; content: string; client?: string; year?: string; image: string }> = {
     'fintrack-dashboard': {
         description: 'A real-time financial dashboard for tracking cashflow, expenses and growth metrics.',
         content: 'FinTrack Dashboard is a modern fintech solution that helps businesses monitor their financial health in real time. It aggregates transactions, visualises cashflow trends and generates actionable reports that support smarter financial decisions.',
@@ -26,8 +26,6 @@ const projectsData: Record<string, { description: string; content: string; clien
     'saas-analytics-tool': {
         description: 'A SaaS analytics platform that turns complex data into clear insights.',
         content: 'This analytics tool helps SaaS businesses track user behaviour, subscription metrics and churn rates. With customisable dashboards and automated reporting, teams can quickly identify opportunities and optimise their product roadmap.',
-        client: 'Confidential SaaS Client',
-        year: '2024',
         image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
     },
 };
