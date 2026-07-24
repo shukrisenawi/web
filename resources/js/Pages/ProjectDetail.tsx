@@ -53,6 +53,7 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
                             Back to Work
                         </Link>
                         <h1 className="mt-6 text-3xl font-bold sm:text-4xl lg:text-5xl">{project.title}</h1>
+                        <span className="mt-3 block text-sm font-semibold uppercase tracking-wider text-blue-500">{project.category}</span>
                     </div>
                 </div>
 
