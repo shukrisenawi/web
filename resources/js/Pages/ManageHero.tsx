@@ -302,6 +302,7 @@ export default function ManageHero({ content }: ManageHeroProps) {
         hero_image_file: null as File | null,
         hero_avatar_files: {} as Record<number, File | null>,
         mobile_apps_hero_avatar_files: {} as Record<number, File | null>,
+        digital_marketing_hero_avatar_files: {} as Record<number, File | null>,
         ...Object.fromEntries(pageHeroTabs.map((t) => [`${t.key}_image_file`, null as File | null])),
     } as any);
 
@@ -333,6 +334,11 @@ export default function ManageHero({ content }: ManageHeroProps) {
             delete files[index];
             setData('mobile_apps_hero_avatar_files', files);
         }
+        if (key === 'digital_marketing_hero_avatars') {
+            const files = { ...data.digital_marketing_hero_avatar_files };
+            delete files[index];
+            setData('digital_marketing_hero_avatar_files', files);
+        }
     };
 
     const moveItem = (key: string, index: number, direction: number) => {
@@ -351,6 +357,10 @@ export default function ManageHero({ content }: ManageHeroProps) {
         setData('mobile_apps_hero_avatar_files', { ...data.mobile_apps_hero_avatar_files, [idx]: file });
     };
 
+    const setDigitalMarketingHeroAvatar = (idx: number, file: File | null) => {
+        setData('digital_marketing_hero_avatar_files', { ...data.digital_marketing_hero_avatar_files, [idx]: file });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post('/manage-hero', {
@@ -359,6 +369,7 @@ export default function ManageHero({ content }: ManageHeroProps) {
                 reset('hero_image_file');
                 setData('hero_avatar_files', {});
                 setData('mobile_apps_hero_avatar_files', {});
+                setData('digital_marketing_hero_avatar_files', {});
                 pageHeroTabs.forEach((t) => {
                     setData(`${t.key}_image_file`, null);
                 });
@@ -366,6 +377,7 @@ export default function ManageHero({ content }: ManageHeroProps) {
                 if (c) {
                     if (c.hero_avatars) setData('hero_avatars', c.hero_avatars);
                     if (c.mobile_apps_hero_avatars) setData('mobile_apps_hero_avatars', c.mobile_apps_hero_avatars);
+                    if (c.digital_marketing_hero_avatars) setData('digital_marketing_hero_avatars', c.digital_marketing_hero_avatars);
                     pageHeroTabs.forEach((t) => {
                         if (c[t.key]) setData(t.key, c[t.key]);
                     });
@@ -488,13 +500,13 @@ export default function ManageHero({ content }: ManageHeroProps) {
                         </>
                     )}
 
-                    {activeTab !== 'home' && activeTab !== 'mobile_apps_hero' && (
+                    {activeTab !== 'home' && activeTab !== 'mobile_apps_hero' && activeTab !== 'digital_marketing_hero' && (
                         <>
                             <Section title={`${pageHeroTabs.find((t) => t.key === activeTab)?.label} Hero`}>
                                 <PageHeroForm heroKey={activeTab} data={data} setData={setData} />
                             </Section>
 
-                            {['services_hero', 'web_development_hero', 'web_system_hero', 'game_development_hero', 'it_equipment_hero', 'digital_marketing_hero'].includes(activeTab) && (
+                            {['services_hero', 'web_development_hero', 'web_system_hero', 'game_development_hero', 'it_equipment_hero'].includes(activeTab) && (
                                 <Section title="Hero Info Cards">
                                     <p className="mb-4 text-sm text-slate-600">
                                         These cards appear below the subtitle in the hero section.
@@ -555,6 +567,64 @@ export default function ManageHero({ content }: ManageHeroProps) {
                                 <button
                                     type="button"
                                     onClick={() => addItem('mobile_apps_hero_avatars', { image: '' })}
+                                    className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                                >
+                                    <Plus className="h-4 w-4" />
+                                    Add Avatar
+                                </button>
+                            </Section>
+                        </>
+                    )}
+
+                    {activeTab === 'digital_marketing_hero' && (
+                        <>
+                            <Section title="Digital Marketing Hero">
+                                <PageHeroForm heroKey="digital_marketing_hero" data={data} setData={setData} />
+                            </Section>
+
+                            <Section title="Trusted-by Avatars">
+                                <p className="mb-4 text-sm text-slate-600">
+                                    These avatars appear next to the trusted text in the Digital Marketing hero section.
+                                </p>
+
+                                <div className="space-y-4">
+                                    {(data.digital_marketing_hero_avatars || []).map((avatar: any, idx: number) => (
+                                        <div key={`dm-avatar-${avatar.image ? avatar.image.slice(-12) : idx}`} className="rounded-lg border border-slate-200 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-sm font-semibold text-slate-700">Avatar #{idx + 1}</span>
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => moveItem('digital_marketing_hero_avatars', idx, -1)}
+                                                        className="rounded p-1 text-slate-400 hover:bg-slate-100"
+                                                    >
+                                                        <GripVertical className="h-4 w-4" />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeItem('digital_marketing_hero_avatars', idx)}
+                                                        className="rounded p-1 text-red-500 hover:bg-red-50"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <ImageUpload
+                                                label="Avatar Image"
+                                                preview={
+                                                    data.digital_marketing_hero_avatar_files[idx]
+                                                        ? URL.createObjectURL(data.digital_marketing_hero_avatar_files[idx]!)
+                                                        : avatar.image
+                                                }
+                                                onChange={(file) => setDigitalMarketingHeroAvatar(idx, file)}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={() => addItem('digital_marketing_hero_avatars', { image: '' })}
                                     className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                                 >
                                     <Plus className="h-4 w-4" />
