@@ -789,23 +789,12 @@ function WebSystemDetail({ service }: { service: any }) {
             tags: p.tags || [],
         }));
 
-    const highlights = [
-        {
-            icon: Code,
-            title: "Scalable \u0026 Flexible",
-            desc: "Built to grow with your business.",
-        },
-        {
-            icon: Shield,
-            title: "Secure \u0026 Reliable",
-            desc: "Best practices for security and stability.",
-        },
-        {
-            icon: Zap,
-            title: "High Performance",
-            desc: "Optimized for speed and efficiency.",
-        },
-    ];
+    const iconMapWS: Record<string, any> = { Code, Shield, Zap, Palette, Rocket, ShieldCheck };
+    const highlights = (h.cards || []).map((c: any) => ({
+        icon: iconMapWS[c.icon] || Shield,
+        title: c.title || '',
+        desc: c.description || '',
+    }));
 
     const techStack = [
         {
@@ -1983,23 +1972,12 @@ function MobileAppsHeroIllustration() {
 function WebDevelopmentDetail({ service }: { service: any }) {
     const { frontpage } = usePage().props as any;
     const h = frontpage?.web_development_hero ?? {};
-    const heroHighlights = [
-        {
-            icon: Palette,
-            title: "Modern Design",
-            desc: "Beautiful & user-friendly",
-        },
-        {
-            icon: Zap,
-            title: "Optimized Performance",
-            desc: "Fast loading & SEO ready",
-        },
-        {
-            icon: Shield,
-            title: "Secure & Reliable",
-            desc: "Built with best practices",
-        },
-    ];
+    const iconMap: Record<string, any> = { Palette, Zap, Shield, Code, Rocket, ShieldCheck, Gamepad2, Headphones, Settings, Megaphone, Users, TrendingUp, Filter, DollarSign };
+    const heroHighlights = (h.cards || []).map((c: any) => ({
+        icon: iconMap[c.icon] || Shield,
+        title: c.title || '',
+        desc: c.description || '',
+    }));
 
     const packages = [
         {
@@ -2702,23 +2680,12 @@ function GameDevelopmentDetail({ service }: { service: any }) {
             desc: p.description || '',
         }));
 
-    const heroHighlights = [
-        {
-            icon: Gamepad2,
-            title: "Multi-Platform",
-            desc: "PC, Console, Mobile & VR",
-        },
-        {
-            icon: Palette,
-            title: "Stunning Visuals",
-            desc: "Immersive art & animation",
-        },
-        {
-            icon: Zap,
-            title: "High Performance",
-            desc: "Smooth gameplay at scale",
-        },
-    ];
+    const iconMapGD: Record<string, any> = { Gamepad2, Palette, Zap, Shield, Headphones, ShieldCheck };
+    const heroHighlights = (h.cards || []).map((c: any) => ({
+        icon: iconMapGD[c.icon] || Gamepad2,
+        title: c.title || '',
+        desc: c.description || '',
+    }));
 
     const techStack = [
         {
@@ -3383,23 +3350,12 @@ function ITEquipmentDetail({ service }: { service: any }) {
     ];
     const dbProducts = usePage().props.products as any[] | undefined;
     const productList = dbProducts?.length ? dbProducts : staticProducts;
-    const heroHighlights = [
-        {
-            icon: Shield,
-            title: "Genuine Products",
-            desc: "100% original and warranty included",
-        },
-        {
-            icon: Settings,
-            title: "Expert Setup",
-            desc: "Professional installation and configuration",
-        },
-        {
-            icon: Headphones,
-            title: "After-Sales Support",
-            desc: "Reliable support when you need it",
-        },
-    ];
+    const iconMapIT: Record<string, any> = { Shield, Settings, Headphones, Palette, Zap, Code, Gamepad2, Rocket, ShieldCheck };
+    const heroHighlights = (h.cards || []).map((c: any) => ({
+        icon: iconMapIT[c.icon] || Shield,
+        title: c.title || '',
+        desc: c.description || '',
+    }));
 
     const supplyServices = [
         {

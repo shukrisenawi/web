@@ -173,6 +173,112 @@ function PageHeroForm({
     );
 }
 
+function CardsEditor({
+    heroKey,
+    data,
+    setData,
+}: {
+    heroKey: string;
+    data: Record<string, any>;
+    setData: (key: string, value: any) => void;
+}) {
+    const hero = data[heroKey] || {};
+    const cards = hero.cards || [];
+
+    const setCards = (newCards: any[]) => {
+        setData(heroKey, { ...hero, cards: newCards });
+    };
+
+    return (
+        <>
+            <div className="space-y-4">
+                {cards.map((card: any, idx: number) => (
+                    <div key={`card-${card.title || idx}`} className="rounded-lg border border-slate-200 p-4">
+                        <div className="mb-3 flex items-center justify-between">
+                            <span className="text-sm font-semibold text-slate-700">Card #{idx + 1}</span>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const newCards = [...cards];
+                                        const newIndex = idx - 1;
+                                        if (newIndex < 0 || newIndex >= newCards.length) return;
+                                        [newCards[idx], newCards[newIndex]] = [newCards[newIndex], newCards[idx]];
+                                        setCards(newCards);
+                                    }}
+                                    className="rounded p-1 text-slate-400 hover:bg-slate-100"
+                                >
+                                    <GripVertical className="h-4 w-4" />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const newCards = [...cards];
+                                        newCards.splice(idx, 1);
+                                        setCards(newCards);
+                                    }}
+                                    className="rounded p-1 text-red-500 hover:bg-red-50"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <Field label="Icon">
+                                <input
+                                    type="text"
+                                    value={card.icon || ''}
+                                    onChange={(e) => {
+                                        const newCards = [...cards];
+                                        newCards[idx] = { ...newCards[idx], icon: e.target.value };
+                                        setCards(newCards);
+                                    }}
+                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                />
+                            </Field>
+                            <Field label="Title">
+                                <input
+                                    type="text"
+                                    value={card.title || ''}
+                                    onChange={(e) => {
+                                        const newCards = [...cards];
+                                        newCards[idx] = { ...newCards[idx], title: e.target.value };
+                                        setCards(newCards);
+                                    }}
+                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                />
+                            </Field>
+                            <div className="sm:col-span-2">
+                                <Field label="Description">
+                                    <textarea
+                                        value={card.description || ''}
+                                        onChange={(e) => {
+                                            const newCards = [...cards];
+                                            newCards[idx] = { ...newCards[idx], description: e.target.value };
+                                            setCards(newCards);
+                                        }}
+                                        rows={2}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <button
+                type="button"
+                onClick={() => setCards([...cards, { icon: '', title: '', description: '' }])}
+                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+                <Plus className="h-4 w-4" />
+                Add Card
+            </button>
+        </>
+    );
+}
+
 export default function ManageHero({ content }: ManageHeroProps) {
     const { flash } = usePage().props as any;
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -355,9 +461,21 @@ export default function ManageHero({ content }: ManageHeroProps) {
                     )}
 
                     {activeTab !== 'home' && (
-                        <Section title={`${pageHeroTabs.find((t) => t.key === activeTab)?.label} Hero`}>
-                            <PageHeroForm heroKey={activeTab} data={data} setData={setData} />
-                        </Section>
+                        <>
+                            <Section title={`${pageHeroTabs.find((t) => t.key === activeTab)?.label} Hero`}>
+                                <PageHeroForm heroKey={activeTab} data={data} setData={setData} />
+                            </Section>
+
+                            {['services_hero', 'web_development_hero', 'web_system_hero', 'mobile_apps_hero', 'game_development_hero', 'it_equipment_hero', 'digital_marketing_hero'].includes(activeTab) && (
+                                <Section title="Hero Info Cards">
+                                    <p className="mb-4 text-sm text-slate-600">
+                                        These cards appear below the subtitle in the hero section.
+                                    </p>
+
+                                    <CardsEditor heroKey={activeTab} data={data} setData={setData} />
+                                </Section>
+                            )}
+                        </>
                     )}
 
                     {Object.keys(errors).length > 0 && (

@@ -1,5 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowRight, Check, Code, Rocket, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Check, Code, Rocket, ShieldCheck, type LucideIcon } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { Clients } from '@/Components/Clients';
@@ -53,9 +53,22 @@ const promotions = [
     },
 ];
 
+const iconMap: Record<string, LucideIcon> = {
+    Code: Code,
+    Rocket: Rocket,
+    ShieldCheck: ShieldCheck,
+};
+
+function ServiceIcon({ name }: { name: string }) {
+    const Icon = iconMap[name];
+    if (!Icon) return null;
+    return <Icon className="h-5 w-5" />;
+}
+
 export default function Services() {
     const { frontpage } = usePage().props as any;
     const h = frontpage?.services_hero ?? {};
+    const cards = h.cards ?? [];
 
     return (
         <>
@@ -79,29 +92,19 @@ export default function Services() {
                                     {h.subtitle || 'We help businesses of all sizes leverage technology to solve problems, engage customers, and accelerate growth.'}
                                 </p>
 
-                                <div className="mt-10 grid grid-cols-3 gap-4">
-                                    <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400">
-                                            <Code className="h-5 w-5" />
-                                        </div>
-                                        <h3 className="mt-3 text-sm font-semibold">Modern Technology</h3>
-                                        <p className="mt-1 text-xs text-slate-400">We use the latest tools and frameworks.</p>
+                                {cards.length > 0 && (
+                                    <div className="mt-10 grid grid-cols-3 gap-4">
+                                        {cards.map((card: any, idx: number) => (
+                                            <div key={card.title || idx} className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur">
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400">
+                                                    <ServiceIcon name={card.icon} />
+                                                </div>
+                                                <h3 className="mt-3 text-sm font-semibold">{card.title}</h3>
+                                                <p className="mt-1 text-xs text-slate-400">{card.description}</p>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400">
-                                            <Rocket className="h-5 w-5" />
-                                        </div>
-                                        <h3 className="mt-3 text-sm font-semibold">Scalable Solutions</h3>
-                                        <p className="mt-1 text-xs text-slate-400">Built to grow with your business.</p>
-                                    </div>
-                                    <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/20 text-blue-400">
-                                            <ShieldCheck className="h-5 w-5" />
-                                        </div>
-                                        <h3 className="mt-3 text-sm font-semibold">Reliable Support</h3>
-                                        <p className="mt-1 text-xs text-slate-400">24/7 support to keep you moving forward.</p>
-                                    </div>
-                                </div>
+                                )}
                             </div>
 
                             <div className="relative flex items-center justify-center">

@@ -74,12 +74,22 @@ class FrontpageContent extends Model
                 'title' => 'Digital Solutions Built for Growth',
                 'subtitle' => 'We help businesses of all sizes leverage technology to solve problems, engage customers, and accelerate growth.',
                 'image' => '/images/hero.png',
+                'cards' => [
+                    ['icon' => 'Code', 'title' => 'Modern Technology', 'description' => 'We use the latest tools and frameworks.'],
+                    ['icon' => 'Rocket', 'title' => 'Scalable Solutions', 'description' => 'Built to grow with your business.'],
+                    ['icon' => 'ShieldCheck', 'title' => 'Reliable Support', 'description' => '24/7 support to keep you moving forward.'],
+                ],
             ],
             'web_development_hero' => [
                 'badge' => 'Web Development',
                 'title' => 'High-Performance Websites \u0026 Web Applications',
                 'subtitle' => 'We build responsive, fast and secure websites that represent your brand and convert visitors into customers.',
                 'image' => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format\u0026fit=crop\u0026w=1200\u0026q=80',
+                'cards' => [
+                    ['icon' => 'Palette', 'title' => 'Modern Design', 'description' => 'Beautiful & user-friendly'],
+                    ['icon' => 'Zap', 'title' => 'Optimized Performance', 'description' => 'Fast loading & SEO ready'],
+                    ['icon' => 'Shield', 'title' => 'Secure & Reliable', 'description' => 'Built with best practices'],
+                ],
             ],
             'mobile_apps_hero' => [
                 'badge' => 'Mobile Apps',
@@ -92,6 +102,11 @@ class FrontpageContent extends Model
                 'title' => 'Secure, Scalable Web Systems',
                 'subtitle' => 'We build custom web systems that power your business operations.',
                 'image' => 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format\u0026fit=crop\u0026w=1200\u0026q=80',
+                'cards' => [
+                    ['icon' => 'Code', 'title' => 'Scalable & Flexible', 'description' => 'Built to grow with your business.'],
+                    ['icon' => 'Shield', 'title' => 'Secure & Reliable', 'description' => 'Best practices for security and stability.'],
+                    ['icon' => 'Zap', 'title' => 'High Performance', 'description' => 'Optimized for speed and efficiency.'],
+                ],
             ],
             'digital_marketing_hero' => [
                 'badge' => 'Digital Marketing',
@@ -104,12 +119,22 @@ class FrontpageContent extends Model
                 'title' => 'Engaging Games Across All Platforms',
                 'subtitle' => 'We create engaging, high-quality games that captivate players and deliver unforgettable experiences.',
                 'image' => 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format\u0026fit=crop\u0026w=1200\u0026q=80',
+                'cards' => [
+                    ['icon' => 'Gamepad2', 'title' => 'Multi-Platform', 'description' => 'PC, Console, Mobile & VR'],
+                    ['icon' => 'Palette', 'title' => 'Stunning Visuals', 'description' => 'Immersive art & animation'],
+                    ['icon' => 'Zap', 'title' => 'High Performance', 'description' => 'Smooth gameplay at scale'],
+                ],
             ],
             'it_equipment_hero' => [
                 'badge' => 'IT Equipment',
                 'title' => 'IT Equipment Supply \u0026 Professional Setup',
                 'subtitle' => 'We supply high-quality IT equipment and provide professional setup and configuration.',
                 'image' => 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format\u0026fit=crop\u0026w=1200\u0026q=80',
+                'cards' => [
+                    ['icon' => 'Shield', 'title' => 'Genuine Products', 'description' => '100% original and warranty included'],
+                    ['icon' => 'Settings', 'title' => 'Expert Setup', 'description' => 'Professional installation and configuration'],
+                    ['icon' => 'Headphones', 'title' => 'After-Sales Support', 'description' => 'Reliable support when you need it'],
+                ],
             ],
             'work_hero' => [
                 'badge' => 'Our Work',
