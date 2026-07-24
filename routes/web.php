@@ -56,7 +56,14 @@ Route::get('/blog', [\App\Http\Controllers\BlogPostController::class, 'publicInd
 Route::get('/blog/{post:slug}', [\App\Http\Controllers\BlogPostController::class, 'publicShow'])->name('blog.show');
 
 Route::get('/contact', function () {
-    return inertia('Contact');
+    $content = \App\Models\FrontpageContent::getCurrent();
+
+    return inertia('Contact', [
+        'contact_title' => $content->contact_title,
+        'contact_email' => $content->contact_email,
+        'contact_phone' => $content->contact_phone,
+        'contact_office' => $content->contact_office,
+    ]);
 })->name('contact');
 
 Route::post('/contact', [TicketController::class, 'storeFromContact'])->name('contact.submit');

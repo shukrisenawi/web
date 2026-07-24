@@ -6,7 +6,14 @@ import { HeroBackground } from '@/Components/HeroBackground';
 import Modal from '@/Components/Modal';
 import { useState } from 'react';
 
-export default function Contact() {
+interface ContactProps {
+    contact_title?: string;
+    contact_email?: string;
+    contact_phone?: string;
+    contact_office?: string;
+}
+
+export default function Contact({ contact_title, contact_email, contact_phone, contact_office }: ContactProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -50,7 +57,7 @@ export default function Contact() {
                             {/* Contact info */}
                             <div className="space-y-8">
                                 <div>
-                                    <h2 className="text-3xl font-bold text-slate-900">Let's start a conversation</h2>
+                                    <h2 className="text-3xl font-bold text-slate-900">{contact_title || "Let's start a conversation"}</h2>
                                     <p className="mt-4 text-slate-600">
                                         Fill out the form and our team will respond within 24 hours. You can also reach
                                         us directly through the channels below.
@@ -64,7 +71,7 @@ export default function Contact() {
                                         </div>
                                         <div>
                                             <p className="font-semibold text-slate-900">Email</p>
-                                            <p className="text-sm text-slate-600">hello@kenjutech.com</p>
+                                            <p className="text-sm text-slate-600">{contact_email || 'hello@kenjutech.com'}</p>
                                         </div>
                                     </div>
 
@@ -74,7 +81,7 @@ export default function Contact() {
                                         </div>
                                         <div>
                                             <p className="font-semibold text-slate-900">Phone</p>
-                                            <p className="text-sm text-slate-600">+60 12-345 6789</p>
+                                            <p className="text-sm text-slate-600">{contact_phone || '+60 12-345 6789'}</p>
                                         </div>
                                     </div>
 
@@ -84,7 +91,7 @@ export default function Contact() {
                                         </div>
                                         <div>
                                             <p className="font-semibold text-slate-900">Office</p>
-                                            <p className="text-sm text-slate-600">Kuala Lumpur, Malaysia</p>
+                                            <p className="whitespace-pre-line text-sm text-slate-600">{contact_office || 'Kuala Lumpur, Malaysia'}</p>
                                         </div>
                                     </div>
                                 </div>
