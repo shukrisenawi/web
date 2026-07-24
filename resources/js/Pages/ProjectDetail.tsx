@@ -16,9 +16,9 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
     const c = frontpage ?? {};
     const projects = (c.projects || []);
     const project = projects.find((p: any) => p.slug === slug || slugify(p.title) === slug || slugify(p.description || '') === slug);
-    const extra = projectsData[slug];
+    const extra = projectsData[slug] ?? null;
 
-    if (!project || !extra) {
+    if (!project) {
         return (
             <>
                 <Head title="Project Not Found" />
@@ -54,15 +54,15 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
                         </Link>
                         <span className="mt-6 block text-sm font-semibold uppercase tracking-wider text-blue-500">{project.category}</span>
                         <h1 className="mt-3 text-3xl font-bold sm:text-4xl lg:text-5xl">{project.title}</h1>
-                        <p className="mt-4 text-lg text-slate-300">{extra.description}</p>
+                        <p className="mt-4 text-lg text-slate-300">{extra?.description || project.description}</p>
                         <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-400">
                             <span className="flex items-center gap-1">
                                 <User className="h-4 w-4" />
-                                {extra.client}
+                                {extra?.client || project.client || 'Kenju Tech Client'}
                             </span>
                             <span className="flex items-center gap-1">
                                 <Calendar className="h-4 w-4" />
-                                {extra.year}
+                                {extra?.year || project.year || new Date().getFullYear().toString()}
                             </span>
                         </div>
                     </div>
@@ -73,7 +73,7 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
                         <div className="grid gap-12 lg:grid-cols-[1.25fr_1fr] lg:items-start">
                             <div className="aspect-[16/10] overflow-hidden rounded-2xl">
                                 <img
-                                    src={extra.image || project.image}
+                                    src={extra?.image || project.image}
                                     alt={project.title}
                                     className="h-full w-full object-cover"
                                 />
@@ -83,7 +83,7 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
                                 <h2 className="text-2xl font-bold text-slate-900">About {project.title}</h2>
                                 <div
                                     className="wysiwyg-content max-w-none text-slate-600"
-                                    dangerouslySetInnerHTML={{ __html: project.full_description || extra.content }}
+                                    dangerouslySetInnerHTML={{ __html: project.full_description || extra?.content || '' }}
                                 />
 
 
