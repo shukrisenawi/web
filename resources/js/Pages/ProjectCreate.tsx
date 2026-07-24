@@ -89,6 +89,10 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
         form.clearErrors();
         let valid = true;
         if (s === 1) {
+            if (isAdmin && !form.data.user_id.trim()) {
+                form.setError('user_id', 'Please select a client.');
+                valid = false;
+            }
             if (!form.data.title.trim()) {
                 form.setError('title', 'Please enter a project title');
                 valid = false;
@@ -104,6 +108,21 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
     const prevStep = () => setStep((s) => Math.max(1, s - 1));
 
     const submitCreate = () => {
+        form.clearErrors();
+        let valid = true;
+        if (isAdmin && !form.data.user_id.trim()) {
+            form.setError('user_id', 'Please select a client.');
+            valid = false;
+        }
+        if (!form.data.title.trim()) {
+            form.setError('title', 'Please enter a project title');
+            valid = false;
+        }
+        if (!valid) {
+            setStep(1);
+            return;
+        }
+
         const formData = new FormData();
         formData.append('title', form.data.title);
         formData.append('service_type', form.data.service_type);
