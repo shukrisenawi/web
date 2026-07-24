@@ -106,7 +106,7 @@ export default function ProjectDetail({ slug }: ProjectDetailProps) {
                                     href="/contact"
                                     className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
                                 >
-                                    Start a Similar Project
+                                    Request Quotation
                                     <ArrowLeft className="h-4 w-4 rotate-180" />
                                 </Link>
                             </div>
