@@ -25,6 +25,7 @@ class FrontpageContent extends Model
             'about_team' => 'array',
             'about_events' => 'array',
             'payment_logo' => 'string',
+            'hero_avatars' => 'array',
         ];
     }
 
@@ -41,6 +42,11 @@ class FrontpageContent extends Model
             'hero_trusted_text' => 'Trusted by 100+ clients',
             'hero_trusted_subtext' => 'from startups to enterprise',
             'hero_image' => '/images/hero.png',
+            'hero_avatars' => [
+                ['image' => 'https://i.pravatar.cc/150?img=11'],
+                ['image' => 'https://i.pravatar.cc/150?img=12'],
+                ['image' => 'https://i.pravatar.cc/150?img=13'],
+            ],
             'services_title' => 'Services We Provide',
             'services_subtitle' => 'From strategy to deployment, we deliver end-to-end digital solutions tailored to your business goals.',
             'services' => [

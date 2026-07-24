@@ -144,6 +144,8 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
 
         Route::get('/manage-frontpage', [FrontpageController::class, 'index'])->name('frontpage.manage');
         Route::post('/manage-frontpage', [FrontpageController::class, 'update'])->name('frontpage.update');
+        Route::get('/manage-hero', [FrontpageController::class, 'hero'])->name('hero.manage');
+        Route::post('/manage-hero', [FrontpageController::class, 'update'])->name('hero.update');
         Route::get('/api/logo-search', [FrontpageController::class, 'searchLogos'])->name('logo.search');
 
         Route::get('/manage-blog', [BlogPostController::class, 'index'])->name('manage-blog');

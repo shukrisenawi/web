@@ -19,6 +19,7 @@ import {
     Wallet,
     CalendarClock,
     Package,
+    Sparkles,
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -53,6 +54,7 @@ const adminSidebar: SidebarItem[] = [
     { label: 'Invoices', href: '/invoices', icon: FileText },
     { label: 'Support', href: '/support', icon: Headphones, badge: 'unreadMessagesCount' },
     { label: 'Website Content', href: '/manage-frontpage', icon: Home },
+    { label: 'Hero', href: '/manage-hero', icon: Sparkles },
     { label: 'Products', href: '/manage-products', icon: Package },
     { label: 'Blog', href: '/manage-blog', icon: FileText },
 ];

@@ -33,10 +33,14 @@ export function Hero() {
                         </div>
                         <div className="mt-10 flex items-center gap-3">
                             <div className="flex -space-x-3">
-                                {[11, 12, 13].map((i) => (
+                                {(c.hero_avatars || [
+                                    { image: 'https://i.pravatar.cc/150?img=11' },
+                                    { image: 'https://i.pravatar.cc/150?img=12' },
+                                    { image: 'https://i.pravatar.cc/150?img=13' },
+                                ]).map((avatar: any, idx: number) => (
                                     <img
-                                        key={i}
-                                        src={`https://i.pravatar.cc/150?img=${i}`}
+                                        key={`hero-avatar-${avatar.image ? avatar.image.slice(-12) : idx}`}
+                                        src={avatar.image || `https://i.pravatar.cc/150?img=${11 + idx}`}
                                         alt="Client"
                                         className="h-10 w-10 rounded-full border-2 border-[#050914] object-cover"
                                     />

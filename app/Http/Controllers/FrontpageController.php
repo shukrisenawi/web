@@ -19,6 +19,15 @@ class FrontpageController extends Controller
         ]);
     }
 
+    public function hero()
+    {
+        $content = FrontpageContent::getCurrent();
+
+        return Inertia::render('ManageHero', [
+            'content' => $content->toArray(),
+        ]);
+    }
+
     public function update(Request $request)
     {
         $content = FrontpageContent::getCurrent();
@@ -59,6 +68,7 @@ class FrontpageController extends Controller
             'bank_name' => 'nullable|string|max:255',
             'bank_account_name' => 'nullable|string|max:255',
             'bank_account_number' => 'nullable|string|max:255',
+            'hero_avatars' => 'nullable|array',
         ]);
 
         // Handle hero image upload
@@ -66,6 +76,17 @@ class FrontpageController extends Controller
             $path = $request->file('hero_image_file')->store('frontpage', 'public');
             $validated['hero_image'] = asset('uploads/' . $path);
         }
+
+        // Handle hero avatar uploads
+        $heroAvatars = $request->input('hero_avatars', []);
+        $heroAvatarFiles = $request->file('hero_avatar_files') ?? [];
+        foreach ($heroAvatarFiles as $idx => $file) {
+            if ($file) {
+                $path = $file->store('frontpage/avatars', 'public');
+                $heroAvatars[$idx]['image'] = asset('uploads/' . $path);
+            }
+        }
+        $validated['hero_avatars'] = $heroAvatars;
 
         // Handle service image uploads
         $services = $request->input('services', []);
