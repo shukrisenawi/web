@@ -172,7 +172,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
         about_event_image_files: {} as Record<number, File | null>,
     } as any);
 
-    const [activeTab, setActiveTab] = useState<'home' | 'services' | 'projects' | 'clients' | 'stats' | 'cta' | 'footer' | 'payment' | 'about'>('home');
+    const [activeTab, setActiveTab] = useState<'home' | 'services' | 'projects' | 'clients' | 'stats' | 'cta' | 'footer' | 'payment' | 'about' | 'contact'>('home');
 
     const updateArray = (key: string, index: number, field: string, value: any) => {
         const list = [...(data[key] || [])];
@@ -261,6 +261,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
         { key: 'footer', label: 'Footer' },
         { key: 'payment', label: 'Payment' },
         { key: 'about', label: 'About Us' },
+        { key: 'contact', label: 'Contact Us' },
     ] as const;
 
     const setServiceImage = (idx: number, file: File | null) => {
@@ -964,6 +965,49 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                 Add Event
                             </button>
 
+                        </Section>
+                    )}
+
+                    {activeTab === 'contact' && (
+                        <Section title="Contact Us">
+                            <div className="grid gap-5 sm:grid-cols-2">
+                                <div className="sm:col-span-2">
+                                    <Field label="Section Title">
+                                        <input
+                                            type="text"
+                                            value={data.contact_title || ''}
+                                            onChange={(e) => setData('contact_title', e.target.value)}
+                                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                        />
+                                    </Field>
+                                </div>
+                                <Field label="Email">
+                                    <input
+                                        type="email"
+                                        value={data.contact_email || ''}
+                                        onChange={(e) => setData('contact_email', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                                <Field label="Phone">
+                                    <input
+                                        type="text"
+                                        value={data.contact_phone || ''}
+                                        onChange={(e) => setData('contact_phone', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
+                                <div className="sm:col-span-2">
+                                    <Field label="Office Address">
+                                        <textarea
+                                            value={data.contact_office || ''}
+                                            onChange={(e) => setData('contact_office', e.target.value)}
+                                            rows={3}
+                                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                        />
+                                    </Field>
+                                </div>
+                            </div>
                         </Section>
                     )}
 

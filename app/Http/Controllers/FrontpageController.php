@@ -88,6 +88,10 @@ class FrontpageController extends Controller
             'about_mission_icon' => 'nullable|string|max:255',
             'about_mission_title' => 'nullable|string|max:255',
             'about_mission_description' => 'nullable|string',
+            'contact_title' => 'nullable|string|max:255',
+            'contact_email' => 'nullable|string|max:255',
+            'contact_phone' => 'nullable|string|max:255',
+            'contact_office' => 'nullable|string',
         ]);
 
         // Handle hero image upload
