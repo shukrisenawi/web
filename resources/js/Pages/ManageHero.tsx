@@ -133,7 +133,7 @@ function PageHeroForm({
                     />
                 </Field>
             </div>
-            {(heroKey === 'home_hero' || heroKey === 'mobile_apps_hero') && (
+            {(heroKey === 'home_hero' || heroKey === 'mobile_apps_hero' || heroKey === 'digital_marketing_hero') && (
                 <>
                     <Field label="Primary CTA">
                         <input
