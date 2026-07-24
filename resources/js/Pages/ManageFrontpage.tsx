@@ -162,7 +162,6 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
     const { flash } = usePage().props as any;
     const { data, setData, post, processing, errors, reset } = useForm({
         ...content,
-        hero_image_file: null as File | null,
         service_image_files: {} as Record<number, File | null>,
         project_image_files: {} as Record<number, File | null>,
         client_logo_files: {} as Record<number, File | null>,
@@ -170,7 +169,7 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
         about_event_image_files: {} as Record<number, File | null>,
     } as any);
 
-    const [activeTab, setActiveTab] = useState<'hero' | 'services' | 'projects' | 'clients' | 'stats' | 'cta' | 'footer' | 'about'>('hero');
+    const [activeTab, setActiveTab] = useState<'services' | 'projects' | 'clients' | 'stats' | 'cta' | 'footer' | 'payment' | 'about'>('services');
 
     const updateArray = (key: string, index: number, field: string, value: any) => {
         const list = [...(data[key] || [])];
@@ -232,7 +231,6 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
         post('/manage-frontpage', {
             preserveScroll: true,
             onSuccess: (page: any) => {
-                reset('hero_image_file');
                 setData('service_image_files', {});
                 setData('project_image_files', {});
                 setData('client_logo_files', {});
@@ -251,7 +249,6 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
     };
 
     const tabs = [
-        { key: 'hero', label: 'Hero' },
         { key: 'services', label: 'Services' },
         { key: 'projects', label: 'Work' },
         { key: 'clients', label: 'Clients' },
@@ -318,94 +315,6 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                             {processing ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>
-
-                    {activeTab === 'hero' && (
-                        <Section title="Hero Section">
-                            <div className="grid gap-5 sm:grid-cols-2">
-                                <Field label="Badge">
-                                    <input
-                                        type="text"
-                                        value={data.hero_badge || ''}
-                                        onChange={(e) => setData('hero_badge', e.target.value)}
-                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                    />
-                                </Field>
-                                <Field label="Trusted Text">
-                                    <input
-                                        type="text"
-                                        value={data.hero_trusted_text || ''}
-                                        onChange={(e) => setData('hero_trusted_text', e.target.value)}
-                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                    />
-                                </Field>
-                                <div className="sm:col-span-2">
-                                    <Field label="Title">
-                                        <textarea
-                                            value={data.hero_title || ''}
-                                            onChange={(e) => setData('hero_title', e.target.value)}
-                                            rows={2}
-                                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                        />
-                                    </Field>
-                                </div>
-                                <div className="sm:col-span-2">
-                                    <Field label="Subtitle">
-                                        <textarea
-                                            value={data.hero_subtitle || ''}
-                                            onChange={(e) => setData('hero_subtitle', e.target.value)}
-                                            rows={3}
-                                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                        />
-                                    </Field>
-                                </div>
-                                <Field label="Primary CTA">
-                                    <input
-                                        type="text"
-                                        value={data.hero_primary_cta || ''}
-                                        onChange={(e) => setData('hero_primary_cta', e.target.value)}
-                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                    />
-                                </Field>
-                                <Field label="Primary Link">
-                                    <input
-                                        type="text"
-                                        value={data.hero_primary_link || ''}
-                                        onChange={(e) => setData('hero_primary_link', e.target.value)}
-                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                    />
-                                </Field>
-                                <Field label="Secondary CTA">
-                                    <input
-                                        type="text"
-                                        value={data.hero_secondary_cta || ''}
-                                        onChange={(e) => setData('hero_secondary_cta', e.target.value)}
-                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                    />
-                                </Field>
-                                <Field label="Secondary Link">
-                                    <input
-                                        type="text"
-                                        value={data.hero_secondary_link || ''}
-                                        onChange={(e) => setData('hero_secondary_link', e.target.value)}
-                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                    />
-                                </Field>
-                                <Field label="Trusted Subtext">
-                                    <input
-                                        type="text"
-                                        value={data.hero_trusted_subtext || ''}
-                                        onChange={(e) => setData('hero_trusted_subtext', e.target.value)}
-                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                                    />
-                                </Field>
-                                <ImageUpload
-                                    label="Hero Image"
-                                    preview={data.hero_image}
-                                    onChange={(file) => setData('hero_image_file', file)}
-                                />
-                            </div>
-                        </Section>
-                    )}
 
                     {activeTab === 'services' && (
                         <Section title="Services Section">
