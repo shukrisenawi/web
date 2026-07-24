@@ -21,3 +21,48 @@ button,
 [role="button"] {
     cursor: pointer;
 }
+
+/* WYSIWYG rendered content (match Jodit editor spacing) */
+.wysiwyg-content {
+    line-height: 1.625;
+    color: #475569;
+}
+
+.wysiwyg-content p,
+.wysiwyg-content ul,
+.wysiwyg-content ol,
+.wysiwyg-content blockquote,
+.wysiwyg-content pre,
+.wysiwyg-content table {
+    margin-bottom: 0.5em;
+}
+
+.wysiwyg-content ul,
+.wysiwyg-content ol {
+    padding-left: 1.5em;
+}
+
+.wysiwyg-content li {
+    margin-bottom: 0.25em;
+}
+
+.wysiwyg-content li > p {
+    margin-bottom: 0;
+}
+
+.wysiwyg-content h1,
+.wysiwyg-content h2,
+.wysiwyg-content h3,
+.wysiwyg-content h4,
+.wysiwyg-content h5,
+.wysiwyg-content h6 {
+    margin-top: 0.75em;
+    margin-bottom: 0.5em;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.wysiwyg-content img {
+    max-width: 100%;
+    height: auto;
+}
