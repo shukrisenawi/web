@@ -3,6 +3,29 @@ import { ArrowRight, Building2, Search, FolderPlus, FileText, Plus, X, Trash2, S
 import { useState } from 'react';
 import { DashboardLayout, Card } from '@/Layouts/Dashboard';
 
+const INDUSTRIES = [
+    'Retail & E-Commerce',
+    'Food & Beverage (F&B)',
+    'Healthcare',
+    'Education',
+    'Finance',
+    'Manufacturing',
+    'Construction',
+    'Real Estate',
+    'Logistics',
+    'Travel & Tourism',
+    'Hotel & Hospitality',
+    'Government',
+    'NGO / Non-Profit',
+    'Religious Organization',
+    'Agriculture',
+    'Beauty & Wellness',
+    'Automotive',
+    'IT & Technology',
+    'Professional Services',
+    'Others',
+];
+
 interface RequestFile {
     id: number;
     filename: string;
@@ -29,6 +52,8 @@ interface Client {
     name: string;
     email: string;
     company: string | null;
+    industry: string | null;
+    industry_other: string | null;
     avatar_url: string | null;
     business_address: string | null;
     whatsapp: string | null;
@@ -138,6 +163,8 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
         name: '',
         email: '',
         company: '',
+        industry: '',
+        industry_other: '',
         business_address: '',
         whatsapp: '',
         business_no: '',
@@ -150,6 +177,8 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
             name: c.name,
             email: c.email,
             company: c.company ?? '',
+            industry: c.industry ?? '',
+            industry_other: c.industry_other ?? '',
             business_address: c.business_address ?? '',
             whatsapp: c.whatsapp ?? '',
             business_no: '',
@@ -520,10 +549,16 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                                     <Field label="Contact Name" value={viewClient.name} />
                                     <Field label="Email" value={viewClient.email} />
                                     <Field label="WhatsApp" value={viewClient.whatsapp} />
-                                    <Field label="Business Address" value={viewClient.business_address} full />
+                                    <Field
+                                        label="Industry"
+                                        value={viewClient.industry === 'Others' && viewClient.industry_other
+                                            ? `${viewClient.industry} — ${viewClient.industry_other}`
+                                            : viewClient.industry}
+                                    />
                                     <Field label="Projects" value={`${viewClient.projects_count} project(s)`} />
                                     <Field label="Invoices" value={`${viewClient.invoices_count} invoice(s)`} />
                                     <Field label="Joined" value={viewClient.joined} />
+                                    <Field label="Business Address" value={viewClient.business_address} full />
                                 </dl>
                             </div>
                         </Card>
@@ -580,6 +615,30 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                                     className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                                 />
                             </div>
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">Industry</label>
+                                <select
+                                    value={editForm.data.industry}
+                                    onChange={(e) => editForm.setData('industry', e.target.value)}
+                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                >
+                                    <option value="">Select an industry…</option>
+                                    {INDUSTRIES.map((opt) => (
+                                        <option key={opt} value={opt}>{opt}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            {editForm.data.industry === 'Others' && (
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700">Specify Industry</label>
+                                    <input
+                                        type="text"
+                                        value={editForm.data.industry_other}
+                                        onChange={(e) => editForm.setData('industry_other', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </div>
+                            )}
                             <div>
                                 <label className="mb-1 block text-sm font-medium text-slate-700">WhatsApp</label>
                                 <input
