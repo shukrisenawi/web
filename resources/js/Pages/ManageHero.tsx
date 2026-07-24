@@ -11,6 +11,13 @@ import {
     CheckCircle2,
 } from 'lucide-react';
 
+const vmIcons = [
+    'Code2', 'Target', 'Globe', 'Smartphone', 'Palette', 'TrendingUp',
+    'Gamepad2', 'Shield', 'ShieldCheck', 'Users', 'Rocket', 'Code',
+    'Megaphone', 'BarChart', 'Layers', 'Monitor', 'Printer', 'Eye',
+    'Zap', 'Star', 'Heart', 'Award', 'Lightbulb',
+];
+
 interface ManageHeroProps {
     content: Record<string, any>;
 }
@@ -525,6 +532,80 @@ export default function ManageHero({ content }: ManageHeroProps) {
                                     </p>
 
                                     <CardsEditor heroKey={activeTab} data={data} setData={setData} />
+                                </Section>
+                            )}
+
+                            {activeTab === 'about_hero' && (
+                                <Section title="Vision & Mission">
+                                    <p className="mb-4 text-sm text-slate-600">
+                                        These cards appear in the About Us hero section.
+                                    </p>
+                                    <div className="grid gap-5 sm:grid-cols-2">
+                                        <div className="rounded-lg border border-slate-200 p-4">
+                                            <h5 className="mb-3 text-sm font-semibold text-slate-700">Vision</h5>
+                                            <div className="space-y-4">
+                                                <Field label="Icon">
+                                                    <select
+                                                        value={data.about_vision_icon || 'Code2'}
+                                                        onChange={(e) => setData('about_vision_icon', e.target.value)}
+                                                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                    >
+                                                        {vmIcons.map((ic) => (
+                                                            <option key={ic} value={ic}>{ic}</option>
+                                                        ))}
+                                                    </select>
+                                                </Field>
+                                                <Field label="Title">
+                                                    <input
+                                                        type="text"
+                                                        value={data.about_vision_title || ''}
+                                                        onChange={(e) => setData('about_vision_title', e.target.value)}
+                                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                    />
+                                                </Field>
+                                                <Field label="Description">
+                                                    <textarea
+                                                        value={data.about_vision_description || ''}
+                                                        onChange={(e) => setData('about_vision_description', e.target.value)}
+                                                        rows={3}
+                                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                    />
+                                                </Field>
+                                            </div>
+                                        </div>
+                                        <div className="rounded-lg border border-slate-200 p-4">
+                                            <h5 className="mb-3 text-sm font-semibold text-slate-700">Mission</h5>
+                                            <div className="space-y-4">
+                                                <Field label="Icon">
+                                                    <select
+                                                        value={data.about_mission_icon || 'Target'}
+                                                        onChange={(e) => setData('about_mission_icon', e.target.value)}
+                                                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                    >
+                                                        {vmIcons.map((ic) => (
+                                                            <option key={ic} value={ic}>{ic}</option>
+                                                        ))}
+                                                    </select>
+                                                </Field>
+                                                <Field label="Title">
+                                                    <input
+                                                        type="text"
+                                                        value={data.about_mission_title || ''}
+                                                        onChange={(e) => setData('about_mission_title', e.target.value)}
+                                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                    />
+                                                </Field>
+                                                <Field label="Description">
+                                                    <textarea
+                                                        value={data.about_mission_description || ''}
+                                                        onChange={(e) => setData('about_mission_description', e.target.value)}
+                                                        rows={3}
+                                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                                    />
+                                                </Field>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </Section>
                             )}
 

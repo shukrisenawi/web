@@ -8,6 +8,24 @@ import {
     Rocket,
     Headphones,
     MapPin,
+    Globe,
+    Smartphone,
+    Palette,
+    TrendingUp,
+    Gamepad2,
+    Shield,
+    Code,
+    Megaphone,
+    BarChart,
+    Layers,
+    Monitor,
+    Printer,
+    Eye,
+    Zap,
+    Star,
+    Heart,
+    Award,
+    Lightbulb,
     LucideIcon,
 } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
@@ -78,17 +96,28 @@ export default function About({
     const events = about_events.length > 0 ? about_events : defaultEvents;
 
     const fp = props?.frontpage ?? {};
-    const vision: { icon: LucideIcon; title: string; description: string } = {
-        icon: Code2,
-        title: fp.about_vision_title || 'Our Vision',
-        description: fp.about_vision_description || 'To be a trusted digital partner for businesses worldwide, delivering innovation with impact.',
+
+    const iconMapVM: Record<string, LucideIcon> = {
+        Code2, Target, Globe, Smartphone, Palette, TrendingUp,
+        Gamepad2, Shield, ShieldCheck, Users, Rocket, Code,
+        Megaphone, BarChart, Layers, Monitor, Printer, Eye,
+        Zap, Star, Heart, Award, Lightbulb,
     };
-    const mission: { icon: LucideIcon; title: string; description: string } = {
-        icon: Target,
-        title: fp.about_mission_title || 'Our Mission',
-        description: fp.about_mission_description || 'To empower businesses with smart digital solutions that are scalable, reliable, and future-ready.',
-    };
-    const visionMission = [vision, mission];
+
+    const visionIcon = iconMapVM[fp.about_vision_icon] || Code2;
+    const missionIcon = iconMapVM[fp.about_mission_icon] || Target;
+    const visionMission = [
+        {
+            icon: visionIcon,
+            title: fp.about_vision_title || 'Our Vision',
+            description: fp.about_vision_description || 'To be a trusted digital partner for businesses worldwide, delivering innovation with impact.',
+        },
+        {
+            icon: missionIcon,
+            title: fp.about_mission_title || 'Our Mission',
+            description: fp.about_mission_description || 'To empower businesses with smart digital solutions that are scalable, reliable, and future-ready.',
+        },
+    ];
 
     return (
         <>

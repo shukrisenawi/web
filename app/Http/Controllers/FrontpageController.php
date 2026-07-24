@@ -82,8 +82,10 @@ class FrontpageController extends Controller
             'it_equipment_hero' => 'nullable|array',
             'work_hero' => 'nullable|array',
             'about_hero' => 'nullable|array',
+            'about_vision_icon' => 'nullable|string|max:255',
             'about_vision_title' => 'nullable|string|max:255',
             'about_vision_description' => 'nullable|string',
+            'about_mission_icon' => 'nullable|string|max:255',
             'about_mission_title' => 'nullable|string|max:255',
             'about_mission_description' => 'nullable|string',
         ]);
