@@ -164,7 +164,7 @@ class TicketController extends Controller
 
         $sender = $isAdmin ? 'Admin' : $user->name;
         ActivityLog::create([
-            'user_id' => $ticket->user_id,
+            'user_id' => $user->id,
             'project_id' => $ticket->project_id,
             'related_type' => TicketReply::class,
             'related_id' => $reply->id,
