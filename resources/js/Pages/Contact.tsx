@@ -1,10 +1,10 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { CheckCircle2, Mail, MapPin, Phone, Send } from 'lucide-react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 import { HeroBackground } from '@/Components/HeroBackground';
 import Modal from '@/Components/Modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ContactProps {
     contact_title?: string;
@@ -20,16 +20,20 @@ export default function Contact({ contact_title, contact_email, contact_phone, c
         subject: '',
         message: '',
     });
+    const { flash } = usePage().props as any;
     const [showSuccess, setShowSuccess] = useState(false);
+
+    useEffect(() => {
+        if (flash?.success) {
+            setShowSuccess(true);
+            reset();
+        }
+    }, [flash, reset]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post('/contact', {
             preserveScroll: true,
-            onSuccess: () => {
-                setShowSuccess(true);
-                reset();
-            },
         });
     };
 
