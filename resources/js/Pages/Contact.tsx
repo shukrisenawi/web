@@ -101,10 +101,13 @@ export default function Contact({ contact_title, contact_email, contact_phone, c
                             <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:p-8">
                                 <div className="grid gap-5 sm:grid-cols-2">
                                     <div>
-                                        <label htmlFor="name" className="block text-sm font-medium text-slate-700">Name</label>
+                                        <label htmlFor="name" className="block text-sm font-medium text-slate-700">
+                                            Name <span className="text-red-500">*</span>
+                                        </label>
                                         <input
                                             id="name"
                                             type="text"
+                                            required
                                             value={data.name}
                                             onChange={(e) => setData('name', e.target.value)}
                                             className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
@@ -113,10 +116,13 @@ export default function Contact({ contact_title, contact_email, contact_phone, c
                                         {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
                                     </div>
                                     <div>
-                                        <label htmlFor="email" className="block text-sm font-medium text-slate-700">Email</label>
+                                        <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+                                            Email <span className="text-red-500">*</span>
+                                        </label>
                                         <input
                                             id="email"
                                             type="email"
+                                            required
                                             value={data.email}
                                             onChange={(e) => setData('email', e.target.value)}
                                             className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
@@ -127,10 +133,13 @@ export default function Contact({ contact_title, contact_email, contact_phone, c
                                 </div>
 
                                 <div className="mt-5">
-                                    <label htmlFor="subject" className="block text-sm font-medium text-slate-700">Subject</label>
+                                    <label htmlFor="subject" className="block text-sm font-medium text-slate-700">
+                                        Subject <span className="text-red-500">*</span>
+                                    </label>
                                     <input
                                         id="subject"
                                         type="text"
+                                        required
                                         value={data.subject}
                                         onChange={(e) => setData('subject', e.target.value)}
                                         className="mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
@@ -140,9 +149,12 @@ export default function Contact({ contact_title, contact_email, contact_phone, c
                                 </div>
 
                                 <div className="mt-5">
-                                    <label htmlFor="message" className="block text-sm font-medium text-slate-700">Message</label>
+                                    <label htmlFor="message" className="block text-sm font-medium text-slate-700">
+                                        Message <span className="text-red-500">*</span>
+                                    </label>
                                     <textarea
                                         id="message"
+                                        required
                                         value={data.message}
                                         onChange={(e) => setData('message', e.target.value)}
                                         rows={5}

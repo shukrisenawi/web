@@ -202,15 +202,15 @@ class TicketController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'subject' => ['required', 'string', 'max:255'],
-            'message' => ['nullable', 'string', 'max:5000'],
+            'message' => ['required', 'string', 'max:5000'],
         ]);
 
-        $validated['description'] = $validated['message'] ?? null;
+        $validated['description'] = $validated['message'];
         unset($validated['message']);
 
         $ticket = $this->createTicket($validated, null);
 
-        return redirect()->route('home')->with('success', 'Thank you for your message. We will get back to you soon.');
+        return redirect()->route('contact')->with('success', 'Thank you for your message. We will get back to you soon.');
     }
 
     private function createTicket(array $validated, ?int $userId): Ticket
