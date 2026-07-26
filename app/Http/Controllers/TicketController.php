@@ -37,7 +37,7 @@ class TicketController extends Controller
             ->with('replies.user')
             ->orderByDesc('created_at')
             ->get()
-            ->map(fn ($t) => [
+            ->map(fn($t) => [
                 'id' => $t->ticket_no,
                 'ticket_id' => $t->id,
                 'subject' => $t->subject,
@@ -53,7 +53,7 @@ class TicketController extends Controller
                 'name' => $t->name ?? $t->user?->name,
                 'email' => $t->email ?? $t->user?->email,
                 'date' => $t->created_at->format('M d, Y'),
-                'replies' => $t->replies->map(fn ($r) => [
+                'replies' => $t->replies->map(fn($r) => [
                     'id' => $r->id,
                     'message' => $r->message,
                     'user' => $r->user?->name ?? 'Unknown',
@@ -244,7 +244,7 @@ class TicketController extends Controller
         $frontpage = FrontpageContent::getCurrent();
         $recipient = $frontpage->email_contact_us
             ?? $frontpage->contact_email
-            ?? 'hello@kenjutech.com';
+            ?? 'support@kenjutech.com';
 
         try {
             Mail::to($recipient)->send(new ContactSubmissionMail($validated));
@@ -260,7 +260,7 @@ class TicketController extends Controller
         $latest = Ticket::latest('id')->first();
         $nextNumber = $latest ? ((int) substr($latest->ticket_no, -3)) + 1 : 1;
 
-        $validated['ticket_no'] = 'TKT-'.date('Y').'-'.str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT);
+        $validated['ticket_no'] = 'TKT-' . date('Y') . '-' . str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT);
         $validated['user_id'] = $userId;
         $validated['status'] = 'open';
         $validated['priority'] = $validated['priority'] ?? 'medium';
