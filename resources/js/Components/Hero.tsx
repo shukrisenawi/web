@@ -53,11 +53,11 @@ export function Hero() {
                         </div>
                     </div>
 
-                    <div className="relative hidden lg:block">
+                    <div className="relative">
                         <img
                             src={h.image || '/images/hero.png'}
                             alt="Digital solutions showcase"
-                            className="relative z-10 w-full max-w-none rounded-xl"
+                            className="relative z-10 mx-auto w-full max-w-lg rounded-xl lg:max-w-none"
                         />
                         <div className="absolute -right-16 -top-10 h-56 w-56 rounded-full bg-blue-600/15 blur-3xl"></div>
                         <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-indigo-600/15 blur-3xl"></div>

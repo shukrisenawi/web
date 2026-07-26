@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\FrontpageContentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class FrontpageContent extends Model
 {
-    /** @use HasFactory<\Database\Factories\FrontpageContentFactory> */
+    /** @use HasFactory<FrontpageContentFactory> */
     use HasFactory;
 
     protected $table = 'frontpage_contents';
@@ -46,7 +48,7 @@ class FrontpageContent extends Model
     {
         return [
             'hero_badge' => 'Digital solutions that drive growth',
-            'hero_title' => "We build digital products that move your business forward.",
+            'hero_title' => 'We build digital products that move your business forward.',
             'hero_subtitle' => 'Kenju Tech helps businesses grow with modern websites, powerful applications and digital strategies that deliver results.',
             'hero_primary_cta' => 'Explore Services',
             'hero_primary_link' => '/services',
@@ -62,7 +64,7 @@ class FrontpageContent extends Model
             ],
             'home_hero' => [
                 'badge' => 'Digital solutions that drive growth',
-                'title' => "We build digital products that move your business forward.",
+                'title' => 'We build digital products that move your business forward.',
                 'subtitle' => 'Kenju Tech helps businesses grow with modern websites, powerful applications and digital strategies that deliver results.',
                 'image' => '/images/hero.png',
                 'primary_cta' => 'Explore Services',
@@ -268,6 +270,15 @@ class FrontpageContent extends Model
 
     public static function getCurrent(): self
     {
-        return self::query()->firstOrCreate([], self::defaultRecord());
+        // Only seed columns that already exist in the table so fresh migrations
+        // do not fail when an early migration triggers getCurrent() before all
+        // frontpage_content columns have been added.
+        $columns = once(function () {
+            return Schema::getColumnListing((new static)->getTable());
+        });
+
+        $defaults = array_intersect_key(self::defaultRecord(), array_flip($columns));
+
+        return self::query()->firstOrCreate([], $defaults);
     }
 }
