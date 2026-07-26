@@ -118,6 +118,7 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
     Route::get('/support', [TicketController::class, 'index'])->name('support');
     Route::post('/support', [TicketController::class, 'store'])->name('tickets.store');
     Route::post('/support/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
+    Route::delete('/support/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
 
     /** Client: Appointments */
     Route::get('/appointments', [ProjectRequestController::class, 'index'])->name('appointments');
@@ -138,7 +139,6 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
         Route::put('/payment-proofs/{proof}/verify', [PaymentController::class, 'verify'])->name('payment.proof.verify');
 
         Route::put('/support/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
-        Route::delete('/support/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
 
         Route::get('/clients', [\App\Http\Controllers\ClientDatabaseController::class, 'index'])->name('clients');
         Route::put('/clients/{client}', [\App\Http\Controllers\ClientDatabaseController::class, 'update'])->name('clients.update');

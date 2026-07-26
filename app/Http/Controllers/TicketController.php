@@ -43,6 +43,7 @@ class TicketController extends Controller
                 'last_reply_by' => $t->last_reply_by,
                 'can_reply' => $t->status !== 'resolved'
                     && ($isAdmin || $t->last_reply_by !== 'client'),
+                'can_delete' => $isAdmin || ($t->user_id === $user->id && $t->replies->isEmpty()),
                 'priority' => $t->priority,
                 'project' => $t->project?->title,
                 'client' => $t->user?->company ?? $t->user?->name,
@@ -180,17 +181,22 @@ class TicketController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        if (! $user->isAdmin()) {
+        $isAdmin = $user->isAdmin();
+        $isOwner = $ticket->user_id === $user->id;
+        $unreplied = $ticket->replies()->count() === 0;
+
+        if (! $isAdmin && ! ($isOwner && $unreplied)) {
             abort(403);
         }
 
         $ticket->delete();
 
+        $actor = $isAdmin ? 'admin' : 'client';
         ActivityLog::create([
             'user_id' => $user->id,
             'project_id' => $ticket->project_id,
             'type' => 'ticket',
-            'description' => "Ticket {$ticket->ticket_no} was deleted by admin",
+            'description' => "Ticket {$ticket->ticket_no} was deleted by {$actor}",
         ]);
 
         return redirect()->route('support')->with('success', 'Ticket deleted successfully.');

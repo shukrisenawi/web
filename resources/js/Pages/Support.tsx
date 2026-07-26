@@ -26,6 +26,7 @@ interface Ticket {
     date: string;
     replies: Reply[];
     can_reply?: boolean;
+    can_delete?: boolean;
 }
 
 interface SupportProps {
@@ -228,7 +229,7 @@ export default function Support({ tickets }: SupportProps) {
                                     >
                                         <MessageSquare className="h-4 w-4" />
                                     </button>
-                                    {isAdmin && (
+                                    {t.can_delete && (
                                         <button
                                             onClick={() => deleteTicket(t.ticket_id)}
                                             className="rounded-lg border border-slate-200 p-2 text-slate-400 hover:text-red-500"
