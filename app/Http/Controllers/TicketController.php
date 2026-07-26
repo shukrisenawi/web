@@ -50,13 +50,16 @@ class TicketController extends Controller
                 'name' => $t->name ?? $t->user?->name,
                 'email' => $t->email ?? $t->user?->email,
                 'date' => $t->created_at->format('M d, Y'),
-                'replies' => $t->replies->map(fn ($r) => [
-                    'id' => $r->id,
-                    'message' => $r->message,
-                    'user' => $r->user?->name ?? 'Unknown',
-                    'is_admin' => $r->user?->isAdmin() ?? false,
-                    'date' => $r->created_at->format('M d, Y h:i A'),
-                ]),
+                'replies' => $t->replies
+                    ->sortByDesc('created_at')
+                    ->values()
+                    ->map(fn ($r) => [
+                        'id' => $r->id,
+                        'message' => $r->message,
+                        'user' => $r->user?->name ?? 'Unknown',
+                        'is_admin' => $r->user?->isAdmin() ?? false,
+                        'date' => $r->created_at->format('M d, Y h:i A'),
+                    ]),
             ]);
 
         return Inertia::render('Support', [
