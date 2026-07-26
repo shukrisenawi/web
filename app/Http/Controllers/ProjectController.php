@@ -163,7 +163,7 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $user = Auth::user();
-        if (!$user->isAdmin() && $project->user_id !== $user->id) {
+        if (! $user->isAdmin() && $project->user_id !== $user->id) {
             abort(403);
         }
 
@@ -227,8 +227,8 @@ class ProjectController extends Controller
         $ownerId = $user->isAdmin() ? $validated['user_id'] : $user->id;
 
         $systemType = $validated['system_type'] ?? null;
-        if ($systemType === 'Other' && !empty($validated['system_type_other'])) {
-            $systemType = 'Other: ' . $validated['system_type_other'];
+        if ($systemType === 'Other' && ! empty($validated['system_type_other'])) {
+            $systemType = 'Other: '.$validated['system_type_other'];
         }
 
         $project = Project::create([
@@ -241,7 +241,7 @@ class ProjectController extends Controller
             'user_roles' => $validated['user_roles'] ?? null,
             'integrations' => $validated['integrations'] ?? null,
             'budget' => $validated['budget'] ?? null,
-            'deadline' => !empty($validated['deadline']) ? $validated['deadline'] : null,
+            'deadline' => ! empty($validated['deadline']) ? $validated['deadline'] : null,
             'hosting_domain' => $validated['hosting_domain'] ?? null,
             'additional_notes' => $validated['additional_notes'] ?? null,
             'description' => $validated['description'] ?? null,
@@ -273,7 +273,7 @@ class ProjectController extends Controller
             'related_type' => Project::class,
             'related_id' => $project->id,
             'type' => 'project',
-            'description' => "Project \"{$project->title}\" was created by " . ($user->isAdmin() ? 'Admin' : $user->name),
+            'description' => "Project \"{$project->title}\" was created by ".($user->isAdmin() ? 'Admin' : $user->name),
         ]);
 
         return redirect()->route('projects')->with('success', 'Project created successfully.');
@@ -312,8 +312,8 @@ class ProjectController extends Controller
                 'request_quotation' => ['boolean'],
             ]);
 
-            if (!empty($validated['system_type']) && $validated['system_type'] === 'Other' && !empty($validated['system_type_other'])) {
-                $validated['system_type'] = 'Other: ' . $validated['system_type_other'];
+            if (! empty($validated['system_type']) && $validated['system_type'] === 'Other' && ! empty($validated['system_type_other'])) {
+                $validated['system_type'] = 'Other: '.$validated['system_type_other'];
             }
             unset($validated['system_type_other']);
         }
@@ -344,13 +344,19 @@ class ProjectController extends Controller
             abort(403);
         }
 
+        $projectId = $project->id;
+        $projectTitle = $project->title;
+        $userId = $project->user_id;
+
         $project->delete();
 
         ActivityLog::create([
-            'user_id' => $project->user_id,
-            'project_id' => $project->id,
+            'user_id' => $userId,
+            'project_id' => null,
+            'related_type' => Project::class,
+            'related_id' => $projectId,
             'type' => 'project',
-            'description' => "Project \"{$project->title}\" was deleted by admin",
+            'description' => "Project \"{$projectTitle}\" was deleted by admin",
         ]);
 
         return redirect()->back()->with('success', 'Project deleted successfully.');
@@ -386,7 +392,7 @@ class ProjectController extends Controller
             'related_type' => FileUpload::class,
             'related_id' => $upload->id,
             'type' => 'file',
-            'description' => "File \"{$upload->filename}\" uploaded to project \"{$project->title}\" by " . ($user->isAdmin() ? 'Admin' : $user->name),
+            'description' => "File \"{$upload->filename}\" uploaded to project \"{$project->title}\" by ".($user->isAdmin() ? 'Admin' : $user->name),
         ]);
 
         return redirect()->back()->with('success', 'File uploaded successfully.');
@@ -436,7 +442,7 @@ class ProjectController extends Controller
             'project_id' => $project->id,
             'title' => $validated['title'],
             'note' => $validated['note'] ?? null,
-            'due_date' => !empty($validated['due_date']) ? $validated['due_date'] : null,
+            'due_date' => ! empty($validated['due_date']) ? $validated['due_date'] : null,
             'is_active' => false,
         ]);
 
