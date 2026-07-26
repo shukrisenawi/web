@@ -250,6 +250,8 @@ class TicketController extends Controller
             Mail::to($recipient)->send(new ContactSubmissionMail($validated));
         } catch (\Throwable $e) {
             report($e);
+
+            return redirect()->route('contact')->with('error', 'Sorry, we could not send your message at this time. Please try again later or contact us directly.');
         }
 
         return redirect()->route('contact')->with('success', 'Thank you for your message. We will get back to you soon.');

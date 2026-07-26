@@ -22,11 +22,15 @@ export default function Contact({ contact_title, contact_email, contact_phone, c
     });
     const { flash } = usePage().props as any;
     const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
 
     useEffect(() => {
         if (flash?.success) {
             setShowSuccess(true);
             reset();
+        }
+        if (flash?.error) {
+            setShowError(true);
         }
     }, [flash, reset]);
 
@@ -57,6 +61,11 @@ export default function Contact({ contact_title, contact_email, contact_phone, c
 
                 <section className="py-20">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        {showError && (
+                            <div className="mb-8 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+                                <p className="text-sm font-medium">{flash.error}</p>
+                            </div>
+                        )}
                         <div className="grid gap-12 lg:grid-cols-[1fr_1.5fr]">
                             {/* Contact info */}
                             <div className="space-y-8">
