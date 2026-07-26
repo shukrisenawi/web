@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactSubmissionMail;
 use App\Models\ActivityLog;
+use App\Models\FrontpageContent;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -238,10 +241,16 @@ class TicketController extends Controller
             'message' => ['required', 'string', 'max:5000'],
         ]);
 
-        $validated['description'] = $validated['message'];
-        unset($validated['message']);
+        $frontpage = FrontpageContent::getCurrent();
+        $recipient = $frontpage->email_contact_us
+            ?? $frontpage->contact_email
+            ?? 'hello@kenjutech.com';
 
-        $ticket = $this->createTicket($validated, null);
+        try {
+            Mail::to($recipient)->send(new ContactSubmissionMail($validated));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return redirect()->route('contact')->with('success', 'Thank you for your message. We will get back to you soon.');
     }

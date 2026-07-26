@@ -194,6 +194,7 @@ class FrontpageContent extends Model
             'about_mission_description' => 'To empower businesses with smart digital solutions that are scalable, reliable, and future-ready.',
             'contact_title' => "Let's start a conversation",
             'contact_email' => 'hello@kenjutech.com',
+            'email_contact_us' => 'hello@kenjutech.com',
             'contact_phone' => '+60 12-345 6789',
             'contact_office' => 'Kuala Lumpur, Malaysia',
             'services_title' => 'Services We Provide',

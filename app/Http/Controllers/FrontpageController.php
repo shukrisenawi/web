@@ -91,6 +91,7 @@ class FrontpageController extends Controller
             'about_mission_description' => 'nullable|string',
             'contact_title' => 'nullable|string|max:255',
             'contact_email' => 'nullable|string|max:255',
+            'email_contact_us' => 'nullable|email|max:255',
             'contact_phone' => 'nullable|string|max:255',
             'contact_office' => 'nullable|string',
             'invoice_company_name' => 'nullable|string|max:255',

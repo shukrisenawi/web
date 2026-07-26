@@ -1048,6 +1048,14 @@ export default function ManageFrontpage({ content }: ManageFrontpageProps) {
                                         className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                                     />
                                 </Field>
+                                <Field label="Contact Form Recipient Email">
+                                    <input
+                                        type="email"
+                                        value={data.email_contact_us || ''}
+                                        onChange={(e) => setData('email_contact_us', e.target.value)}
+                                        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                    />
+                                </Field>
                                 <Field label="Phone">
                                     <input
                                         type="text"
