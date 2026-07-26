@@ -139,6 +139,7 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
         Route::put('/payment-proofs/{proof}/verify', [PaymentController::class, 'verify'])->name('payment.proof.verify');
 
         Route::put('/support/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
+        Route::delete('/support/{ticket}/replies/{reply}', [TicketController::class, 'destroyReply'])->name('tickets.replies.destroy');
 
         Route::get('/clients', [\App\Http\Controllers\ClientDatabaseController::class, 'index'])->name('clients');
         Route::put('/clients/{client}', [\App\Http\Controllers\ClientDatabaseController::class, 'update'])->name('clients.update');

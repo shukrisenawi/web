@@ -202,6 +202,33 @@ class TicketController extends Controller
         return redirect()->route('support')->with('success', 'Ticket deleted successfully.');
     }
 
+    public function destroyReply(Ticket $ticket, TicketReply $reply)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user->isAdmin()) {
+            abort(403);
+        }
+
+        if ($reply->ticket_id !== $ticket->id) {
+            abort(404);
+        }
+
+        $reply->delete();
+
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'project_id' => $ticket->project_id,
+            'related_type' => TicketReply::class,
+            'related_id' => $reply->id,
+            'type' => 'ticket',
+            'description' => "Admin deleted a reply from ticket {$ticket->ticket_no}",
+        ]);
+
+        return redirect()->route('support')->with('success', 'Reply deleted successfully.');
+    }
+
     public function storeFromContact(Request $request)
     {
         $validated = $request->validate([

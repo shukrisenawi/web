@@ -65,6 +65,7 @@ export default function Support({ tickets }: SupportProps) {
     const [viewId, setViewId] = useState<number | null>(null);
     const [activeTab, setActiveTab] = useState<Tab>('all');
     const [deleteId, setDeleteId] = useState<number | null>(null);
+    const [deleteReplyId, setDeleteReplyId] = useState<number | null>(null);
 
     const filteredTickets = activeTab === 'all' ? tickets : tickets.filter((t) => t.status === activeTab);
 
@@ -127,6 +128,16 @@ export default function Support({ tickets }: SupportProps) {
         if (deleteId === null) return;
         router.delete(`/support/${deleteId}`);
         setDeleteId(null);
+    };
+
+    const deleteReply = (id?: number) => {
+        if (id === undefined) return;
+        setDeleteReplyId(id);
+    };
+    const confirmDeleteReply = () => {
+        if (deleteReplyId === null || viewId === null) return;
+        router.delete(`/support/${viewId}/replies/${deleteReplyId}`);
+        setDeleteReplyId(null);
     };
 
     return (
@@ -368,11 +379,22 @@ export default function Support({ tickets }: SupportProps) {
                                                     : 'mr-6 border border-slate-100 bg-white'
                                             }`}
                                         >
-                                            <div className="mb-1 flex items-center gap-2 text-xs">
-                                                <span className={`font-semibold ${r.is_admin ? 'text-blue-700' : 'text-slate-700'}`}>
-                                                    {r.is_admin ? 'Admin' : r.user}
-                                                </span>
-                                                <span className="text-slate-400">{r.date}</span>
+                                            <div className="mb-1 flex items-center justify-between gap-2 text-xs">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`font-semibold ${r.is_admin ? 'text-blue-700' : 'text-slate-700'}`}>
+                                                        {r.is_admin ? 'Admin' : r.user}
+                                                    </span>
+                                                    <span className="text-slate-400">{r.date}</span>
+                                                </div>
+                                                {isAdmin && (
+                                                    <button
+                                                        onClick={() => deleteReply(r.id)}
+                                                        className="text-slate-400 hover:text-red-500"
+                                                        title="Delete reply"
+                                                    >
+                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                    </button>
+                                                )}
                                             </div>
                                             <p className="whitespace-pre-wrap text-sm text-slate-700">{r.message}</p>
                                         </div>
@@ -460,6 +482,16 @@ export default function Support({ tickets }: SupportProps) {
                 onConfirm={confirmDeleteTicket}
                 title="Delete Ticket"
                 message="Are you sure you want to delete this ticket?"
+                confirmText="Delete"
+                confirmColor="red"
+            />
+
+            <ConfirmModal
+                open={deleteReplyId !== null}
+                onClose={() => setDeleteReplyId(null)}
+                onConfirm={confirmDeleteReply}
+                title="Delete Reply"
+                message="Are you sure you want to delete this reply?"
                 confirmText="Delete"
                 confirmColor="red"
             />
