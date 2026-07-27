@@ -157,6 +157,7 @@ class InvoiceController extends Controller
         ]);
 
         try {
+            $invoice->load('items');
             Mail::to($client)->send(new NewInvoiceMail($invoice));
         } catch (\Throwable $e) {
             // silently fail — email is not critical

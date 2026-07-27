@@ -28,6 +28,10 @@ class NewInvoiceMail extends Mailable
     {
         return new Content(
             view: 'emails.new-invoice',
+            with: [
+                'viewUrl' => route('invoices.show', $this->invoice),
+                'paymentUrl' => $this->invoice->payment_url ?: route('payment.show', $this->invoice->invoice_no),
+            ],
         );
     }
 }
