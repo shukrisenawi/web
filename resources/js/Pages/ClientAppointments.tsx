@@ -1,7 +1,6 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { Calendar, CalendarClock, CheckCircle2, Clock, Loader2, Plus, X } from 'lucide-react';
 import { useState } from 'react';
-import { setHours, setMinutes } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DashboardLayout } from '@/Layouts/Dashboard';
@@ -142,8 +141,8 @@ export default function ClientAppointments({ appointments = [] }: { appointments
     const [appointmentTime, setAppointmentTime] = useState<Date | null>(null);
 
     const timeBase = datePickerOpen || new Date();
-    const minTime = setHours(setMinutes(timeBase, 0), 8);
-    const maxTime = setHours(setMinutes(timeBase, 0), 18);
+    const minTime = new Date(timeBase.getFullYear(), timeBase.getMonth(), timeBase.getDate(), 8, 0, 0, 0);
+    const maxTime = new Date(timeBase.getFullYear(), timeBase.getMonth(), timeBase.getDate(), 18, 0, 0, 0);
 
     const validate = () => {
         form.clearErrors();

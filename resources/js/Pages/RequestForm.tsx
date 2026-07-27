@@ -1,7 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { CheckCircle2, Calendar, Clock, MapPin, MonitorPlay, Check } from 'lucide-react';
 import { useState } from 'react';
-import { setHours, setMinutes } from 'date-fns';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -133,8 +132,8 @@ export default function RequestForm() {
     const [appointmentTime, setAppointmentTime] = useState<Date | null>(null);
 
     const timeBase = appointmentDate || new Date();
-    const minTime = setHours(setMinutes(timeBase, 0), 8);
-    const maxTime = setHours(setMinutes(timeBase, 0), 18);
+    const minTime = new Date(timeBase.getFullYear(), timeBase.getMonth(), timeBase.getDate(), 8, 0, 0, 0);
+    const maxTime = new Date(timeBase.getFullYear(), timeBase.getMonth(), timeBase.getDate(), 18, 0, 0, 0);
 
     const validate = (): boolean => {
         clearErrors();
