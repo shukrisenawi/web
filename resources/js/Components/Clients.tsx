@@ -36,7 +36,7 @@ export function Clients() {
     return (
         <section className="border-y border-slate-200 bg-slate-50 py-12">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="mb-8 text-center md:mb-10">
+                <div className="mb-8 flex items-center justify-center gap-3 text-center md:mb-10">
                     <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600">Trusted By</p>
                     <p className="font-bold text-slate-900">{c.clients_title || 'GREAT COMPANIES'}</p>
                 </div>
