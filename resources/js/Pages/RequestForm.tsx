@@ -96,6 +96,12 @@ function formatTimeFromDate(date: Date | null): string {
     return `${hour}:${minuteStr} ${ampm}`;
 }
 
+function buildTime(date: Date | null, hour: number, minute: number): Date {
+    const base = date ? new Date(date) : new Date();
+    base.setHours(hour, minute, 0, 0);
+    return base;
+}
+
 export default function RequestForm() {
     const { data, setData, post, processing, errors, setError, clearErrors } = useForm<{
         company_name: string;
@@ -168,6 +174,14 @@ export default function RequestForm() {
         if (!validateTimeFormat(formattedTime)) {
             setError('appointment_time', 'Please enter time as h:mm AM/PM (e.g. 2:30 PM)');
             valid = false;
+        } else {
+            const parsed = parseTimeInput(formattedTime);
+            if (parsed) {
+                if (parsed.hour < 8 || parsed.hour > 18 || (parsed.hour === 18 && parsed.minute > 0)) {
+                    setError('appointment_time', 'Please choose a time between 8:00 AM and 6:00 PM');
+                    valid = false;
+                }
+            }
         }
         if (!data.message.trim()) {
             setError('message', 'Please enter a message');
@@ -377,6 +391,8 @@ export default function RequestForm() {
                                                     <Clock className="h-4 w-4 text-slate-400" />
                                                 }
                                                 popperPlacement="bottom-start"
+                                                minTime={buildTime(appointmentDate, 8, 0)}
+                                                maxTime={buildTime(appointmentDate, 18, 0)}
                                             />
                                         </div>
                                         {errors.appointment_time && <p className="mt-1 text-xs text-red-600">{errors.appointment_time}</p>}
