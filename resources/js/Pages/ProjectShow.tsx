@@ -23,7 +23,6 @@ interface Project {
     features?: string | null;
     user_roles?: string | null;
     integrations?: string | null;
-    budget?: string | null;
     deadline?: string | null;
     hosting_domain?: string | null;
     additional_notes?: string | null;

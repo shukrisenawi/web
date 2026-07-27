@@ -44,7 +44,6 @@ class ClientDatabaseController extends Controller
                         'features' => $request->features,
                         'user_roles' => $request->user_roles,
                         'integrations' => $request->integrations,
-                        'budget' => $request->budget,
                         'deadline' => $request->deadline?->format('M d, Y'),
                         'hosting_domain' => $request->hosting_domain,
                         'additional_notes' => $request->additional_notes,

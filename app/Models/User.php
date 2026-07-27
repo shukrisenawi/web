@@ -35,16 +35,17 @@ use Illuminate\Notifications\Notifiable;
             ];
         }
 
-        public function isAdmin(): bool
-        {
-            return $this->role === self::ROLE_ADMIN;
-        }
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
 
-        public function isClient(): bool
-        {
-            return $this->role === self::ROLE_CLIENT;
-        }
+    public function isClient(): bool
+    {
+        return $this->role === self::ROLE_CLIENT;
+    }
 
+    /** @return HasMany<Project, $this> */
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);

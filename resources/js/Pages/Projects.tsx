@@ -26,7 +26,6 @@ interface Project {
     features?: string | null;
     user_roles?: string | null;
     integrations?: string | null;
-    budget?: string | null;
     deadline?: string | null;
     hosting_domain?: string | null;
     additional_notes?: string | null;
@@ -315,11 +314,6 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                 {project.integrations && (
                                     <p className="text-xs text-slate-500">
                                         <span className="font-semibold">Integrations:</span> {project.integrations.length > 60 ? project.integrations.slice(0, 60) + '…' : project.integrations}
-                                    </p>
-                                )}
-                                {project.budget && (
-                                    <p className="text-xs text-slate-500">
-                                        <span className="font-semibold">Budget:</span> {project.budget}
                                     </p>
                                 )}
                                 {project.deadline && (

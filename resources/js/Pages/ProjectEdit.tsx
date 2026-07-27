@@ -39,7 +39,6 @@ interface ProjectData {
     features: string | null;
     user_roles: string | null;
     integrations: string | null;
-    budget: string | null;
     project_price?: number | string | null;
     deadline: string | null;
     hosting_domain: string | null;
@@ -84,7 +83,6 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
         features: project.features ?? '',
         user_roles: project.user_roles ?? '',
         integrations: project.integrations ?? '',
-        budget: project.budget ?? '',
         deadline: project.deadline ?? '',
         hosting_domain: project.hosting_domain ?? '',
         additional_notes: project.additional_notes ?? '',
@@ -111,6 +109,12 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
         if (s === 1) {
             if (!form.data.title.trim()) {
                 form.setError('title', 'Please enter a project title');
+                valid = false;
+            }
+        }
+        if (s === 2) {
+            if (!form.data.project_price.trim() || Number(form.data.project_price) <= 0) {
+                form.setError('project_price', 'Please enter a valid project price');
                 valid = false;
             }
         }
@@ -279,23 +283,26 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
                             </div>
                         )}
 
-                        {/* Step 2 - Budget & Timeline */}
+                        {/* Step 2 - Pricing & Timeline */}
                         {step === 2 && (
                             <div className="space-y-5">
                                 <div>
-                                    <h2 className="mb-1 text-lg font-semibold text-slate-900">Budget &amp; Timeline</h2>
-                                    <p className="text-sm text-slate-500">Budget, deadline &amp; hosting.</p>
+                                    <h2 className="mb-1 text-lg font-semibold text-slate-900">Pricing &amp; Timeline</h2>
+                                    <p className="text-sm text-slate-500">Project price, deadline &amp; hosting.</p>
                                 </div>
                                 <div>
-                                    <label htmlFor="budget" className={labelClass}>Budget <span className="text-red-500">*</span></label>
+                                    <label htmlFor="project-price" className={labelClass}>Project Price (RM) <span className="text-red-500">*</span></label>
                                     <input
-                                        id="budget"
-                                        value={form.data.budget}
-                                        onChange={(e) => form.setData('budget', e.target.value)}
+                                        id="project-price"
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        value={form.data.project_price}
+                                        onChange={(e) => form.setData('project_price', e.target.value)}
                                         className={inputClass}
-                                        placeholder="e.g. RM 10,000 - RM 20,000"
+                                        placeholder="e.g. 15000.00"
                                     />
-                                    {form.errors.budget && <p className="mt-1 text-xs text-red-500">{form.errors.budget}</p>}
+                                    {form.errors.project_price && <p className="mt-1 text-xs text-red-500">{form.errors.project_price}</p>}
                                 </div>
                                 <div>
                                     <label htmlFor="deadline" className={labelClass}>Deadline <span className="text-red-500">*</span></label>
@@ -410,7 +417,7 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
                                     <dl className="grid gap-2 text-sm sm:grid-cols-2">
                                         <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Title</dt><dd className="text-slate-700">{form.data.title || <span className="text-slate-300">—</span>}</dd></div>
                                         <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">System Type</dt><dd className="text-slate-700">{form.data.system_type === 'Other' && form.data.system_type_other ? `Other: ${form.data.system_type_other}` : form.data.system_type || <span className="text-slate-300">—</span>}</dd></div>
-                                        <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Budget</dt><dd className="text-slate-700">{form.data.budget || <span className="text-slate-300">—</span>}</dd></div>
+                                        <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Project Price</dt><dd className="text-slate-700">{form.data.project_price ? `RM ${form.data.project_price}` : <span className="text-slate-300">—</span>}</dd></div>
                                         <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Deadline</dt><dd className="text-slate-700">{form.data.deadline || <span className="text-slate-300">—</span>}</dd></div>
                                     </dl>
                                 </div>

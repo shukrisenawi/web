@@ -17,8 +17,11 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         $status = $request->query('status');
         $search = $request->query('search');
@@ -67,9 +70,8 @@ class ProjectController extends Controller
                     'features' => $p->features,
                     'user_roles' => $p->user_roles,
                     'integrations' => $p->integrations,
-                    'budget' => $p->budget,
-                    'project_price' => $projectPrice > 0 ? number_format($projectPrice, 2) : null,
-                    'deadline' => $p->deadline?->format('Y-m-d'),
+                'project_price' => $projectPrice > 0 ? number_format($projectPrice, 2) : null,
+                'deadline' => $p->deadline?->format('Y-m-d'),
                     'hosting_domain' => $p->hosting_domain,
                     'additional_notes' => $p->additional_notes,
                     'description' => $p->description,
@@ -104,8 +106,11 @@ class ProjectController extends Controller
 
     public function create(Request $request)
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         return Inertia::render('ProjectCreate', [
             'clients' => $user->isAdmin()
@@ -119,8 +124,11 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         if (! $user->isAdmin() && $project->user_id !== $user->id) {
             abort(403);
@@ -145,7 +153,6 @@ class ProjectController extends Controller
                 'features' => $project->features,
                 'user_roles' => $project->user_roles,
                 'integrations' => $project->integrations,
-                'budget' => $project->budget,
                 'project_price' => $projectPrice > 0 ? number_format($projectPrice, 2) : null,
                 'deadline' => $project->deadline?->format('Y-m-d'),
                 'hosting_domain' => $project->hosting_domain,
@@ -174,7 +181,11 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
         if (! $user->isAdmin() && $project->user_id !== $user->id) {
             abort(403);
         }
@@ -196,8 +207,11 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         $rules = [
             'title' => ['required', 'string', 'max:255'],
@@ -207,8 +221,7 @@ class ProjectController extends Controller
             'features' => ['nullable', 'string', 'max:5000'],
             'user_roles' => ['nullable', 'string', 'max:5000'],
             'integrations' => ['nullable', 'string', 'max:5000'],
-            'budget' => ['nullable', 'string', 'max:255'],
-            'project_price' => ['nullable', 'numeric', 'min:0'],
+            'project_price' => ['required', 'numeric', 'min:0'],
             'deadline' => ['nullable', 'date'],
             'hosting_domain' => ['nullable', 'string', 'max:2000'],
             'additional_notes' => ['nullable', 'string', 'max:5000'],
@@ -253,8 +266,7 @@ class ProjectController extends Controller
             'features' => $validated['features'] ?? null,
             'user_roles' => $validated['user_roles'] ?? null,
             'integrations' => $validated['integrations'] ?? null,
-            'budget' => $validated['budget'] ?? null,
-            'project_price' => $validated['project_price'] ?? null,
+            'project_price' => $validated['project_price'],
             'deadline' => ! empty($validated['deadline']) ? $validated['deadline'] : null,
             'hosting_domain' => $validated['hosting_domain'] ?? null,
             'additional_notes' => $validated['additional_notes'] ?? null,
@@ -295,15 +307,18 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         if ($user->isAdmin()) {
             $validated = $request->validate([
                 'progress' => ['required', 'integer', 'min:0', 'max:100'],
                 'status' => ['required', Rule::in(['in_progress', 'completed', 'on_hold'])],
                 'payment_status' => ['required', Rule::in(['unpaid', 'partial', 'paid'])],
-                'project_price' => ['nullable', 'numeric', 'min:0'],
+                'project_price' => ['required', 'numeric', 'min:0'],
                 'key_person' => ['nullable', 'string', 'max:255'],
                 'status_remark' => ['nullable', 'string', 'max:5000'],
             ]);
@@ -319,7 +334,7 @@ class ProjectController extends Controller
                 'features' => ['nullable', 'string', 'max:5000'],
                 'user_roles' => ['nullable', 'string', 'max:5000'],
                 'integrations' => ['nullable', 'string', 'max:5000'],
-                'budget' => ['nullable', 'string', 'max:255'],
+                'project_price' => ['required', 'numeric', 'min:0'],
                 'deadline' => ['nullable', 'date'],
                 'hosting_domain' => ['nullable', 'string', 'max:2000'],
                 'additional_notes' => ['nullable', 'string', 'max:5000'],
@@ -352,8 +367,11 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         if (! $user->isAdmin()) {
             abort(403);
@@ -379,7 +397,11 @@ class ProjectController extends Controller
 
     public function uploadFile(Request $request, Project $project)
     {
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         if (! $user->isAdmin() && $project->user_id !== $user->id) {
             abort(403);
@@ -415,7 +437,11 @@ class ProjectController extends Controller
 
     public function deleteFile(Project $project, FileUpload $file)
     {
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
         if (! $user->isAdmin() && $project->user_id !== $user->id) {
             abort(403);
         }
@@ -439,8 +465,11 @@ class ProjectController extends Controller
 
     public function storeMilestone(Request $request, Project $project)
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         if (! $user->isAdmin()) {
             abort(403);
@@ -477,8 +506,11 @@ class ProjectController extends Controller
 
     public function updateMilestone(Request $request, Project $project, Milestone $milestone)
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         if (! $user->isAdmin() || $milestone->project_id !== $project->id) {
             abort(403);
@@ -507,8 +539,11 @@ class ProjectController extends Controller
 
     public function destroyMilestone(Project $project, Milestone $milestone)
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(401);
+        }
 
         if (! $user->isAdmin() || $milestone->project_id !== $project->id) {
             abort(403);

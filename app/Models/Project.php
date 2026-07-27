@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'title', 'category', 'service_type', 'system_type', 'system_type_other', 'features', 'user_roles', 'integrations', 'budget', 'project_price', 'deadline', 'hosting_domain', 'additional_notes', 'description', 'key_person', 'status_remark', 'progress', 'status', 'payment_status', 'icon_color'])]
+#[Fillable(['user_id', 'title', 'category', 'service_type', 'system_type', 'system_type_other', 'features', 'user_roles', 'integrations', 'project_price', 'deadline', 'hosting_domain', 'additional_notes', 'description', 'key_person', 'status_remark', 'progress', 'status', 'payment_status', 'icon_color'])]
 class Project extends Model
 {
     /** @use HasFactory\Database\Factories\ProjectFactory */
