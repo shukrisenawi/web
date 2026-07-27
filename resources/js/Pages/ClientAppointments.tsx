@@ -60,12 +60,6 @@ function formatTimeValue(value: string): string {
     return `${displayHour}:${displayMinute} ${ampm}`;
 }
 
-function buildTime(date: Date | null, hour: number, minute: number): Date {
-    const base = date ? new Date(date) : new Date();
-    base.setHours(hour, minute, 0, 0);
-    return base;
-}
-
 function formatDateToDdMmYyyy(date: Date | null): string {
     if (!date) return '';
     const day = String(date.getDate()).padStart(2, '0');
@@ -134,15 +128,6 @@ export default function ClientAppointments({ appointments = [] }: { appointments
         if (!form.data.appointment_type) { form.setError('appointment_type', 'Select appointment type'); valid = false; }
         if (!form.data.appointment_date) { form.setError('appointment_date', 'Select a date'); valid = false; }
         if (!form.data.appointment_time || !/^\d{1,2}:\d{2} (AM|PM)$/i.test(form.data.appointment_time.trim())) { form.setError('appointment_time', 'Enter valid time (e.g. 2:30 PM)'); valid = false; }
-        else {
-            const parsed = parseTimeInput(form.data.appointment_time);
-            if (parsed) {
-                if (parsed.hour < 8 || parsed.hour > 18 || (parsed.hour === 18 && parsed.minute > 0)) {
-                    form.setError('appointment_time', 'Please choose a time between 8:00 AM and 6:00 PM');
-                    valid = false;
-                }
-            }
-        }
         if (!form.data.message.trim()) { form.setError('message', 'Enter a message'); valid = false; }
         return valid;
     };
