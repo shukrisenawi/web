@@ -29,7 +29,7 @@ class InvoiceController extends Controller
 
         $invoices = $query
             ->when($status, fn ($q) => $q->where('status', $status))
-            ->orderByDesc('issue_date')
+            ->orderByDesc('created_at')
             ->get()
             ->map(fn ($i) => $this->formatInvoice($i));
 
