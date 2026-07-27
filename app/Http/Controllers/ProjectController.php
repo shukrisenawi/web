@@ -314,7 +314,7 @@ class ProjectController extends Controller
                 'progress' => ['required', 'integer', 'min:0', 'max:100'],
                 'status' => ['required', Rule::in(['in_progress', 'completed', 'on_hold'])],
                 'payment_status' => ['required', Rule::in(['unpaid', 'partial', 'paid'])],
-                'project_price' => ['required', 'numeric', 'min:0'],
+                'project_price' => ['nullable', 'numeric', 'min:0'],
                 'key_person' => ['nullable', 'string', 'max:255'],
                 'status_remark' => ['nullable', 'string', 'max:5000'],
             ]);
