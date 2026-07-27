@@ -136,6 +136,21 @@ class PaymentController extends Controller
         $proof->update($updateData);
 
         if ($validated['status'] === 'verified') {
+            $totalVerified = (float) $invoice->paymentProofs()
+                ->where('status', 'verified')
+                ->sum('amount');
+
+            if ($invoice->project_id) {
+                $project = $invoice->project;
+                $projectPrice = (float) ($project->project_price ?? 0);
+
+                if ($projectPrice > 0) {
+                    $project->update([
+                        'payment_status' => $totalVerified >= $projectPrice ? 'paid' : 'partial',
+                    ]);
+                }
+            }
+
             $invoice->update(['status' => 'paid', 'paid_at' => now()]);
 
             ActivityLog::create([
@@ -181,6 +196,21 @@ class PaymentController extends Controller
         $invoice = $proof->invoice;
         $oldAmount = $proof->amount;
         $proof->update(['amount' => $validated['amount']]);
+
+        if ($proof->status === 'verified' && $invoice->project_id) {
+            $project = $invoice->project;
+            $projectPrice = (float) ($project->project_price ?? 0);
+
+            if ($projectPrice > 0) {
+                $totalVerified = (float) $invoice->paymentProofs()
+                    ->where('status', 'verified')
+                    ->sum('amount');
+
+                $project->update([
+                    'payment_status' => $totalVerified >= $projectPrice ? 'paid' : 'partial',
+                ]);
+            }
+        }
 
         ActivityLog::create([
             'user_id' => $invoice->user_id,
