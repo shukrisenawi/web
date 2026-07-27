@@ -1,6 +1,6 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, Building2, QrCode, Upload, CheckCircle, FileText, Info } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LandingHeader } from '@/Layouts/LandingHeader';
 import { LandingFooter } from '@/Layouts/LandingFooter';
 
@@ -37,8 +37,6 @@ const BANK = (frontpage: any) => ({
 export default function Payment({ invoice }: { invoice: Invoice }) {
     const { success, frontpage } = usePage().props as any;
     const bank = BANK(frontpage);
-    const [submitted, setSubmitted] = useState(false);
-
     const form = useForm({
         invoice_no: invoice.id,
         payment_method: 'bank_transfer',
@@ -47,6 +45,30 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
         proof: null as File | null,
     });
 
+    const [submitted, setSubmitted] = useState(false);
+
+    useEffect(() => {
+        if (!form.hasErrors) return;
+
+        const errorFields = [
+            { key: 'payment_method', id: 'payment_method' },
+            { key: 'name', id: 'name' },
+            { key: 'email', id: 'email' },
+            { key: 'proof', id: 'proof_label' },
+        ];
+
+        const target = errorFields.find((f) => form.errors[f.key as keyof typeof form.errors]);
+        if (target) {
+            const el = document.getElementById(target.id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+                    (el as HTMLElement).focus();
+                }
+            }
+        }
+    }, [form.hasErrors, form.errors]);
+
     const submit = () => {
         form.post('/payment/proof', {
             forceFormData: true,
@@ -54,7 +76,7 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                 setSubmitted(true);
                 form.reset();
             },
-            onError: (err) => {
+            onError: (err: Record<string, string>) => {
                 console.error('Payment form errors:', err);
             },
         });
@@ -133,8 +155,8 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                         {invoice.items.length > 0 && (
                             <div className="mt-4 border-t border-slate-100 pt-4">
                                 <p className="mb-2 text-xs font-semibold uppercase text-slate-400">Items</p>
-                                {invoice.items.map((it, i) => (
-                                    <div key={i} className="flex items-center justify-between py-1 text-sm">
+                                {invoice.items.map((it) => (
+                                    <div key={it.description} className="flex items-center justify-between py-1 text-sm">
                                         <span className="text-slate-700">{it.description}</span>
                                         <span className="font-semibold text-slate-900">RM {it.amount}</span>
                                     </div>
@@ -278,16 +300,18 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                 )}
                                 <div className="grid gap-4 sm:grid-cols-2">
                                     <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">Invoice Number *</label>
+                                        <label htmlFor="invoice_no" className="mb-1 block text-sm font-medium text-slate-700">Invoice Number *</label>
                                         <input
+                                            id="invoice_no"
                                             value={form.data.invoice_no}
                                             readOnly
                                             className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500"
                                         />
                                     </div>
                                     <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">Payment Method *</label>
+                                        <label htmlFor="payment_method" className="mb-1 block text-sm font-medium text-slate-700">Payment Method *</label>
                                         <select
+                                            id="payment_method"
                                             value={form.data.payment_method}
                                             onChange={(e) => form.setData('payment_method', e.target.value)}
                                             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
@@ -304,8 +328,9 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
 
                                 <div className="grid gap-4 sm:grid-cols-2">
                                     <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">Your Name *</label>
+                                        <label htmlFor="name" className="mb-1 block text-sm font-medium text-slate-700">Your Name *</label>
                                         <input
+                                            id="name"
                                             value={form.data.name}
                                             onChange={(e) => form.setData('name', e.target.value)}
                                             placeholder="Full Name"
@@ -316,8 +341,9 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                         )}
                                     </div>
                                     <div>
-                                        <label className="mb-1 block text-sm font-medium text-slate-700">Email Address *</label>
+                                        <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-700">Email Address *</label>
                                         <input
+                                            id="email"
                                             type="email"
                                             value={form.data.email}
                                             onChange={(e) => form.setData('email', e.target.value)}
@@ -330,8 +356,8 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-slate-700">Upload Proof *</label>
+                                <div id="proof_label">
+                                    <label htmlFor="proof" className="mb-1 block text-sm font-medium text-slate-700">Upload Proof *</label>
                                     <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-6 transition-colors hover:border-blue-400 hover:bg-blue-50">
                                         <Upload className="h-8 w-8 text-slate-400" />
                                         <p className="mt-2 text-sm text-slate-600">
@@ -339,6 +365,7 @@ export default function Payment({ invoice }: { invoice: Invoice }) {
                                         </p>
                                         <p className="mt-1 text-xs text-slate-400">PNG, JPG or PDF (Max. 6MB)</p>
                                         <input
+                                            id="proof"
                                             type="file"
                                             accept=".jpg,.jpeg,.png,.pdf"
                                             className="hidden"
