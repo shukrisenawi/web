@@ -96,6 +96,12 @@ function formatTimeFromDate(date: Date | null): string {
     return `${hour}:${minuteStr} ${ampm}`;
 }
 
+function isBusinessHour(time: Date): boolean {
+    const hour = time.getHours();
+    const minute = time.getMinutes();
+    return hour >= 8 && (hour < 18 || (hour === 18 && minute === 0));
+}
+
 export default function RequestForm() {
     const { data, setData, post, processing, errors, setError, clearErrors } = useForm<{
         company_name: string;
@@ -168,6 +174,12 @@ export default function RequestForm() {
         if (!validateTimeFormat(formattedTime)) {
             setError('appointment_time', 'Please enter time as h:mm AM/PM (e.g. 2:30 PM)');
             valid = false;
+        } else {
+            const parsedTime = parseTimeInput(formattedTime);
+            if (parsedTime && !isBusinessHour(new Date(0, 0, 0, parsedTime.hour, parsedTime.minute))) {
+                setError('appointment_time', 'Please select a time between 8:00 AM and 6:00 PM');
+                valid = false;
+            }
         }
         if (!data.message.trim()) {
             setError('message', 'Please enter a message');
@@ -372,6 +384,7 @@ export default function RequestForm() {
                                                 placeholderText="2:30 PM"
                                                 className={`${inputClass} !pl-9`}
                                                 wrapperClassName="w-full"
+                                                filterTime={isBusinessHour}
                                                 showIcon
                                                 icon={
                                                     <Clock className="h-4 w-4 text-slate-400" />

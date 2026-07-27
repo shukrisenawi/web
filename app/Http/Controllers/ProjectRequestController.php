@@ -29,7 +29,7 @@ class ProjectRequestController extends Controller
             'password' => ['required', 'confirmed', Password::min(6)],
             'appointment_type' => ['required', 'in:Physical,Online'],
             'appointment_date' => ['required', 'date'],
-            'appointment_time' => ['required', 'string', 'max:20'],
+            'appointment_time' => ['required', 'string', 'max:20', $this->appointmentTimeRule()],
             'message' => ['required', 'string', 'max:5000'],
         ]);
 
@@ -114,7 +114,7 @@ class ProjectRequestController extends Controller
         $validated = $request->validate([
             'appointment_type' => ['required', 'in:Physical,Online'],
             'appointment_date' => ['required', 'date'],
-            'appointment_time' => ['required', 'string', 'max:20'],
+            'appointment_time' => ['required', 'string', 'max:20', $this->appointmentTimeRule()],
             'message' => ['required', 'string', 'max:5000'],
         ]);
 
@@ -153,5 +153,31 @@ class ProjectRequestController extends Controller
         ]);
 
         return redirect()->route('appointments')->with('success', 'Appointment booked successfully.');
+    }
+
+    private function appointmentTimeRule(): \Closure
+    {
+        return function ($attribute, $value, $fail) {
+            $value = strtoupper(trim((string) $value));
+            if (! preg_match('/^(\d{1,2}):(\d{2})\s?(AM|PM)$/', $value, $matches)) {
+                $fail('The :attribute must be a valid time in h:mm AM/PM format (e.g. 2:30 PM).');
+                return;
+            }
+
+            $hour = (int) $matches[1];
+            $minute = (int) $matches[2];
+            $ampm = $matches[3];
+
+            if ($ampm === 'PM' && $hour !== 12) {
+                $hour += 12;
+            }
+            if ($ampm === 'AM' && $hour === 12) {
+                $hour = 0;
+            }
+
+            if ($hour < 8 || $hour > 18 || ($hour === 18 && $minute !== 0)) {
+                $fail('The :attribute must be between 8:00 AM and 6:00 PM.');
+            }
+        };
     }
 }

@@ -90,6 +90,23 @@ function formatYyyyMmDd(value: string): string {
     return `${y}-${m}-${d}`;
 }
 
+function formatTimeFromDate(date: Date | null): string {
+    if (!date) return '';
+    let hour = date.getHours();
+    const minute = date.getMinutes();
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12;
+    hour = hour || 12;
+    const minuteStr = String(minute).padStart(2, '0');
+    return `${hour}:${minuteStr} ${ampm}`;
+}
+
+function isBusinessHour(time: Date): boolean {
+    const hour = time.getHours();
+    const minute = time.getMinutes();
+    return hour >= 8 && (hour < 18 || (hour === 18 && minute === 0));
+}
+
 
 const now = new Date();
 const defaultDate = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
@@ -121,13 +138,23 @@ export default function ClientAppointments({ appointments = [] }: { appointments
     });
 
     const [datePickerOpen, setDatePickerOpen] = useState<Date | null>(parseDdMmYyyy(form.data.appointment_date));
+    const [appointmentTime, setAppointmentTime] = useState<Date | null>(null);
 
     const validate = () => {
         form.clearErrors();
         let valid = true;
         if (!form.data.appointment_type) { form.setError('appointment_type', 'Select appointment type'); valid = false; }
         if (!form.data.appointment_date) { form.setError('appointment_date', 'Select a date'); valid = false; }
-        if (!form.data.appointment_time || !/^\d{1,2}:\d{2} (AM|PM)$/i.test(form.data.appointment_time.trim())) { form.setError('appointment_time', 'Enter valid time (e.g. 2:30 PM)'); valid = false; }
+        if (!form.data.appointment_time || !/^\d{1,2}:\d{2} (AM|PM)$/i.test(form.data.appointment_time.trim())) {
+            form.setError('appointment_time', 'Enter valid time (e.g. 2:30 PM)');
+            valid = false;
+        } else {
+            const parsedTime = parseTimeInput(form.data.appointment_time);
+            if (!parsedTime || !isBusinessHour(new Date(0, 0, 0, parsedTime.hour, parsedTime.minute))) {
+                form.setError('appointment_time', 'Select a time between 8:00 AM and 6:00 PM');
+                valid = false;
+            }
+        }
         if (!form.data.message.trim()) { form.setError('message', 'Enter a message'); valid = false; }
         return valid;
     };
@@ -271,14 +298,27 @@ export default function ClientAppointments({ appointments = [] }: { appointments
                             <div>
                                 <label htmlFor="appointment_time" className={labelClass}>Time</label>
                                 <div className="relative">
-                                    <Clock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                                    <input
+                                    <DatePicker
                                         id="appointment_time"
-                                        type="text"
-                                        placeholder="e.g. 2:30 PM"
-                                        value={form.data.appointment_time}
-                                        onChange={(e) => form.setData('appointment_time', formatTimeValue(e.target.value))}
-                                        className={`${inputClass} pl-10`}
+                                        selected={appointmentTime}
+                                        onChange={(d: Date | null) => {
+                                            setAppointmentTime(d);
+                                            form.setData('appointment_time', formatTimeFromDate(d));
+                                        }}
+                                        showTimeSelect
+                                        showTimeSelectOnly
+                                        timeFormat="h:mm aa"
+                                        timeIntervals={15}
+                                        dateFormat="h:mm aa"
+                                        placeholderText="2:30 PM"
+                                        className={`${inputClass} !pl-9`}
+                                        wrapperClassName="w-full"
+                                        showIcon
+                                        icon={
+                                            <Clock className="h-4 w-4 text-slate-400" />
+                                        }
+                                        filterTime={isBusinessHour}
+                                        popperPlacement="bottom-start"
                                     />
                                 </div>
                                 {form.errors.appointment_time && <p className="mt-1 text-xs text-red-500">{form.errors.appointment_time}</p>}
