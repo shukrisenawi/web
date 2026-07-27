@@ -27,6 +27,8 @@ class FrontpageContent extends Model
             'about_team' => 'array',
             'about_events' => 'array',
             'payment_logo' => 'string',
+            'privacy_policy_last_updated' => 'date',
+            'terms_conditions_last_updated' => 'date',
             'hero_avatars' => 'array',
             'mobile_apps_hero_avatars' => 'array',
             'digital_marketing_hero_avatars' => 'array',
@@ -249,6 +251,12 @@ class FrontpageContent extends Model
                 ['name' => 'GitHub', 'url' => 'https://github.com'],
                 ['name' => 'Instagram', 'url' => 'https://instagram.com'],
             ],
+            'privacy_policy_title' => 'Privacy Policy',
+            'privacy_policy_content' => self::defaultPrivacyPolicyContent(),
+            'privacy_policy_last_updated' => now()->toDateString(),
+            'terms_conditions_title' => 'Terms & Conditions',
+            'terms_conditions_content' => self::defaultTermsConditionsContent(),
+            'terms_conditions_last_updated' => now()->toDateString(),
             'about_team_title' => 'Our Team',
             'about_team_subtitle' => 'Meet The People Behind Kenju Tech',
             'about_team' => [
@@ -281,5 +289,47 @@ class FrontpageContent extends Model
         $defaults = array_intersect_key(self::defaultRecord(), array_flip($columns));
 
         return self::query()->firstOrCreate([], $defaults);
+    }
+
+    public static function defaultPrivacyPolicyContent(): string
+    {
+        return <<<'HTML'
+<h2>1. Introduction</h2>
+<p>Welcome to Kenju Tech. We respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.</p>
+<h2>2. Information We Collect</h2>
+<p>We may collect personal information such as your name, email address, phone number, company details, and project requirements when you submit forms, request quotations, or communicate with us.</p>
+<h2>3. How We Use Your Information</h2>
+<p>Your information is used to respond to inquiries, process project requests, manage client accounts, send invoices, provide support, and improve our services.</p>
+<h2>4. Data Security</h2>
+<p>We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction.</p>
+<h2>5. Third-Party Sharing</h2>
+<p>We do not sell or rent your personal information. We may share data with trusted service providers only when necessary to deliver our services to you.</p>
+<h2>6. Your Rights</h2>
+<p>You have the right to access, update, or delete your personal information. To exercise these rights, please contact us using the details on our Contact page.</p>
+<h2>7. Changes to This Policy</h2>
+<p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated effective date.</p>
+HTML;
+    }
+
+    public static function defaultTermsConditionsContent(): string
+    {
+        return <<<'HTML'
+<h2>1. Acceptance of Terms</h2>
+<p>By accessing and using the Kenju Tech website and services, you agree to be bound by these Terms &amp; Conditions. If you do not agree, please do not use our services.</p>
+<h2>2. Services</h2>
+<p>Kenju Tech provides digital solutions including web development, mobile applications, web systems, digital marketing, game development, and IT equipment supply and setup. Specific terms for each project will be outlined in a separate agreement.</p>
+<h2>3. Intellectual Property</h2>
+<p>All content on this website, including text, graphics, logos, and software, is the property of Kenju Tech unless otherwise stated. Unauthorized use is prohibited.</p>
+<h2>4. Client Responsibilities</h2>
+<p>Clients are responsible for providing accurate information, timely feedback, and necessary materials required to complete projects. Delays caused by the client may affect timelines.</p>
+<h2>5. Payments</h2>
+<p>Payment terms will be specified in invoices and project agreements. Late payments may result in project delays or suspension of services.</p>
+<h2>6. Limitation of Liability</h2>
+<p>Kenju Tech shall not be liable for any indirect, incidental, or consequential damages arising from the use of our services or website.</p>
+<h2>7. Governing Law</h2>
+<p>These Terms &amp; Conditions are governed by the laws of Malaysia. Any disputes shall be resolved in the courts of Malaysia.</p>
+<h2>8. Changes to Terms</h2>
+<p>We reserve the right to modify these Terms &amp; Conditions at any time. Continued use of our services constitutes acceptance of the updated terms.</p>
+HTML;
     }
 }

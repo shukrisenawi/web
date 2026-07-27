@@ -51,6 +51,28 @@ Route::get('/about', function () {
     ]);
 })->name('about');
 
+Route::get('/privacy-policy', function () {
+    $content = \App\Models\FrontpageContent::getCurrent();
+
+    return inertia('LegalPage', [
+        'type' => 'privacy',
+        'title' => $content->privacy_policy_title ?? 'Privacy Policy',
+        'content' => $content->privacy_policy_content ?? '',
+        'lastUpdated' => $content->privacy_policy_last_updated?->format('d M Y'),
+    ]);
+})->name('privacy-policy');
+
+Route::get('/terms-conditions', function () {
+    $content = \App\Models\FrontpageContent::getCurrent();
+
+    return inertia('LegalPage', [
+        'type' => 'terms',
+        'title' => $content->terms_conditions_title ?? 'Terms & Conditions',
+        'content' => $content->terms_conditions_content ?? '',
+        'lastUpdated' => $content->terms_conditions_last_updated?->format('d M Y'),
+    ]);
+})->name('terms-conditions');
+
 Route::get('/blog', [\App\Http\Controllers\BlogPostController::class, 'publicIndex'])->name('blog');
 
 Route::get('/blog/{post:slug}', [\App\Http\Controllers\BlogPostController::class, 'publicShow'])->name('blog.show');
