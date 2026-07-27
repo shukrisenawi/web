@@ -93,9 +93,6 @@ class HandleInertiaRequests extends Middleware
             'unreadMessagesCount' => $request->user()
                 ? ($request->user()->isAdmin()
                     ? Ticket::whereNull('admin_viewed_at')->count()
-                        + Notification::where('user_id', $request->user()->id)
-                            ->where('is_read', false)
-                            ->count()
                     : $request->user()->tickets()->whereNull('viewed_at')->count())
                 : 0,
             'pendingRequestsCount' => $request->user()?->isAdmin()
