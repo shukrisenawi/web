@@ -71,3 +71,17 @@ button,
 .react-datepicker__time-list .react-datepicker__time-list-item--disabled {
     display: none;
 }
+
+/* Infinite marquee: right to left */
+@keyframes marquee {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee {
+    animation: marquee 30s linear infinite;
+}
