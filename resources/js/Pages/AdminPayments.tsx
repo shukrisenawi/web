@@ -2,6 +2,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { ArrowRight, CheckCircle, XCircle, Download, Search } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
+import Modal from '@/Components/Modal';
 
 interface Proof {
     id: number;
@@ -10,14 +11,20 @@ interface Proof {
     payment_method: string;
     name: string;
     email: string;
-    amount: string;
+    invoice_amount: string;
+    amount: string | null;
     proof_url: string | null;
     status: string;
     created_at: string;
 }
 
+const inputClass = 'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
+const labelClass = 'block text-sm font-medium text-slate-700';
+
 export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
     const [search, setSearch] = useState('');
+    const [approveProof, setApproveProof] = useState<Proof | null>(null);
+    const [approveAmount, setApproveAmount] = useState('');
 
     const filtered = proofs.filter(
         (p) =>
@@ -25,6 +32,22 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
             p.name.toLowerCase().includes(search.toLowerCase()) ||
             p.client.toLowerCase().includes(search.toLowerCase()),
     );
+
+    const submitApprove = () => {
+        if (!approveProof) return;
+        const amount = parseFloat(approveAmount);
+        if (Number.isNaN(amount) || amount <= 0) return;
+
+        router.put(`/payment-proofs/${approveProof.id}/verify`, {
+            status: 'verified',
+            amount,
+        }, {
+            onSuccess: () => {
+                setApproveProof(null);
+                setApproveAmount('');
+            },
+        });
+    };
 
     return (
         <>
@@ -66,7 +89,8 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                                     <th className="pb-3 font-medium">Client</th>
                                     <th className="pb-3 font-medium">Submitted By</th>
                                     <th className="pb-3 font-medium">Method</th>
-                                    <th className="pb-3 font-medium">Amount</th>
+                                    <th className="pb-3 font-medium">Invoice Amount</th>
+                                    <th className="pb-3 font-medium">Paid Amount</th>
                                     <th className="pb-3 font-medium">Proof</th>
                                     <th className="pb-3 font-medium">Date</th>
                                     <th className="pb-3 font-medium">Status</th>
@@ -91,7 +115,8 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                                             <p className="text-xs text-slate-500">{p.email}</p>
                                         </td>
                                         <td className="py-4 text-slate-600 capitalize">{p.payment_method.replace('_', ' ')}</td>
-                                        <td className="py-4 font-semibold text-slate-900">{p.amount}</td>
+                                        <td className="py-4 font-semibold text-slate-900">{p.invoice_amount}</td>
+                                        <td className="py-4 font-semibold text-emerald-600">{p.amount ?? <span className="text-slate-400">—</span>}</td>
                                         <td className="py-4">
                                             {p.proof_url ? (
                                                 <a
@@ -116,7 +141,7 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                                             {p.status === 'pending' ? (
                                                 <div className="flex items-center gap-2">
                                                     <button
-                                                        onClick={() => router.put(`/payment-proofs/${p.id}/verify`, { status: 'verified' })}
+                                                        onClick={() => { setApproveProof(p); setApproveAmount(''); }}
                                                         className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
                                                     >
                                                         <CheckCircle className="h-3.5 w-3.5" /> Approve
@@ -148,6 +173,47 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                     )}
                 </Card>
             </DashboardLayout>
+
+            <Modal open={approveProof !== null} onClose={() => { setApproveProof(null); setApproveAmount(''); }}>
+                <div className="px-6 py-5">
+                    <h2 className="mb-1 text-lg font-bold text-slate-900">Approve Payment</h2>
+                    <p className="mb-4 text-sm text-slate-500">
+                        Enter the amount actually paid by the customer for invoice{' '}
+                        <span className="font-semibold text-slate-900">{approveProof?.invoice_no}</span>.
+                    </p>
+                    <div>
+                        <label htmlFor="approve-amount" className={labelClass}>Amount Paid</label>
+                        <input
+                            id="approve-amount"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={approveAmount}
+                            onChange={(e) => setApproveAmount(e.target.value)}
+                            placeholder="e.g. 1500.00"
+                            className={inputClass}
+                            autoFocus
+                        />
+                    </div>
+                    <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+                        <button
+                            type="button"
+                            onClick={() => { setApproveProof(null); setApproveAmount(''); }}
+                            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={submitApprove}
+                            disabled={!approveAmount || parseFloat(approveAmount) <= 0 || Number.isNaN(parseFloat(approveAmount))}
+                            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
+                        >
+                            Approve Payment
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </>
     );
 }

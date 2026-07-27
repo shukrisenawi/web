@@ -40,6 +40,7 @@ interface ProjectData {
     user_roles: string | null;
     integrations: string | null;
     budget: string | null;
+    project_price?: number | string | null;
     deadline: string | null;
     hosting_domain: string | null;
     additional_notes: string | null;
@@ -96,6 +97,7 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
             progress: project.progress ?? 0,
             status: project.status ?? 'in_progress',
             payment_status: project.payment_status ?? 'unpaid',
+            project_price: project.project_price ?? '',
             key_person: project.key_person ?? '',
             status_remark: project.status_remark ?? '',
         });
@@ -451,6 +453,20 @@ export default function ProjectEdit({ project, services = [], systemTypes = [] }
                                                     <option value="partial">Partial</option>
                                                     <option value="paid">Paid</option>
                                                 </select>
+                                            </div>
+                                            <div>
+                                                <label htmlFor="project-price" className={labelClass}>Project Price (RM)</label>
+                                                <input
+                                                    id="project-price"
+                                                    type="number"
+                                                    min="0"
+                                                    step="0.01"
+                                                    value={form.data.project_price}
+                                                    onChange={(e) => form.setData('project_price', e.target.value)}
+                                                    className={inputClass}
+                                                    placeholder="e.g. 15000.00"
+                                                />
+                                                {form.errors.project_price && <p className="mt-1 text-xs text-red-500">{form.errors.project_price}</p>}
                                             </div>
                                             <div>
                                                 <label className={labelClass}>Key Person (PIC)</label>

@@ -32,7 +32,8 @@ class PaymentController extends Controller
                 'payment_method' => $p->payment_method,
                 'name' => $p->name,
                 'email' => $p->email,
-                'amount' => '$' . number_format($p->invoice->amount, 2),
+                'invoice_amount' => '$' . number_format($p->invoice->amount, 2),
+                'amount' => $p->amount !== null ? '$' . number_format($p->amount, 2) : null,
                 'proof_url' => $p->proof_path ? Storage::url($p->proof_path) : null,
                 'status' => $p->status,
                 'created_at' => $p->created_at->format('M d, Y'),
@@ -121,14 +122,20 @@ class PaymentController extends Controller
 
         $validated = $request->validate([
             'status' => ['required', 'string', 'in:verified,rejected'],
+            'amount' => ['required_if:status,verified', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $proof = PaymentProof::findOrFail($proofId);
-        $proof->update($validated);
+        $invoice = $proof->invoice;
+
+        $updateData = ['status' => $validated['status']];
+        if ($validated['status'] === 'verified') {
+            $updateData['amount'] = $validated['amount'];
+        }
+        $proof->update($updateData);
 
         if ($validated['status'] === 'verified') {
-            $invoice = $proof->invoice;
             $invoice->update(['status' => 'paid', 'paid_at' => now()]);
 
             ActivityLog::create([

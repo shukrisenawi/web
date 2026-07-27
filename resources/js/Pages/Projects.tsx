@@ -37,6 +37,8 @@ interface Project {
     status: string;
     payment_status?: string;
     total_paid?: string;
+    project_price?: string | null;
+    balance?: string | null;
     icon_color: string;
     created_at: string;
     files: RequestFile[];
@@ -354,11 +356,21 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                 </div>
                             )}
 
-                            {project.total_paid && parseFloat(project.total_paid) > 0 && (
-                                <p className="mt-3 text-sm">
-                                    <span className="text-slate-500">Total Paid:</span>{' '}
-                                    <span className="font-semibold text-emerald-600">${project.total_paid}</span>
-                                </p>
+                            {project.project_price !== null && project.project_price !== undefined && (
+                                <div className="mt-3 rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-slate-500">Project Price</span>
+                                        <span className="font-semibold text-slate-900">RM {project.project_price}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-slate-500">Total Paid</span>
+                                        <span className="font-semibold text-emerald-600">RM {project.total_paid}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between border-t border-slate-200 pt-2 mt-2">
+                                        <span className="text-slate-500">Balance</span>
+                                        <span className={`font-semibold ${(project.balance ? parseFloat(project.balance) : 0) > 0 ? 'text-red-600' : 'text-emerald-600'}`}>RM {project.balance ?? '0.00'}</span>
+                                    </div>
+                                </div>
                             )}
 
                             <div className="mt-6">

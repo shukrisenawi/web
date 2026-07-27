@@ -17,6 +17,7 @@ class PaymentProof extends Model
         'email',
         'proof_path',
         'status',
+        'amount',
         'notes',
     ];
 

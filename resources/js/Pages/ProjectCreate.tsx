@@ -66,6 +66,7 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
         user_roles: '',
         integrations: '',
         budget: '',
+        project_price: '',
         deadline: '',
         hosting_domain: '',
         additional_notes: '',
@@ -132,6 +133,7 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
         formData.append('user_roles', form.data.user_roles);
         formData.append('integrations', form.data.integrations);
         formData.append('budget', form.data.budget);
+        formData.append('project_price', form.data.project_price);
         formData.append('deadline', form.data.deadline);
         formData.append('hosting_domain', form.data.hosting_domain);
         formData.append('additional_notes', form.data.additional_notes);
@@ -351,6 +353,22 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
                                     />
                                     {form.errors.budget && <p className="mt-1 text-xs text-red-500">{form.errors.budget}</p>}
                                 </div>
+                                {isAdmin && (
+                                    <div>
+                                        <label htmlFor="project-price" className={labelClass}>Project Price (RM)</label>
+                                        <input
+                                            id="project-price"
+                                            type="number"
+                                            min="0"
+                                            step="0.01"
+                                            value={form.data.project_price}
+                                            onChange={(e) => form.setData('project_price', e.target.value)}
+                                            className={inputClass}
+                                            placeholder="e.g. 15000.00"
+                                        />
+                                        {form.errors.project_price && <p className="mt-1 text-xs text-red-500">{form.errors.project_price}</p>}
+                                    </div>
+                                )}
                                 <div>
                                     <label htmlFor="deadline" className={labelClass}>Deadline <span className="text-red-500">*</span></label>
                                     <input
@@ -439,6 +457,7 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
                                         <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Title</dt><dd className="text-slate-700">{form.data.title || <span className="text-slate-300">—</span>}</dd></div>
                                         <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">System Type</dt><dd className="text-slate-700">{form.data.system_type === 'Other' && form.data.system_type_other ? `Other: ${form.data.system_type_other}` : form.data.system_type || <span className="text-slate-300">—</span>}</dd></div>
                                         <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Budget</dt><dd className="text-slate-700">{form.data.budget || <span className="text-slate-300">—</span>}</dd></div>
+                                        {isAdmin && <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Project Price</dt><dd className="text-slate-700">{form.data.project_price ? `RM ${form.data.project_price}` : <span className="text-slate-300">—</span>}</dd></div>}
                                         <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Deadline</dt><dd className="text-slate-700">{form.data.deadline || <span className="text-slate-300">—</span>}</dd></div>
                                         <div><dt className="text-xs font-medium uppercase tracking-wide text-slate-400">Files</dt><dd className="text-slate-700">{createFiles.length ? `${createFiles.length} file(s)` : <span className="text-slate-300">—</span>}</dd></div>
                                     </dl>

@@ -51,6 +51,10 @@ class ProjectController extends Controller
                 ]);
 
                 $totalPaid = $p->invoices->where('status', 'paid')->sum('amount');
+                $verifiedProofsAmount = $p->invoices->flatMap(fn ($i) => $i->paymentProofs->where('status', 'verified'))->sum('amount');
+                $totalPaid = max($totalPaid, $verifiedProofsAmount);
+                $projectPrice = $p->project_price ? (float) $p->project_price : 0;
+                $balance = max(0, $projectPrice - $totalPaid);
 
                 return [
                     'id' => $p->id,
@@ -64,6 +68,7 @@ class ProjectController extends Controller
                     'user_roles' => $p->user_roles,
                     'integrations' => $p->integrations,
                     'budget' => $p->budget,
+                    'project_price' => $projectPrice > 0 ? number_format($projectPrice, 2) : null,
                     'deadline' => $p->deadline?->format('Y-m-d'),
                     'hosting_domain' => $p->hosting_domain,
                     'additional_notes' => $p->additional_notes,
@@ -73,7 +78,8 @@ class ProjectController extends Controller
                     'progress' => $p->progress,
                     'status' => $p->status,
                     'payment_status' => $p->payment_status,
-                    'total_paid' => number_format($totalPaid, 2),
+                    'total_paid' => $totalPaid > 0 ? number_format($totalPaid, 2) : '0.00',
+                    'balance' => $projectPrice > 0 ? number_format($balance, 2) : null,
                     'icon_color' => $p->icon_color,
                     'created_at' => $p->created_at->format('M d, Y'),
                     'files' => collect($requestFiles)->concat($uploadedFiles)->values(),
@@ -123,6 +129,10 @@ class ProjectController extends Controller
         $project->load(['milestones' => fn ($q) => $q->orderBy('due_date'), 'user', 'invoices']);
 
         $totalPaid = $project->invoices->where('status', 'paid')->sum('amount');
+        $verifiedProofsAmount = $project->invoices->flatMap(fn ($i) => $i->paymentProofs->where('status', 'verified'))->sum('amount');
+        $totalPaid = max($totalPaid, $verifiedProofsAmount);
+        $projectPrice = $project->project_price ? (float) $project->project_price : 0;
+        $balance = max(0, $projectPrice - $totalPaid);
 
         return Inertia::render('ProjectShow', [
             'project' => [
@@ -136,6 +146,7 @@ class ProjectController extends Controller
                 'user_roles' => $project->user_roles,
                 'integrations' => $project->integrations,
                 'budget' => $project->budget,
+                'project_price' => $projectPrice > 0 ? number_format($projectPrice, 2) : null,
                 'deadline' => $project->deadline?->format('Y-m-d'),
                 'hosting_domain' => $project->hosting_domain,
                 'additional_notes' => $project->additional_notes,
@@ -145,7 +156,8 @@ class ProjectController extends Controller
                 'progress' => $project->progress,
                 'status' => $project->status,
                 'payment_status' => $project->payment_status,
-                'total_paid' => number_format($totalPaid, 2),
+                'total_paid' => $totalPaid > 0 ? number_format($totalPaid, 2) : '0.00',
+                'balance' => $projectPrice > 0 ? number_format($balance, 2) : null,
                 'icon_color' => $project->icon_color,
                 'created_at' => $project->created_at->format('M d, Y'),
                 'milestones' => $project->milestones->map(fn ($m) => [
@@ -196,6 +208,7 @@ class ProjectController extends Controller
             'user_roles' => ['nullable', 'string', 'max:5000'],
             'integrations' => ['nullable', 'string', 'max:5000'],
             'budget' => ['nullable', 'string', 'max:255'],
+            'project_price' => ['nullable', 'numeric', 'min:0'],
             'deadline' => ['nullable', 'date'],
             'hosting_domain' => ['nullable', 'string', 'max:2000'],
             'additional_notes' => ['nullable', 'string', 'max:5000'],
@@ -241,6 +254,7 @@ class ProjectController extends Controller
             'user_roles' => $validated['user_roles'] ?? null,
             'integrations' => $validated['integrations'] ?? null,
             'budget' => $validated['budget'] ?? null,
+            'project_price' => $validated['project_price'] ?? null,
             'deadline' => ! empty($validated['deadline']) ? $validated['deadline'] : null,
             'hosting_domain' => $validated['hosting_domain'] ?? null,
             'additional_notes' => $validated['additional_notes'] ?? null,
@@ -249,7 +263,7 @@ class ProjectController extends Controller
             'status_remark' => $user->isAdmin() ? ($validated['status_remark'] ?? null) : null,
             'progress' => 0,
             'status' => 'in_progress',
-            'payment_status' => 'unpaid',
+            'payment_status' => ($validated['project_price'] ?? 0) > 0 ? 'unpaid' : 'paid',
             'icon_color' => '#2563eb',
         ]);
 
@@ -289,6 +303,7 @@ class ProjectController extends Controller
                 'progress' => ['required', 'integer', 'min:0', 'max:100'],
                 'status' => ['required', Rule::in(['in_progress', 'completed', 'on_hold'])],
                 'payment_status' => ['required', Rule::in(['unpaid', 'partial', 'paid'])],
+                'project_price' => ['nullable', 'numeric', 'min:0'],
                 'key_person' => ['nullable', 'string', 'max:255'],
                 'status_remark' => ['nullable', 'string', 'max:5000'],
             ]);
