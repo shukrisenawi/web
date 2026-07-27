@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, CheckCircle, XCircle, Download, Search } from 'lucide-react';
+import { ArrowRight, CheckCircle, XCircle, Download, Search, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
 import Modal from '@/Components/Modal';
@@ -25,6 +25,8 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
     const [search, setSearch] = useState('');
     const [approveProof, setApproveProof] = useState<Proof | null>(null);
     const [approveAmount, setApproveAmount] = useState('');
+    const [editProof, setEditProof] = useState<Proof | null>(null);
+    const [editAmount, setEditAmount] = useState('');
 
     const filtered = proofs.filter(
         (p) =>
@@ -45,6 +47,21 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
             onSuccess: () => {
                 setApproveProof(null);
                 setApproveAmount('');
+            },
+        });
+    };
+
+    const submitEditAmount = () => {
+        if (!editProof) return;
+        const amount = parseFloat(editAmount);
+        if (Number.isNaN(amount) || amount < 0) return;
+
+        router.put(`/payment-proofs/${editProof.id}/amount`, {
+            amount,
+        }, {
+            onSuccess: () => {
+                setEditProof(null);
+                setEditAmount('');
             },
         });
     };
@@ -116,7 +133,21 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                                         </td>
                                         <td className="py-4 text-slate-600 capitalize">{p.payment_method.replace('_', ' ')}</td>
                                         <td className="py-4 font-semibold text-slate-900">{p.invoice_amount}</td>
-                                        <td className="py-4 font-semibold text-emerald-600">{p.amount ?? <span className="text-slate-400">—</span>}</td>
+                                        <td className="py-4 font-semibold text-emerald-600">
+                                            <div className="flex items-center gap-2">
+                                                {p.amount ?? <span className="text-slate-400">—</span>}
+                                                {p.status === 'verified' && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => { setEditProof(p); setEditAmount(p.amount ? p.amount.replace(/[^0-9.]/g, '') : ''); }}
+                                                        className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-blue-600"
+                                                        title="Edit paid amount"
+                                                    >
+                                                        <Pencil className="h-3.5 w-3.5" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </td>
                                         <td className="py-4">
                                             {p.proof_url ? (
                                                 <a
@@ -141,12 +172,14 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                                             {p.status === 'pending' ? (
                                                 <div className="flex items-center gap-2">
                                                     <button
+                                                        type="button"
                                                         onClick={() => { setApproveProof(p); setApproveAmount(''); }}
                                                         className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
                                                     >
                                                         <CheckCircle className="h-3.5 w-3.5" /> Approve
                                                     </button>
                                                     <button
+                                                        type="button"
                                                         onClick={() => router.put(`/payment-proofs/${p.id}/verify`, { status: 'rejected' })}
                                                         className="inline-flex items-center gap-1 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
                                                     >
@@ -192,7 +225,6 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                             onChange={(e) => setApproveAmount(e.target.value)}
                             placeholder="e.g. 1500.00"
                             className={inputClass}
-                            autoFocus
                         />
                     </div>
                     <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
@@ -210,6 +242,46 @@ export default function AdminPayments({ proofs }: { proofs: Proof[] }) {
                             className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
                         >
                             Approve Payment
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal open={editProof !== null} onClose={() => { setEditProof(null); setEditAmount(''); }}>
+                <div className="px-6 py-5">
+                    <h2 className="mb-1 text-lg font-bold text-slate-900">Edit Paid Amount</h2>
+                    <p className="mb-4 text-sm text-slate-500">
+                        Update the recorded paid amount for invoice{' '}
+                        <span className="font-semibold text-slate-900">{editProof?.invoice_no}</span>.
+                    </p>
+                    <div>
+                        <label htmlFor="edit-amount" className={labelClass}>Paid Amount</label>
+                        <input
+                            id="edit-amount"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={editAmount}
+                            onChange={(e) => setEditAmount(e.target.value)}
+                            placeholder="e.g. 1500.00"
+                            className={inputClass}
+                        />
+                    </div>
+                    <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+                        <button
+                            type="button"
+                            onClick={() => { setEditProof(null); setEditAmount(''); }}
+                            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={submitEditAmount}
+                            disabled={!editAmount || parseFloat(editAmount) < 0 || Number.isNaN(parseFloat(editAmount))}
+                            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                        >
+                            Save Amount
                         </button>
                     </div>
                 </div>

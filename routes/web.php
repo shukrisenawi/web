@@ -159,6 +159,7 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
 
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments');
         Route::put('/payment-proofs/{proof}/verify', [PaymentController::class, 'verify'])->name('payment.proof.verify');
+        Route::put('/payment-proofs/{proof}/amount', [PaymentController::class, 'updateAmount'])->name('payment.proof.amount.update');
 
         Route::put('/support/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
         Route::delete('/support/{ticket}/replies/{reply}', [TicketController::class, 'destroyReply'])->name('tickets.replies.destroy');

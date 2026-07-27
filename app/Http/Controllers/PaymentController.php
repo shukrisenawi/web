@@ -164,6 +164,36 @@ class PaymentController extends Controller
         return back()->with('success', 'Payment proof ' . $validated['status'] . ' successfully.');
     }
 
+    public function updateAmount(Request $request, int $proofId)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'amount' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $proof = PaymentProof::findOrFail($proofId);
+        $invoice = $proof->invoice;
+        $oldAmount = $proof->amount;
+        $proof->update(['amount' => $validated['amount']]);
+
+        ActivityLog::create([
+            'user_id' => $invoice->user_id,
+            'project_id' => $invoice->project_id,
+            'related_type' => PaymentProof::class,
+            'related_id' => $proof->id,
+            'type' => 'payment',
+            'description' => "Payment amount for invoice {$invoice->invoice_no} updated from " . ($oldAmount !== null ? number_format($oldAmount, 2) : 'unset') . ' to ' . number_format($validated['amount'], 2),
+        ]);
+
+        return back()->with('success', 'Payment amount updated successfully.');
+    }
+
     private function autoCreateProject(Invoice $invoice): void
     {
         $items = $invoice->items;
