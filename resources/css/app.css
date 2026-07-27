@@ -66,3 +66,8 @@ button,
     max-width: 100%;
     height: auto;
 }
+
+/* Hide disabled time slots in react-datepicker time picker */
+.react-datepicker__time-list .react-datepicker__time-list-item--disabled {
+    display: none;
+}

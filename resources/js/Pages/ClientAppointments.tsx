@@ -1,6 +1,7 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { Calendar, CalendarClock, CheckCircle2, Clock, Loader2, Plus, X } from 'lucide-react';
 import { useState } from 'react';
+import { setHours, setMinutes } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DashboardLayout } from '@/Layouts/Dashboard';
@@ -139,6 +140,10 @@ export default function ClientAppointments({ appointments = [] }: { appointments
 
     const [datePickerOpen, setDatePickerOpen] = useState<Date | null>(parseDdMmYyyy(form.data.appointment_date));
     const [appointmentTime, setAppointmentTime] = useState<Date | null>(null);
+
+    const timeBase = datePickerOpen || new Date();
+    const minTime = setHours(setMinutes(timeBase, 0), 8);
+    const maxTime = setHours(setMinutes(timeBase, 0), 18);
 
     const validate = () => {
         form.clearErrors();
@@ -317,7 +322,8 @@ export default function ClientAppointments({ appointments = [] }: { appointments
                                         icon={
                                             <Clock className="h-4 w-4 text-slate-400" />
                                         }
-                                        filterTime={isBusinessHour}
+                                        minTime={minTime}
+                                        maxTime={maxTime}
                                         popperPlacement="bottom-start"
                                     />
                                 </div>
