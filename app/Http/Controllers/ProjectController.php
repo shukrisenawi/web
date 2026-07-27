@@ -27,8 +27,8 @@ class ProjectController extends Controller
         $search = $request->query('search');
 
         $query = $user->isAdmin()
-            ? Project::query()->with('user.projectRequests.files', 'fileUploads', 'invoices')
-            : $user->projects()->with('user.projectRequests.files', 'fileUploads', 'invoices');
+            ? Project::query()->with('user.projectRequests.files', 'fileUploads', 'invoices.paymentProofs')
+            : $user->projects()->with('user.projectRequests.files', 'fileUploads', 'invoices.paymentProofs');
 
         $projects = $query
             ->when($status, fn ($q) => $q->where('status', $status))
@@ -53,9 +53,7 @@ class ProjectController extends Controller
                     'url' => Storage::url($f->path),
                 ]);
 
-                $totalPaid = $p->invoices->where('status', 'paid')->sum('amount');
-                $verifiedProofsAmount = $p->invoices->flatMap(fn ($i) => $i->paymentProofs->where('status', 'verified'))->sum('amount');
-                $totalPaid = max($totalPaid, $verifiedProofsAmount);
+                $totalPaid = $p->invoices->flatMap(fn ($i) => $i->paymentProofs->where('status', 'verified'))->sum('amount');
                 $projectPrice = $p->project_price ? (float) $p->project_price : 0;
                 $balance = max(0, $projectPrice - $totalPaid);
 
@@ -134,11 +132,9 @@ class ProjectController extends Controller
             abort(403);
         }
 
-        $project->load(['milestones' => fn ($q) => $q->orderBy('due_date'), 'user', 'invoices']);
+        $project->load(['milestones' => fn ($q) => $q->orderBy('due_date'), 'user', 'invoices.paymentProofs']);
 
-        $totalPaid = $project->invoices->where('status', 'paid')->sum('amount');
-        $verifiedProofsAmount = $project->invoices->flatMap(fn ($i) => $i->paymentProofs->where('status', 'verified'))->sum('amount');
-        $totalPaid = max($totalPaid, $verifiedProofsAmount);
+        $totalPaid = $project->invoices->flatMap(fn ($i) => $i->paymentProofs->where('status', 'verified'))->sum('amount');
         $projectPrice = $project->project_price ? (float) $project->project_price : 0;
         $balance = max(0, $projectPrice - $totalPaid);
 
