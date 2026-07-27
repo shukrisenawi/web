@@ -386,7 +386,7 @@ export default function Projects({ projects, filters, clients = [], preselect_us
                                             <ListChecks className="h-3.5 w-3.5" /> Update
                                         </button>
                                     )}
-                                    {isAdmin && !project.has_invoice && (
+                                    {isAdmin && project.balance && parseFloat(project.balance.replace(/,/g, '')) > 0 && (
                                         <Link
                                             href={`/invoices?user_id=${project.user_id}&project_id=${project.id}&new=1`}
                                             className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:underline"
