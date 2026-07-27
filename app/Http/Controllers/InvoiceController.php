@@ -156,8 +156,12 @@ class InvoiceController extends Controller
             'description' => "Invoice {$invoice->invoice_no} generated for $" . number_format($invoice->amount, 2) . " ({$invoice->status})",
         ]);
 
-        $invoice->load('items');
-        Mail::to($client)->queue(new NewInvoiceMail($invoice));
+        try {
+            $invoice->load('items');
+            Mail::to($client)->send(new NewInvoiceMail($invoice));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return redirect()->route('invoices')
             ->with('success', 'Invoice generated successfully.')
