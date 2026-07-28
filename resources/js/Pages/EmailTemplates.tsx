@@ -150,6 +150,17 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
                                         />
                                         <label htmlFor={`edit-active-${t.id}`} className="text-sm text-slate-700">Active</label>
                                     </div>
+                                    <div className="rounded-lg bg-slate-50 p-3">
+                                        <p className="mb-2 text-xs font-semibold text-slate-500">Available variables</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {variablesFor(t.key).map((v) => (
+                                                <span key={v} className="rounded-full bg-white px-2 py-1 text-xs text-slate-600 border border-slate-200">
+                                                    {'{{'} {v} {'}}'}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
                                     <div className="flex justify-end gap-2">
                                         <button
                                             type="button"
