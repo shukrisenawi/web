@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactSubmissionMail;
+use App\Mail\TicketReplyMail;
 use App\Models\ActivityLog;
 use App\Models\FrontpageContent;
 use App\Models\Ticket;
@@ -167,6 +168,16 @@ class TicketController extends Controller
         ]);
 
         $sender = $isAdmin ? 'Admin' : $user->name;
+
+        try {
+            $recipient = $isAdmin ? $ticket->user : User::where('role', User::ROLE_ADMIN)->first();
+            if ($recipient) {
+                Mail::to($recipient)->send(new TicketReplyMail($ticket, $reply));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         ActivityLog::create([
             'user_id' => $user->id,
             'project_id' => $ticket->project_id,

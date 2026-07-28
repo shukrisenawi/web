@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ClientAppointmentSubmittedMail;
 use App\Models\ActivityLog;
 use App\Models\Notification as AdminNotification;
 use App\Models\ProjectRequest;
@@ -9,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 
@@ -69,6 +71,12 @@ class ProjectRequestController extends Controller
         }
 
         Auth::login($user);
+
+        try {
+            Mail::to($user)->send(new ClientAppointmentSubmittedMail($projectRequest));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         ActivityLog::create([
             'user_id' => $user->id,
@@ -142,6 +150,12 @@ class ProjectRequestController extends Controller
                 'message' => $user->name . ' (' . $user->email . ') booked a new appointment.',
                 'is_read' => false,
             ]);
+        }
+
+        try {
+            Mail::to($user)->send(new ClientAppointmentSubmittedMail($projectRequest));
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         ActivityLog::create([

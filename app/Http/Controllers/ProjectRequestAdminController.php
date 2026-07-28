@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ClientAppointmentApprovedMail;
+use App\Mail\ClientAppointmentRejectedMail;
 use App\Models\ActivityLog;
 use App\Models\Notification;
 use App\Models\ProjectRequest;
@@ -9,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -66,6 +69,15 @@ class ProjectRequestAdminController extends Controller
             'is_read' => false,
         ]);
 
+        try {
+            $client = User::find($request->user_id);
+            if ($client) {
+                Mail::to($client)->send(new ClientAppointmentApprovedMail($request));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         ActivityLog::create([
             'user_id' => $request->user_id,
             'related_type' => ProjectRequest::class,
@@ -101,6 +113,15 @@ class ProjectRequestAdminController extends Controller
             'message' => 'Reason: ' . $validated['reason'],
             'is_read' => false,
         ]);
+
+        try {
+            $client = User::find($projectRequest->user_id);
+            if ($client) {
+                Mail::to($client)->send(new ClientAppointmentRejectedMail($projectRequest));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         ActivityLog::create([
             'user_id' => $projectRequest->user_id,
