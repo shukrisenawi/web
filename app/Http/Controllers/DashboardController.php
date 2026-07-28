@@ -35,23 +35,21 @@ class DashboardController extends Controller
         $totalClients = $isAdmin ? User::where('role', User::ROLE_CLIENT)->count() : 0;
 
         $milestoneQuery = $isAdmin
-            ? \App\Models\Project::query()->with('milestones')
-            : $user->projects()->with('milestones');
+            ? \App\Models\Milestone::query()->with('project')
+            : \App\Models\Milestone::query()->whereHas('project', fn ($q) => $q->where('user_id', $user->id))->with('project');
 
         $milestones = $milestoneQuery
+            ->orderByDesc('created_at')
+            ->limit(10)
             ->get()
-            ->pluck('milestones')
-            ->flatten()
-            ->sortBy('due_date')
-            ->filter(fn ($m) => $m->due_date?->isFuture() || $m->due_date?->isToday())
-            ->values()
-            ->take(3)
             ->map(fn ($m) => [
-                'title' => $m->project->title,
+                'project' => $m->project->title,
+                'title' => $m->title,
                 'note' => $m->note,
                 'due_date' => $m->due_date?->format('M d, Y'),
                 'is_active' => $m->is_active,
-            ]);
+            ])
+            ->values();
 
         $fileQuery = $isAdmin
             ? \App\Models\Project::query()->with('fileUploads')

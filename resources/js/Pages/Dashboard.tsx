@@ -39,7 +39,7 @@ const iconMap: Record<string, React.ElementType> = {
 interface DashboardProps {
     stats: { label: string; value: number | string; sub: string }[];
     projects: { id: number; title: string; category: string; progress: number; status: string; icon_color: string }[];
-    milestones: { title: string; note: string; due_date: string; is_active: boolean }[];
+    milestones: { project: string; title: string; note: string; due_date: string; is_active: boolean }[];
     invoices: { id: string; project: string; date: string; amount: string; status: string }[];
     tickets: { id: string; issue: string; status: string; date: string }[];
     activity: { type: string; text: string; time: string }[];
@@ -240,19 +240,20 @@ export default function Dashboard({
                         <Card>
                             <div className="mb-4 flex items-center gap-2">
                                 <Calendar className="h-5 w-5 text-slate-700" />
-                                <h3 className="font-semibold text-slate-900">Upcoming Milestones</h3>
+                                <h3 className="font-semibold text-slate-900">Latest Milestones & Updates</h3>
                             </div>
                             <div className="relative space-y-6 pl-4">
                                 <div className="absolute left-[21px] top-2 bottom-2 w-px bg-slate-200"></div>
                                 {milestones.map((m) => (
-                                    <div key={m.note + m.due_date} className="relative flex items-start gap-4">
+                                    <div key={m.note + m.due_date + m.title + m.project} className="relative flex items-start gap-4">
                                         <div
                                             className={`relative z-10 mt-1 h-3 w-3 rounded-full border-2 ${
                                                 m.is_active ? 'border-blue-600 bg-blue-600' : 'border-slate-300 bg-white'
                                             }`}
                                         />
                                         <div className="min-w-0 flex-1">
-                                            <p className="truncate font-semibold text-slate-900">{m.title}</p>
+                                            <p className="truncate font-semibold text-slate-900">{m.project}</p>
+                                            <p className="truncate text-sm text-slate-900">{m.title}</p>
                                             <p className="text-xs text-slate-500">{m.note}</p>
                                         </div>
                                         <p className="shrink-0 text-xs text-slate-500">{m.due_date}</p>
