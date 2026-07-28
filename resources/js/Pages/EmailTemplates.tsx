@@ -2,6 +2,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { ArrowRight, Mail, Plus, Save, X } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
+import WysiwygEditor from '@/Components/WysiwygEditor';
 
 interface Template {
     id: number;
@@ -130,14 +131,15 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
                                         {editForm.errors.subject && <p className="mt-1 text-xs text-red-500">{editForm.errors.subject}</p>}
                                     </div>
                                     <div>
-                                        <label htmlFor={`edit-body-${t.id}`} className="mb-1 block text-sm font-medium text-slate-700">Body (HTML)</label>
-                                        <textarea
-                                            id={`edit-body-${t.id}`}
-                                            value={editForm.data.body}
-                                            onChange={(e) => editForm.setData('body', e.target.value)}
-                                            rows={20}
-                                            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-mono focus:border-blue-500 focus:outline-none"
-                                        />
+                                        <label htmlFor={`edit-body-${t.id}`} className="mb-1 block text-sm font-medium text-slate-700">Body</label>
+                                        <div className="rounded-lg border border-slate-200">
+                                            <WysiwygEditor
+                                                id={`edit-body-${t.id}`}
+                                                value={editForm.data.body}
+                                                onChange={(value) => editForm.setData('body', value)}
+                                                placeholder="Design your email body here..."
+                                            />
+                                        </div>
                                         {editForm.errors.body && <p className="mt-1 text-xs text-red-500">{editForm.errors.body}</p>}
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -271,14 +273,15 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
                                 {createForm.errors.subject && <p className="mt-1 text-xs text-red-500">{createForm.errors.subject}</p>}
                             </div>
                             <div>
-                                <label htmlFor="create-body" className="mb-1 block text-sm font-medium text-slate-700">Body (HTML)</label>
-                                <textarea
-                                    id="create-body"
-                                    value={createForm.data.body}
-                                    onChange={(e) => createForm.setData('body', e.target.value)}
-                                    rows={20}
-                                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-mono focus:border-blue-500 focus:outline-none"
-                                />
+                                <label htmlFor="create-body" className="mb-1 block text-sm font-medium text-slate-700">Body</label>
+                                <div className="rounded-lg border border-slate-200">
+                                    <WysiwygEditor
+                                        id="create-body"
+                                        value={createForm.data.body}
+                                        onChange={(value) => createForm.setData('body', value)}
+                                        placeholder="Design your email body here..."
+                                    />
+                                </div>
                                 {createForm.errors.body && <p className="mt-1 text-xs text-red-500">{createForm.errors.body}</p>}
                             </div>
                             <div className="flex items-center gap-2">
