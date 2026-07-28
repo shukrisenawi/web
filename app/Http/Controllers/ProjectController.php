@@ -350,8 +350,12 @@ class ProjectController extends Controller
 
         $originalStatus = $project->status;
 
-        if ($user->isAdmin() && isset($validated['progress']) && $validated['progress'] == 100) {
-            $validated['status'] = 'completed';
+        if ($user->isAdmin() && isset($validated['progress'])) {
+            if ($validated['progress'] == 100) {
+                $validated['status'] = 'completed';
+            } elseif ($project->status === 'completed' && $validated['progress'] < 100) {
+                $validated['status'] = 'in_progress';
+            }
         }
 
         $project->update($validated);
@@ -498,6 +502,8 @@ class ProjectController extends Controller
         $statusUpdate = ['progress' => $validated['progress']];
         if ($validated['progress'] == 100) {
             $statusUpdate['status'] = 'completed';
+        } elseif ($project->status === 'completed' && $validated['progress'] < 100) {
+            $statusUpdate['status'] = 'in_progress';
         }
         $project->update($statusUpdate);
 
@@ -536,6 +542,8 @@ class ProjectController extends Controller
         $statusUpdate = ['progress' => $validated['progress']];
         if ($validated['progress'] == 100) {
             $statusUpdate['status'] = 'completed';
+        } elseif ($project->status === 'completed' && $validated['progress'] < 100) {
+            $statusUpdate['status'] = 'in_progress';
         }
         $project->update($statusUpdate);
 
