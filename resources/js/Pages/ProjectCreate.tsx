@@ -2,6 +2,7 @@ import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowRight, Check, CheckCircle2, Clock4, FileText, Layers, Paperclip, Save, Trash2, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { DashboardLayout, Card } from '@/Layouts/Dashboard';
+import Modal from '@/Components/Modal';
 
 const inputClass = 'mt-1 w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none';
 const labelClass = 'block text-sm font-medium text-slate-700';
@@ -39,6 +40,7 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
     const [createFiles, setCreateFiles] = useState<File[]>([]);
     const [clientSearch, setClientSearch] = useState('');
     const [clientOpen, setClientOpen] = useState(false);
+    const [successModal, setSuccessModal] = useState(false);
 
     const filteredClients = clients.filter((c) =>
         `${c.name} ${c.company || ''} ${c.email}`.toLowerCase().includes(clientSearch.toLowerCase())
@@ -155,6 +157,7 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
         router.post('/projects', formData, {
             onSuccess: () => {
                 setCreateFiles([]);
+                setSuccessModal(true);
             },
         });
     };
@@ -511,6 +514,32 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
                     </Card>
                 </div>
             </DashboardLayout>
+
+            <Modal open={successModal} onClose={() => setSuccessModal(false)}>
+                <div className="flex flex-col items-center py-6 text-center">
+                    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
+                        <CheckCircle2 className="h-7 w-7 text-green-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900">Project Created Successfully</h3>
+                    <p className="mt-2 text-sm text-slate-600">Your project "{form.data.title}" has been created successfully.</p>
+                    <div className="mt-6 flex gap-2">
+                        <Link
+                            href="/projects"
+                            onClick={() => setSuccessModal(false)}
+                            className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                        >
+                            View Projects
+                        </Link>
+                        <button
+                            type="button"
+                            onClick={() => setSuccessModal(false)}
+                            className="rounded-lg border border-slate-200 px-6 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </>
     );
 }
