@@ -40,7 +40,6 @@ interface DashboardProps {
     stats: { label: string; value: number | string; sub: string }[];
     projects: { id: number; title: string; category: string; progress: number; status: string; icon_color: string }[];
     milestones: { title: string; note: string; due_date: string; is_active: boolean }[];
-    files: { name: string; size: string; date: string }[];
     invoices: { id: string; project: string; date: string; amount: string; status: string }[];
     tickets: { id: string; issue: string; status: string; date: string }[];
     activity: { type: string; text: string; time: string }[];
@@ -92,7 +91,6 @@ export default function Dashboard({
     stats,
     projects,
     milestones,
-    files,
     invoices,
     tickets,
     activity,
@@ -267,27 +265,7 @@ export default function Dashboard({
                             </Link>
                         </Card>
 
-                        {/** Recent Files */}
-                        <Card>
-                            <h3 className="font-semibold text-slate-900">Recent Files</h3>
-                            <div className="mt-4 space-y-3">
-                                {files.map((file) => (
-                                    <div key={file.name} className="flex items-center gap-3">
-                                        <div className="rounded-lg bg-red-50 p-2">
-                                            <FileText className="h-5 w-5 text-red-600" />
-                                        </div>
-                                        <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm font-semibold text-slate-900">{file.name}</p>
-                                            <p className="truncate text-xs text-slate-500">{file.size} · {file.date}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <Link href="/projects" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline">
-                                View All Files
-                                <ArrowRight className="h-4 w-4" />
-                            </Link>
-                        </Card>
+
                     </div>
                 </div>
 
