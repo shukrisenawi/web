@@ -298,6 +298,10 @@ class ProjectController extends Controller
             'description' => "Project \"{$project->title}\" was created by ".($user->isAdmin() ? 'Admin' : $user->name),
         ]);
 
+        if ($request->wantsJson() || $request->header('X-Inertia')) {
+            return back()->with('success', 'Project created successfully.');
+        }
+
         return redirect()->route('projects')->with('success', 'Project created successfully.');
     }
 

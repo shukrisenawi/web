@@ -155,6 +155,8 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
         createFiles.forEach((f) => { formData.append('files[]', f); });
 
         router.post('/projects', formData, {
+            preserveState: true,
+            preserveScroll: true,
             onSuccess: () => {
                 setCreateFiles([]);
                 setSuccessModal(true);
