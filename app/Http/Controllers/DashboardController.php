@@ -43,14 +43,15 @@ class DashboardController extends Controller
             ->pluck('milestones')
             ->flatten()
             ->sortBy('due_date')
+            ->filter(fn ($m) => $m->due_date?->isFuture() || $m->due_date?->isToday())
+            ->values()
             ->take(3)
             ->map(fn ($m) => [
                 'title' => $m->project->title,
                 'note' => $m->note,
                 'due_date' => $m->due_date?->format('M d, Y'),
                 'is_active' => $m->is_active,
-            ])
-            ->values();
+            ]);
 
         $fileQuery = $isAdmin
             ? \App\Models\Project::query()->with('fileUploads')
