@@ -156,7 +156,7 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
         billingForm.setData('items', billingForm.data.items.filter((_, i) => i !== idx));
     };
 
-    const newProject = (id: number) => router.get('/projects', { user_id: id, new: 1 });
+    const newProject = (id: number) => router.get('/projects/create', { user_id: id });
 
     const editForm = useForm({
         name: '',
