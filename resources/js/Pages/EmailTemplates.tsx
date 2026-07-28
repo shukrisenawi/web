@@ -1,5 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
-import { ArrowRight, Mail, Plus, Save, X } from 'lucide-react';
+import { ArrowRight, Code, FileText, Mail, Plus, Save, X } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
 import WysiwygEditor from '@/Components/WysiwygEditor';
@@ -21,6 +21,8 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
     const [editingId, setEditingId] = useState<number | null>(null);
     const [creating, setCreating] = useState(false);
     const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
+    const [editMode, setEditMode] = useState<'visual' | 'source'>('visual');
+    const [createMode, setCreateMode] = useState<'visual' | 'source'>('visual');
 
     const createForm = useForm({
         key: '',
@@ -44,6 +46,7 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
             body: t.body,
             is_active: t.is_active,
         });
+        setEditMode('visual');
         setEditingId(t.id);
     };
 
@@ -131,15 +134,43 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
                                         {editForm.errors.subject && <p className="mt-1 text-xs text-red-500">{editForm.errors.subject}</p>}
                                     </div>
                                     <div>
-                                        <label htmlFor={`edit-body-${t.id}`} className="mb-1 block text-sm font-medium text-slate-700">Body</label>
-                                        <div className="rounded-lg border border-slate-200">
-                                            <WysiwygEditor
+                                        <div className="mb-1 flex items-center justify-between">
+                                            <label htmlFor={`edit-body-${t.id}`} className="block text-sm font-medium text-slate-700">Body</label>
+                                            <div className="flex rounded-lg border border-slate-200 bg-white p-0.5 text-xs">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setEditMode('visual')}
+                                                    className={`flex items-center gap-1 rounded-md px-2 py-1 ${editMode === 'visual' ? 'bg-blue-100 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'}`}
+                                                >
+                                                    <FileText className="h-3.5 w-3.5" /> Visual
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setEditMode('source')}
+                                                    className={`flex items-center gap-1 rounded-md px-2 py-1 ${editMode === 'source' ? 'bg-blue-100 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'}`}
+                                                >
+                                                    <Code className="h-3.5 w-3.5" /> HTML
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {editMode === 'visual' ? (
+                                            <div className="rounded-lg border border-slate-200">
+                                                <WysiwygEditor
+                                                    id={`edit-body-${t.id}`}
+                                                    value={editForm.data.body}
+                                                    onChange={(value) => editForm.setData('body', value)}
+                                                    placeholder="Design your email body here..."
+                                                />
+                                            </div>
+                                        ) : (
+                                            <textarea
                                                 id={`edit-body-${t.id}`}
                                                 value={editForm.data.body}
-                                                onChange={(value) => editForm.setData('body', value)}
-                                                placeholder="Design your email body here..."
+                                                onChange={(e) => editForm.setData('body', e.target.value)}
+                                                rows={20}
+                                                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-mono focus:border-blue-500 focus:outline-none"
                                             />
-                                        </div>
+                                        )}
                                         {editForm.errors.body && <p className="mt-1 text-xs text-red-500">{editForm.errors.body}</p>}
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -273,15 +304,43 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
                                 {createForm.errors.subject && <p className="mt-1 text-xs text-red-500">{createForm.errors.subject}</p>}
                             </div>
                             <div>
-                                <label htmlFor="create-body" className="mb-1 block text-sm font-medium text-slate-700">Body</label>
-                                <div className="rounded-lg border border-slate-200">
-                                    <WysiwygEditor
+                                <div className="mb-1 flex items-center justify-between">
+                                    <label htmlFor="create-body" className="block text-sm font-medium text-slate-700">Body</label>
+                                    <div className="flex rounded-lg border border-slate-200 bg-white p-0.5 text-xs">
+                                        <button
+                                            type="button"
+                                            onClick={() => setCreateMode('visual')}
+                                            className={`flex items-center gap-1 rounded-md px-2 py-1 ${createMode === 'visual' ? 'bg-blue-100 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'}`}
+                                        >
+                                            <FileText className="h-3.5 w-3.5" /> Visual
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setCreateMode('source')}
+                                            className={`flex items-center gap-1 rounded-md px-2 py-1 ${createMode === 'source' ? 'bg-blue-100 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'}`}
+                                        >
+                                            <Code className="h-3.5 w-3.5" /> HTML
+                                        </button>
+                                    </div>
+                                </div>
+                                {createMode === 'visual' ? (
+                                    <div className="rounded-lg border border-slate-200">
+                                        <WysiwygEditor
+                                            id="create-body"
+                                            value={createForm.data.body}
+                                            onChange={(value) => createForm.setData('body', value)}
+                                            placeholder="Design your email body here..."
+                                        />
+                                    </div>
+                                ) : (
+                                    <textarea
                                         id="create-body"
                                         value={createForm.data.body}
-                                        onChange={(value) => createForm.setData('body', value)}
-                                        placeholder="Design your email body here..."
+                                        onChange={(e) => createForm.setData('body', e.target.value)}
+                                        rows={20}
+                                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-mono focus:border-blue-500 focus:outline-none"
                                     />
-                                </div>
+                                )}
                                 {createForm.errors.body && <p className="mt-1 text-xs text-red-500">{createForm.errors.body}</p>}
                             </div>
                             <div className="flex items-center gap-2">
