@@ -386,7 +386,7 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
                         </div>
                         <div className="flex flex-1 min-h-0 rounded-lg border border-slate-200 bg-white p-4">
                             <iframe
-                                srcDoc={previewTemplate.body}
+                                srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:sans-serif;padding:24px;background:#f1f5f9;margin:0}</style></head><body>${previewTemplate.body}</body></html>`}
                                 className="w-full h-full rounded-lg border-0"
                                 title="Preview"
                             />
