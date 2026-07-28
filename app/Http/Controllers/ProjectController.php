@@ -132,7 +132,7 @@ class ProjectController extends Controller
             abort(403);
         }
 
-        $project->load(['milestones' => fn ($q) => $q->orderBy('due_date'), 'user', 'invoices.paymentProofs']);
+        $project->load(['milestones' => fn ($q) => $q->orderByDesc('created_at'), 'user', 'invoices.paymentProofs']);
 
         $totalPaid = $project->invoices->flatMap(fn ($i) => $i->paymentProofs->where('status', 'verified'))->sum('amount');
         $projectPrice = $project->project_price ? (float) $project->project_price : 0;
