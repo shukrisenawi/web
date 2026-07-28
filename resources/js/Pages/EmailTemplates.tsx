@@ -307,7 +307,7 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
 
             {previewTemplate && (
                 <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4">
-                    <Card className="my-8 w-full max-w-3xl">
+                    <Card className="my-4 w-[90vw] max-w-[90vw]">
                         <div className="mb-4 flex items-center justify-between">
                             <h3 className="text-lg font-bold text-slate-900">Preview: {previewTemplate.name}</h3>
                             <button type="button" onClick={() => setPreviewTemplate(null)} className="text-slate-400 hover:text-slate-700">
@@ -317,7 +317,7 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
                         <div className="rounded-lg border border-slate-200 bg-white p-4">
                             <iframe
                                 srcDoc={previewTemplate.body}
-                                className="w-full min-h-[400px] rounded-lg border-0"
+                                className="w-full min-h-[70vh] rounded-lg border-0"
                                 title="Preview"
                             />
                         </div>
