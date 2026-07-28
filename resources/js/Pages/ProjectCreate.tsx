@@ -40,13 +40,22 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
     const [createFiles, setCreateFiles] = useState<File[]>([]);
     const [clientSearch, setClientSearch] = useState('');
     const [clientOpen, setClientOpen] = useState(false);
-    const [successModal, setSuccessModal] = useState(false);
+        const [successModal, setSuccessModal] = useState(false);
+    const successRedirectRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const filteredClients = clients.filter((c) =>
         `${c.name} ${c.company || ''} ${c.email}`.toLowerCase().includes(clientSearch.toLowerCase())
     );
 
     const clientRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        return () => {
+            if (successRedirectRef.current) {
+                clearTimeout(successRedirectRef.current);
+            }
+        };
+    }, []);
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -160,6 +169,9 @@ export default function ProjectCreate({ clients = [], services = [], systemTypes
             onSuccess: () => {
                 setCreateFiles([]);
                 setSuccessModal(true);
+                successRedirectRef.current = setTimeout(() => {
+                    router.get('/projects');
+                }, 2500);
             },
         });
     };
