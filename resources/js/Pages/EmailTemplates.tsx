@@ -153,6 +153,13 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
                                     <div className="flex justify-end gap-2">
                                         <button
                                             type="button"
+                                            onClick={() => setPreviewTemplate({ ...t, subject: editForm.data.subject, body: editForm.data.body, name: editForm.data.name, is_active: editForm.data.is_active })}
+                                            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                                        >
+                                            Preview
+                                        </button>
+                                        <button
+                                            type="button"
                                             onClick={() => setEditingId(null)}
                                             className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
                                         >
