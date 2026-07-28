@@ -67,11 +67,11 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
             case 'client_appointment_submitted':
             case 'client_appointment_approved':
             case 'client_appointment_rejected':
-                return ['app_name', 'company_name', 'contact_name', 'appointment_date', 'appointment_time', 'appointment_type', 'rejection_reason', 'url'];
+                return ['app_name', 'app_url', 'logo_url', 'company_name', 'contact_name', 'appointment_date', 'appointment_time', 'appointment_type', 'rejection_reason', 'url'];
             case 'ticket_reply':
-                return ['app_name', 'app_url', 'ticket_no', 'subject', 'sender_name', 'message', 'is_admin_reply', 'url'];
+                return ['app_name', 'app_url', 'logo_url', 'ticket_no', 'subject', 'sender_name', 'message', 'is_admin_reply', 'url'];
             case 'new_invoice':
-                return ['app_name', 'app_url', 'invoice_no', 'billed_to', 'issue_date', 'status', 'view_url', 'payment_url'];
+                return ['app_name', 'app_url', 'logo_url', 'invoice_no', 'billed_to', 'issue_date', 'status', 'view_url', 'payment_url'];
             default:
                 return [];
         }
