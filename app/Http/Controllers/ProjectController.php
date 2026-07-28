@@ -349,6 +349,11 @@ class ProjectController extends Controller
         }
 
         $originalStatus = $project->status;
+
+        if ($user->isAdmin() && isset($validated['progress']) && $validated['progress'] == 100) {
+            $validated['status'] = 'completed';
+        }
+
         $project->update($validated);
 
         ActivityLog::create([
@@ -490,7 +495,11 @@ class ProjectController extends Controller
             'is_active' => false,
         ]);
 
-        $project->update(['progress' => $validated['progress']]);
+        $statusUpdate = ['progress' => $validated['progress']];
+        if ($validated['progress'] == 100) {
+            $statusUpdate['status'] = 'completed';
+        }
+        $project->update($statusUpdate);
 
         ActivityLog::create([
             'user_id' => $user->id,
@@ -523,7 +532,12 @@ class ProjectController extends Controller
         ]);
 
         $milestone->update($validated);
-        $project->update(['progress' => $validated['progress']]);
+
+        $statusUpdate = ['progress' => $validated['progress']];
+        if ($validated['progress'] == 100) {
+            $statusUpdate['status'] = 'completed';
+        }
+        $project->update($statusUpdate);
 
         ActivityLog::create([
             'user_id' => $user->id,
