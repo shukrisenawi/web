@@ -20,6 +20,7 @@ import {
     CalendarClock,
     Package,
     Sparkles,
+    Mail,
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -57,6 +58,7 @@ const adminSidebar: SidebarItem[] = [
     { label: 'Hero', href: '/manage-hero', icon: Sparkles },
     { label: 'Products', href: '/manage-products', icon: Package },
     { label: 'Blog', href: '/manage-blog', icon: FileText },
+    { label: 'Email Templates', href: '/email-templates', icon: Mail },
 ];
 
 interface NotificationItem {

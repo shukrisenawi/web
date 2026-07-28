@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\FrontpageController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
@@ -189,5 +190,9 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
         Route::post('/manage-products', [ProductController::class, 'store'])->name('products.store');
         Route::put('/manage-products/{product}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/manage-products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+        Route::get('/email-templates', [EmailTemplateController::class, 'index'])->name('email-templates.index');
+        Route::post('/email-templates', [EmailTemplateController::class, 'store'])->name('email-templates.store');
+        Route::put('/email-templates/{emailTemplate}', [EmailTemplateController::class, 'update'])->name('email-templates.update');
     });
 });
