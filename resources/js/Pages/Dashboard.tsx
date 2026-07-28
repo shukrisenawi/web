@@ -39,7 +39,7 @@ const iconMap: Record<string, React.ElementType> = {
 interface DashboardProps {
     stats: { label: string; value: number | string; sub: string }[];
     projects: { id: number; title: string; category: string; progress: number; status: string; icon_color: string }[];
-    milestones: { project: string; title: string; note: string; due_date: string; is_active: boolean }[];
+    milestones: { project: string; title: string; note: string; due_date: string; created_at: string; is_active: boolean }[];
     invoices: { id: string; project: string; date: string; amount: string; status: string }[];
     tickets: { id: string; issue: string; status: string; date: string }[];
     activity: { type: string; text: string; time: string }[];
@@ -256,7 +256,7 @@ export default function Dashboard({
                                             <p className="truncate text-sm text-slate-900">{m.title}</p>
                                             <p className="text-xs text-slate-500">{m.note}</p>
                                         </div>
-                                        <p className="shrink-0 text-xs text-slate-500">{m.due_date}</p>
+                                        <p className="shrink-0 text-xs text-slate-500">{m.created_at}</p>
                                     </div>
                                 ))}
                             </div>
