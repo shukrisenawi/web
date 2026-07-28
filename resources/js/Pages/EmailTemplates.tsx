@@ -1,5 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
-import { ArrowRight, Code, FileText, Mail, Plus, Save, X } from 'lucide-react';
+import { ArrowRight, CheckCircle, Code, FileText, Mail, Plus, Save, X } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
 import WysiwygEditor from '@/Components/WysiwygEditor';
@@ -23,6 +23,7 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
     const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
     const [editMode, setEditMode] = useState<'visual' | 'source'>('visual');
     const [createMode, setCreateMode] = useState<'visual' | 'source'>('visual');
+    const [successModal, setSuccessModal] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
 
     const createForm = useForm({
         key: '',
@@ -55,6 +56,7 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
             onSuccess: () => {
                 setCreating(false);
                 createForm.reset();
+                setSuccessModal({ open: true, message: `Email template "${createForm.data.name}" has been created successfully.` });
             },
         });
     };
@@ -62,7 +64,10 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
     const submitEdit = () => {
         if (editingId === null) return;
         editForm.put(`/email-templates/${editingId}`, {
-            onSuccess: () => setEditingId(null),
+            onSuccess: () => {
+                setEditingId(null);
+                setSuccessModal({ open: true, message: `Email template "${editForm.data.name}" has been saved successfully.` });
+            },
         });
     };
 
@@ -390,6 +395,27 @@ export default function EmailTemplates({ templates }: EmailTemplatesProps) {
                                 className="w-full h-full rounded-lg border-0"
                                 title="Preview"
                             />
+                        </div>
+                    </Card>
+                </div>
+            )}
+
+            {successModal.open && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <Card className="w-full max-w-md">
+                        <div className="flex flex-col items-center py-6 text-center">
+                            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
+                                <CheckCircle className="h-7 w-7 text-green-600" />
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900">Saved Successfully</h3>
+                            <p className="mt-2 text-sm text-slate-600">{successModal.message}</p>
+                            <button
+                                type="button"
+                                onClick={() => setSuccessModal({ open: false, message: '' })}
+                                className="mt-6 rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                            >
+                                OK
+                            </button>
                         </div>
                     </Card>
                 </div>
