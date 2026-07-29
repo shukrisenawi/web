@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\EmailTemplate;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use Illuminate\Bus\Queueable;
@@ -21,13 +22,23 @@ class TicketReplyMail extends Mailable
 
     public function envelope(): Envelope
     {
+        $template = EmailTemplate::get('ticket_reply', $this->variables());
+
         return new Envelope(
-            subject: 'New Reply on Your Support Ticket ' . $this->ticket->ticket_no . ' - ' . config('app.name'),
+            subject: $template['found'] && $template['subject'] ? $template['subject'] : 'New Reply on Your Support Ticket ' . $this->ticket->ticket_no . ' - ' . config('app.name'),
         );
     }
 
     public function content(): Content
     {
+        $template = EmailTemplate::get('ticket_reply', $this->variables());
+
+        if ($template['found'] && $template['body']) {
+            return new Content(
+                htmlString: $template['body'],
+            );
+        }
+
         return new Content(
             view: 'emails.ticket-reply',
             with: [
@@ -35,5 +46,20 @@ class TicketReplyMail extends Mailable
                 'isAdminReply' => $this->reply->user?->isAdmin() ?? false,
             ],
         );
+    }
+
+    private function variables(): array
+    {
+        return [
+            'app_name' => config('app.name'),
+            'app_url' => config('app.url'),
+            'logo_url' => asset('images/logo.png'),
+            'ticket_no' => $this->ticket->ticket_no,
+            'subject' => $this->ticket->subject,
+            'sender_name' => $this->reply->user?->name ?? 'Unknown',
+            'message' => $this->reply->message,
+            'is_admin_reply' => ($this->reply->user?->isAdmin() ?? false) ? 'true' : 'false',
+            'url' => route('support') . '?ticket=' . $this->ticket->ticket_no,
+        ];
     }
 }
