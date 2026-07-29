@@ -37,6 +37,19 @@ class EmailTemplate extends Model
             $body = str_replace('{{' . $placeholder . '}}', $value, $body);
         }
 
+        $appUrl = rtrim(config('app.url') ?? '', '/');
+        $body = preg_replace_callback(
+            '/(src|href)=["\'](?!https?:\/\/|\/\/|mailto:|tel:|#)([^"\']+)["\']/i',
+            function ($matches) use ($appUrl) {
+                $attribute = $matches[1];
+                $path = $matches[2];
+                $url = str_starts_with($path, '/') ? $appUrl . $path : $appUrl . '/' . $path;
+
+                return $attribute . '="' . $url . '"';
+            },
+            $body
+        );
+
         return [
             'subject' => $subject,
             'body' => $body,
