@@ -695,7 +695,7 @@ export default function ClientDatabase({ clients, projects = [] }: { clients: Cl
                             </div>
                             <p className="mb-6 text-sm text-slate-700">
                                 Are you sure you want to delete <strong>{deleteConfirm.company ?? deleteConfirm.name}</strong> ({deleteConfirm.name})?
-                                All associated data including projects and invoices will also be removed.
+                                All associated data including appointments, projects and invoices will also be removed.
                             </p>
                             <div className="flex justify-end gap-2">
                                 <button

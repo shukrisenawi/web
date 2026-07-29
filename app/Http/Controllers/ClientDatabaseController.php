@@ -143,8 +143,17 @@ class ClientDatabaseController extends Controller
             return redirect()->route('clients')->with('error', 'Cannot delete an admin user.');
         }
 
+        foreach ($client->projectRequests as $request) {
+            $request->files()->get()->each(function ($file) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($file->path);
+                $file->delete();
+            });
+
+            $request->delete();
+        }
+
         $client->delete();
 
-        return redirect()->route('clients')->with('success', 'Client deleted successfully.');
+        return redirect()->route('clients')->with('success', 'Client and all associated appointments deleted successfully.');
     }
 }
