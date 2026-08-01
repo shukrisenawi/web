@@ -1,6 +1,7 @@
 import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { DashboardLayout, Card, Badge } from '@/Layouts/Dashboard';
+import WysiwygEditor from '@/Components/WysiwygEditor';
 import {
     Plus,
     Pencil,
@@ -13,6 +14,8 @@ import {
     CheckCircle2,
     AlertCircle,
     ArrowLeft,
+    FileText,
+    Code,
 } from 'lucide-react';
 
 interface Post {
@@ -54,6 +57,7 @@ export default function ManageBlog({ posts }: ManageBlogProps) {
     const [showDelete, setShowDelete] = useState<Post | null>(null);
 
     const { data, setData, processing, errors, reset } = useForm({ ...emptyPost });
+    const [contentMode, setContentMode] = useState<'visual' | 'source'>('visual');
 
     const startCreate = () => {
         setEditing(null);
@@ -262,14 +266,41 @@ export default function ManageBlog({ posts }: ManageBlogProps) {
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-sm font-medium text-slate-700">Content *</label>
-                                <textarea
-                                    value={data.content}
-                                    onChange={(e) => setData('content', e.target.value)}
-                                    rows={10}
-                                    className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                                    placeholder="Write your post content here..."
-                                />
+                                <div className="flex items-center justify-between">
+                                    <label className="text-sm font-medium text-slate-700">Content *</label>
+                                    <div className="flex rounded-lg border border-slate-200 bg-white p-0.5 text-xs">
+                                        <button
+                                            type="button"
+                                            onClick={() => setContentMode('visual')}
+                                            className={`flex items-center gap-1 rounded-md px-2 py-1 ${contentMode === 'visual' ? 'bg-blue-100 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'}`}
+                                        >
+                                            <FileText className="h-3.5 w-3.5" /> Visual
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setContentMode('source')}
+                                            className={`flex items-center gap-1 rounded-md px-2 py-1 ${contentMode === 'source' ? 'bg-blue-100 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'}`}
+                                        >
+                                            <Code className="h-3.5 w-3.5" /> HTML
+                                        </button>
+                                    </div>
+                                </div>
+                                {contentMode === 'visual' ? (
+                                    <div className="rounded-lg border border-slate-200">
+                                        <WysiwygEditor
+                                            value={data.content}
+                                            onChange={(value) => setData('content', value)}
+                                            placeholder="Write your post content here..."
+                                        />
+                                    </div>
+                                ) : (
+                                    <textarea
+                                        value={data.content}
+                                        onChange={(e) => setData('content', e.target.value)}
+                                        rows={20}
+                                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-mono focus:border-blue-500 focus:outline-none"
+                                    />
+                                )}
                                 {errors.content && <p className="text-xs text-red-600">{errors.content}</p>}
                             </div>
 
@@ -353,7 +384,7 @@ export default function ManageBlog({ posts }: ManageBlogProps) {
                                     )}
                                 </div>
                                 <h3 className="mt-1 text-lg font-semibold text-slate-900">{post.title}</h3>
-                                <p className="mt-1 line-clamp-2 text-sm text-slate-600">{post.excerpt || post.content}</p>
+                                <p className="mt-1 line-clamp-2 text-sm text-slate-600">{post.excerpt || post.content.replace(/<[^>]*>/g, ' ')}</p>
                                 <div className="mt-2 flex items-center gap-4 text-xs text-slate-500">
                                     {post.author && <span>{post.author}</span>}
                                     {post.published_at && (

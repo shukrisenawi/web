@@ -88,15 +88,10 @@ export default function BlogPost() {
                             />
                         </div>
 
-                        <div className="prose prose-slate mt-10 max-w-none">
-                            {post.content.split('\n').map((paragraph, idx) => {
-                                if (!paragraph.trim()) return null;
-                                if (paragraph.match(/^\d+\./)) {
-                                    return <p key={idx} className="mt-2 text-slate-700">{paragraph.trim()}</p>;
-                                }
-                                return <p key={idx} className="mt-4 leading-relaxed text-slate-700">{paragraph.trim()}</p>;
-                            })}
-                        </div>
+                        <div
+                            className="prose prose-slate mt-10 max-w-none"
+                            dangerouslySetInnerHTML={{ __html: post.content }}
+                        />
 
                         <div className="mt-12 border-t border-slate-200 pt-8">
                             <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline">
